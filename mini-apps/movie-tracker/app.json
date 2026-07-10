@@ -1,0 +1,77 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "App: Movie Tracker",
+      "slug": "rule/app_movie_tracker",
+      "data": {
+        "tags": [
+          "app",
+          "movie-tracker"
+        ],
+        "properties": {
+          "scope": "item, event, interest, person, place",
+          "trust": "imported",
+          "status": "active",
+          "trigger": "user mentions watching a movie or film, their watchlist, movie ratings or reviews, rewatching, or going to the cinema/theater",
+          "priority": 10,
+          "owns_tags": [
+            "movie-tracker"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/movie-tracker@1.0"
+        },
+        "short_description": "Movie Tracker mini-app — a personal movie diary. Tracks movies as items, watch sessions as events with per-watch ratings, watchlists, favorites, and co-watcher history. Full operating rules are in this entity's lore chunks: Data Model, Log a Watch, Watchlist/Favorites/Edits, Queries & Stats. Read all lore before acting on movie-related requests."
+      },
+      "lore": [
+        {
+          "title": "Data Model",
+          "content": "MOVIE = item entity. Name: the movie's title (slugs derive from names; add the year to the name only when two tracked movies share a title). Properties: item_type: \"movie\", year (number), director, genres (array), runtime_minutes (number), status (\"watchlist\" | \"watched\"), favorite (boolean), where_to_stream (optional). Tag every movie item \"movie-tracker\". Every movie item gets RELATED_TO interest/watching_movies (collection anchor).\n\nWATCH SESSION = event entity. Name: \"Watched <title> (<YYYY-MM-DD>)\", dated so every watch of the same movie gets its own slug. Properties: event_type: \"movie_watch\", date (human-readable), date_year/date_month/date_day (numbers), rating (1-10), impression (1-3 sentence review), rewatch (boolean), format (\"theater\" | \"streaming\" | \"physical\"), mood (optional). Tag \"movie-tracker\".\n\nRELATIONSHIPS per watch: event RELATED_TO item (the movie); each watcher person ATTENDED event (always include the world owner); event OCCURRED_AT place if location known (create the place if new). Optionally link the movie item via REFERENCES to a reference entity (e.g. an IMDb page) when a URL is provided.",
+          "display_index": 0
+        },
+        {
+          "title": "Workflow: Log a Watch",
+          "content": "WORKFLOW: Log a watch (\"I watched X last night with Y\").\n1. Search entities for the movie item. If missing, create it per the Data Model, filling year/director/genres from general knowledge; set status: \"watched\".\n2. If the movie existed with status \"watchlist\", update status to \"watched\".\n3. Create the watch event. Ask for a 1-10 rating and a one-line impression if not given; rating is the single most important field — always try to capture it. Set rewatch: true if a prior watch event for this movie exists.\n4. Create relationships: event RELATED_TO movie; ATTENDED edges for the owner and each named co-watcher (create person entities for unknown co-watchers after confirming with the user); OCCURRED_AT if a place was mentioned.\n5. Confirm back with a one-line summary: title, rating, who, where.",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Watchlist, Favorites, Edits",
+          "content": "WORKFLOW: Watchlist (\"add X to my watchlist\"). Create the movie item with status: \"watchlist\", tag \"movie-tracker\", RELATED_TO interest/watching_movies. No event is created until it's actually watched. To list the watchlist: search items tagged \"movie-tracker\" with status \"watchlist\".\n\nWORKFLOW: Favorites. \"X is one of my favorites\" → set favorite: true on the movie item. Favorites list = movie items with favorite: true.\n\nWORKFLOW: Re-rate / edit review. Update the rating/impression on the most recent watch event for that movie, not on the movie item. The movie item never stores a rating; ratings live on watch events so rewatches can differ — each watch gets its own rating.",
+          "display_index": 2
+        },
+        {
+          "title": "Workflow: Queries & Stats",
+          "content": "WORKFLOW: Queries & stats.\n- \"What did I watch with <person>?\" → query_relationships: that person's ATTENDED edges to events with event_type movie_watch, then follow RELATED_TO to movie items.\n- \"What have I rated highest?\" → list movie_watch events, sort by rating property.\n- \"Have I seen X?\" → search for the movie item; check status and any linked watch events.\n- \"What should I watch?\" → list watchlist items; optionally recommend based on genres of high-rated (8+) watches.\n- Year in review → filter movie_watch events by date_year; report count, average rating, top co-watcher (most ATTENDED overlaps), most-watched genre.\nPresentation: keep answers conversational; a compact list or table only when 4+ titles.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "interest",
+      "name": "Watching Movies",
+      "slug": "interest/watching_movies",
+      "data": {
+        "tags": [
+          "movie-tracker"
+        ],
+        "properties": {
+          "interest_type": "entertainment"
+        },
+        "short_description": "Collection anchor for the Movie Tracker app. All movie items link here via RELATED_TO so the full collection can be queried from one hub."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_type": "APPLIES_TO",
+      "source_id": "rule/app_movie_tracker",
+      "target_id": "interest/watching_movies",
+      "properties": {
+        "note": "Collection anchor managed by the Movie Tracker app"
+      }
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

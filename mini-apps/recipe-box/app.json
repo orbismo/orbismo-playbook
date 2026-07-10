@@ -1,0 +1,90 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "App: Recipe Box",
+      "slug": "rule/app_recipe_box",
+      "data": {
+        "tags": [
+          "app",
+          "recipe-box"
+        ],
+        "properties": {
+          "scope": "item, event, person, place, reference, interest",
+          "trust": "imported",
+          "source": "orbismo-playbook/recipe-box@1.0",
+          "status": "active",
+          "trigger": "recipes, ingredients, cookbooks, cooking or baking something, meals and dinners together, what to make or cook, family dishes, logging that we cooked or ate",
+          "priority": 10,
+          "owns_tags": [
+            "recipe-box",
+            "family-recipe",
+            "favorite",
+            "eat-again",
+            "not-again",
+            "quick",
+            "make-ahead",
+            "crowd-pleaser",
+            "holiday"
+          ],
+          "rule_type": "tracker"
+        },
+        "short_description": "Recipe Box mini-app: recipes as items with consistent Ingredients and Instructions lore, provenance as real links (cookbook item, website reference, or the relative who created it), facet tags for retrieval, and meals as dated social events that carry the tweaks and the table. Full operating rules are in this entity's lore chunks: Data Model: Recipes, Data Model: Meals, Workflow: Capture a Recipe, Workflow: Log a Meal, Workflow: Queries & What to Make. Read all lore before acting on recipe or meal requests."
+      },
+      "lore": [
+        {
+          "title": "Data Model: Recipes",
+          "content": "RECIPE = item entity. Name: the dish in Title Case (\"Grandma's Dinner Rolls\", \"Weeknight Chicken Curry\"). Keep names unique; slugs derive from names.\n\nRequired properties:\n- item_type: \"recipe\"\n- meal_type: \"breakfast\" | \"lunch\" | \"dinner\" | \"dessert\" | \"side\" | \"snack\" | \"drink\" | \"other\"\n- provenance: \"family\" | \"cookbook\" | \"website\" | \"friend\" | \"invented\" | \"other\"\n- servings: number (0 if unknown)\n- total_time_minutes: number (0 if unknown)\n- last_cooked: ISO date, or \"never\"\n- times_cooked: number (0 to start)\nOptional: cuisine (free text).\nRequired tags: [\"recipe-box\"] plus any facet tags that apply (below).\n\nINGREDIENTS ARE LORE, NOT ENTITIES (by design; entities per ingredient are too much upkeep). Every recipe gets a lore chunk titled exactly \"Ingredients\": one ingredient per line, quantity first, prep note after a comma:\n- 2 lbs chicken thighs, boneless\n- 1 can coconut milk\n- 3 cloves garlic, minced\nApproximate or spoken quantities are recorded as said (\"~2 lbs flour\", \"some yeast\", \"salt to taste\"); never invent precision the user didn't give. Same format every time; that consistency is what makes recipes comparable and searchable (search_lore finds \"the recipe with saffron\" from here).\n\nINSTRUCTIONS ARE LORE TOO, in a chunk titled exactly \"Instructions\". For family and invented recipes, write the full method. For cookbook and website recipes, do NOT transcribe the published method: record where it lives (\"page 132\" / the linked site) plus only what we do differently. Lasting changes get their own chunk titled \"Our Version\" (see Workflow: Log a Meal).\n\nPROVENANCE IS LINKS. The provenance property records the primary origin; create EVERY provenance link that applies (a family recipe adapted from a cookbook gets both CREATED_BY and COMPONENT_OF). For \"invented\" and \"other\" there is no provenance link. The links:\n- Cookbook: the cookbook is an item entity named by its title (item_type: \"book\"; if the Book Tracker app is installed this is the SAME book item, shared). Link recipe COMPONENT_OF cookbook { page: <number> }. The owner may link person OWNS cookbook.\n- Website: a reference entity holding the url (source_type \"webpage\"), named by the page's title (\"Smitten Kitchen Crispy Treats\"), one reference per distinct URL. Search references first and reuse on a URL match. Link recipe REFERENCES it. If a linked source goes dead, rebuild what the user remembers into the recipe's \"Instructions\" chunk and note that it's a reconstruction.\n- A relative or friend: recipe CREATED_BY that person { note: e.g. \"from her handwritten card\" }. Family attribution is a real edge, not a string.\n\nFACET TAGS, exact spellings (tags are case-sensitive): \"family-recipe\" | \"favorite\" | \"eat-again\" | \"not-again\" | \"quick\" | \"make-ahead\" | \"crowd-pleaser\" | \"holiday\". Rules: \"quick\" means total_time_minutes is between 1 and 30 (0 means unknown, and unknown is never quick); \"eat-again\"/\"not-again\" are the after-cooking verdict (at most one of the two; revise freely as tastes change); coin a new facet only after checking existing tags.\n\nTAG EDITS REPLACE THE WHOLE ARRAY. To add, remove, or swap any tag: first read the recipe's current tags (get_entities), then write the complete new set, always keeping \"recipe-box\" and every unrelated facet. Never send only the changed tag; that wipes the rest.\n\nEvery recipe links RELATED_TO interest/cooking (collection anchor). A recipe's RELATED_TO edges stay distinguishable by target type: the interest edge is the anchor; edges to events are its meals.",
+          "display_index": 0
+        },
+        {
+          "title": "Data Model: Meals",
+          "content": "MEALS ARE THE SOCIAL MOMENTS. We don't log \"cooks\"; we log meals: who was at the table matters as much as what was served.\n\nMEAL = event entity. Name: \"<Meal or occasion> (<YYYY-MM-DD>)\" (\"Sunday Dinner (2026-11-30)\", \"Priya's Birthday Brunch (2026-08-02)\"), dated so repeat meals get their own slugs. When no occasion or label is given, default to the meal_type of what was served (\"Dinner (2026-07-09)\").\n\nRequired properties:\n- event_type: \"meal\"\n- date: human-readable\n- date_year / date_month / date_day: numbers (date_hour optional)\nOptional: occasion (free text: \"birthday\", \"first night of the trip\").\nRequired tags: [\"recipe-box\"].\n\nRELATIONSHIPS:\n- meal RELATED_TO each recipe served (one meal can serve several recipes; each gets its own edge).\n- each person at the table ATTENDED the meal (always include the world owner; create new people only after confirming who they are).\n- meal OCCURRED_AT the place, when it wasn't home or home is tracked.\n- meal PART_OF a bigger occasion event when there is one (\"Thanksgiving Dinner (2026-11-26)\" PART_OF \"Thanksgiving 2026\"). OCCASION = event entity, name \"<Occasion> <YYYY>\", event_type: \"gathering\", with its date properties; if no other app has created it, this app creates it on first mention (search first). One meal event per distinct meal: Thanksgiving dinner is one meal; a holiday weekend of three dinners is three meals PART_OF one occasion.\n\nMEAL LORE holds the moment and the tweaks: what was changed this time (\"half the sugar, buttermilk instead\"), what worked, who asked for seconds. Tweaks live on the meal first; when a tweak becomes how we always make it, promote it into the recipe's \"Our Version\" lore chunk (create the chunk if missing, revise it if present). The meal keeps the history; the recipe keeps the current truth.",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Capture a Recipe",
+          "content": "Triggered when a recipe is described, shared, or mentioned as worth keeping.\n\n1. Search item entities for the recipe first; near-matches get confirmed, not duplicated.\n2. Create the recipe per the Data Model. Ask for what's missing one question at a time, and only what matters: ingredients first, then where it came from. servings and total_time_minutes can be 0 until known (and 0 never earns the \"quick\" tag). Set provenance provisionally from context (\"my grandma's rolls\" is already \"family\") and refine it at step 4.\n3. Write the \"Ingredients\" lore chunk in the exact format. Then \"Instructions\" per the transcription rule (full method only for family/invented recipes).\n4. Wire the provenance: the COMPONENT_OF, REFERENCES, or CREATED_BY link matching the provenance property. Create the cookbook item, reference, or person if new (search first; the cookbook may already exist as a tracked book).\n5. Apply facet tags that already apply (\"family-recipe\", \"quick\" if the time qualifies). Link RELATED_TO interest/cooking.\n6. Confirm in one warm line: \"Saved: Grandma's Dinner Rolls, from her card, tagged family-recipe.\"\n\nIf a recipe is mentioned in passing but not saved (\"I made my mom's stew\"), offer once to capture it properly; don't push.",
+          "display_index": 2
+        },
+        {
+          "title": "Workflow: Log a Meal",
+          "content": "Triggered by any mention of having cooked or eaten together: \"I made the curry last night\", \"we had everyone over for dinner\".\n\n1. Offer to log it if the user hasn't asked directly; one gentle question, never a form.\n2. Search for the recipes served; capture unsaved ones first (Workflow: Capture a Recipe) or log the meal with a note if the user doesn't want to.\n3. Create the meal event per the Data Model: date, the RELATED_TO edge per recipe, ATTENDED for everyone at the table, OCCURRED_AT and PART_OF when they apply.\n4. Update each recipe served: last_cooked to the meal's date, times_cooked incremented.\n5. WHILE IT'S FRESH, ask the two questions that make the record worth keeping, one at a time:\n   - The verdict: \"Make it again?\" Set \"eat-again\" or \"not-again\" on the recipe, replacing the other if present; a strong yes may earn \"favorite\". Remember tag edits replace the whole array: read the current tags first and rewrite the full set, keeping \"recipe-box\" and every unrelated facet.\n   - The tweaks: \"Change anything this time?\" Save the answer as lore on the meal. If the user says that's how they'll always make it now, promote it into the recipe's \"Our Version\" chunk too.\n6. Confirm back naturally: \"Logged: Sunday dinner, six of you, the rolls and the ragu. Rolls stay a favorite.\"\n\nA meal with no saved recipes is still worth logging when it was a moment. A memorable restaurant night belongs to a travel or journaling app when one is installed (hand off rather than duplicate); when none is, log it here as a meal with no recipe edge, OCCURRED_AT the restaurant place.",
+          "display_index": 3
+        },
+        {
+          "title": "Workflow: Queries & What to Make",
+          "content": "- \"What should I make this week?\" Recipes tagged \"eat-again\" or \"favorite\" (adding \"quick\" on weeknights), sorted by oldest last_cooked so neglected keepers resurface. No keepers yet? Fall back to any \"recipe-box\" recipe by oldest last_cooked; an empty box gets an offer to capture a first recipe instead of an empty list. Present a short shortlist with one line each.\n- \"What's in the lasagna?\" Read the recipe's \"Ingredients\" lore chunk verbatim.\n- \"How do we make it?\" \"Instructions\" plus \"Our Version\" if present; for cookbook/website recipes, point to the page or link and give our tweaks.\n- \"Which recipes are Grandma's?\" CREATED_BY edges from that person; \"show me the family recipes\" is the \"family-recipe\" tag.\n- \"When did I last make the ragu, and what did I change?\" The recipe's last_cooked, then its meals (RELATED_TO edges to meal events) and their tweak lore, newest first.\n- \"What did we serve at Thanksgiving?\" The occasion event's PART_OF meals, or get_timeline bounded to the window with event_types: [\"meal\"], then each meal's RELATED_TO recipes.\n- \"Who was at that dinner?\" The meal's ATTENDED edges.\n- \"Find the recipe with saffron.\" search_lore across recipe lore.\nPresentation: conversational and warm; a compact list or table only when 4+ items.",
+          "display_index": 4
+        }
+      ]
+    },
+    {
+      "entity_type": "interest",
+      "name": "Cooking",
+      "slug": "interest/cooking",
+      "data": {
+        "tags": [
+          "recipe-box"
+        ],
+        "properties": {
+          "interest_type": "cooking"
+        },
+        "short_description": "Collection anchor for the Recipe Box app. All recipes link here via RELATED_TO so the whole box can be queried from one hub."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_type": "APPLIES_TO",
+      "source_id": "rule/app_recipe_box",
+      "target_id": "interest/cooking",
+      "properties": {
+        "note": "Collection anchor managed by the Recipe Box app"
+      }
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

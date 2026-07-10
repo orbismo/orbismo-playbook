@@ -1,0 +1,77 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "App: Book Tracker",
+      "slug": "rule/app_book_tracker",
+      "data": {
+        "tags": [
+          "app",
+          "book-tracker"
+        ],
+        "properties": {
+          "scope": "item, event, interest, person, reference",
+          "trust": "imported",
+          "status": "active",
+          "trigger": "user mentions reading, starting, or finishing a book, their reading list or to-read pile, book ratings or reviews, rereading, audiobooks, book series, or asks for book recommendations",
+          "priority": 10,
+          "owns_tags": [
+            "book-tracker"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/book-tracker@1.0"
+        },
+        "short_description": "Book Tracker mini-app — a personal reading diary. Tracks books as items with shelves (to-read, reading, read, DNF), reading progress, completed read-throughs as events with per-read ratings, favorites, series, first-class author entities (CREATED_BY), and taste-based recommendations. Full operating rules are in this entity's lore chunks: Data Model, Reading Lifecycle, Read List/Favorites/Edits, Queries/Stats/Recommendations. Read all lore before acting on book-related requests."
+      },
+      "lore": [
+        {
+          "title": "Data Model",
+          "content": "BOOK = item entity. Name: the book's title (slugs derive from names; add the author's surname to the name only when two tracked books share a title). Properties: item_type: \"book\", author, year (number, first publication), genres (array), pages (number), series + series_number (optional), format (\"physical\" | \"ebook\" | \"audiobook\", optional until known), status (\"to_read\" | \"reading\" | \"read\" | \"dnf\"), favorite (boolean), started_date (ISO date, while reading), current_page OR progress_percent (number, while reading), dnf_reason (optional). Tag every book item \"book-tracker\". Every book item gets RELATED_TO interest/reading (collection anchor).\n\nREAD-THROUGH = event entity, created when a book is FINISHED — not per sitting; a read spans days or weeks, so progress lives on the item and the event marks completion. Name: \"Read <title> (<YYYY-MM-DD>)\" using the finish date, so every read-through of the same book gets its own slug. Properties: event_type: \"book_read\", date (human-readable finish date), date_year/date_month/date_day (numbers), rating (1-10), impression (1-3 sentence review), reread (boolean), format, started_date (optional). Tag \"book-tracker\".\n\nAUTHOR = person entity, created once and reused across books, named with the author's full name. Properties: person_type: \"human\", occupation: \"author\". Tags: \"author\", \"book-tracker\" — the author tag marks public figures so they stay distinct from personal contacts; never link an author socially to the world owner unless the user actually knows them. Every book item links CREATED_BY to its author person (search for the author before creating, in the same operation as the book). Keep the book's author property as the canonical display spelling; the CREATED_BY edge is the queryable source of truth.\n\nRELATIONSHIPS per read-through: event RELATED_TO item (the book); the reader ATTENDED event (always include the world owner; add co-readers such as read-aloud or book-club partners when named). Optionally link the book item via REFERENCES to a reference entity when a URL is provided.",
+          "display_index": 0
+        },
+        {
+          "title": "Workflow: Reading Lifecycle",
+          "content": "WORKFLOW: Start a book (\"I started X\").\n1. Search for the book item. If missing, create it per the Data Model, filling author/year/genres/pages from general knowledge, and link CREATED_BY to its author person (search first, create if new).\n2. Set status: \"reading\", started_date, and format if known. No event yet.\n\nWORKFLOW: Progress (\"I'm on page 120\" / \"about halfway\"). Update current_page or progress_percent on the item. No event.\n\nWORKFLOW: Finish a book (\"I finished X\").\n1. Set status: \"read\"; clear current_page/progress_percent.\n2. Create the read-through event dated by the finish. Ask for a 1-10 rating and a one-line impression if not given; rating is the single most important field — always try to capture it. Set reread: true if a prior read-through event for this book exists.\n3. Create relationships: event RELATED_TO book; ATTENDED for the owner and any named co-readers.\n4. Confirm back in one line: title, rating, dates.\n\nWORKFLOW: Abandon (\"I gave up on X\"). Set status: \"dnf\" and dnf_reason if offered; clear progress. No event and no rating pressure — a DNF is itself useful signal for recommendations.",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Read List, Favorites, Edits",
+          "content": "WORKFLOW: Read list (\"add X to my reading list\"). Create the book item with status: \"to_read\", tag \"book-tracker\", RELATED_TO interest/reading, and CREATED_BY its author person (search first, create if new). No event is created until it's actually read. To list the read list: search items tagged \"book-tracker\" with status \"to_read\".\n\nWORKFLOW: Favorites. \"X is one of my favorite books\" → set favorite: true on the book item. Favorites list = book items with favorite: true.\n\nWORKFLOW: Re-rate / edit review. Update the rating/impression on the most recent read-through event for that book, not on the book item. The book item never stores a rating; ratings live on read-through events so rereads can differ — each read gets its own rating.\n\nWORKFLOW: Series. Books in a series share the series property; order by series_number. When the user finishes a series book, offer the next installment for the read list.",
+          "display_index": 2
+        },
+        {
+          "title": "Workflow: Queries, Stats & Recommendations",
+          "content": "WORKFLOW: Queries & stats.\n- \"What am I reading?\" → items with status \"reading\", with current progress.\n- \"Have I read X?\" → search for the book item; check status and any linked read-through events.\n- \"What did I think of X?\" → the most recent read-through event's rating and impression.\n- \"What have I rated highest?\" → list book_read events, sort by rating property.\n- \"What have I read by <author>?\" / \"Have I read everything by X?\" → query_relationships (mode: neighbors) on the author person → their CREATED_BY books → check each book's status and read-through events. Never answer author questions by string-matching the author property; the edge is the source of truth.\n- Year in review → filter book_read events by date_year; report count, total pages (sum pages of finished books), average rating, top genre and author, rereads. Count DNFs separately — they are not finished books.\n\nWORKFLOW: Recommendations (\"what should I read next?\").\n1. Start from the read list (status \"to_read\"), ranked by overlap with the genres, authors, and series of high-rated (8+) reads.\n2. If the list is thin or the user wants something new, suggest a few titles from general knowledge that fit those tastes — favor authors whose books they rated highly (follow CREATED_BY edges), respect patterns in their DNFs (genres or styles they abandon), and say in one line why each fits.\n3. Offer to add accepted suggestions to the read list.\nPresentation: keep answers conversational; a compact list or table only when 4+ titles.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "interest",
+      "name": "Reading",
+      "slug": "interest/reading",
+      "data": {
+        "tags": [
+          "book-tracker"
+        ],
+        "properties": {
+          "interest_type": "entertainment"
+        },
+        "short_description": "Collection anchor for the Book Tracker app. All book items link here via RELATED_TO so the full collection can be queried from one hub."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_type": "APPLIES_TO",
+      "source_id": "rule/app_book_tracker",
+      "target_id": "interest/reading",
+      "properties": {
+        "note": "Collection anchor managed by the Book Tracker app"
+      }
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}
