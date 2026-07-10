@@ -1,0 +1,86 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "App: Travel Tracker",
+      "slug": "rule/app_travel_tracker",
+      "data": {
+        "tags": [
+          "app",
+          "travel-tracker"
+        ],
+        "properties": {
+          "scope": "project, place, event, person, reference, interest, item",
+          "trust": "imported",
+          "source": "orbismo-playbook/travel-tracker@1.0",
+          "status": "active",
+          "trigger": "a trip is mentioned, planned, booked, underway, or wrapping up; destinations, flights, hotels, or bookings; visiting places, restaurants, or stays while traveling; travel recommendations; trip recaps or verdicts",
+          "priority": 10,
+          "owns_tags": [
+            "travel-tracker",
+            "booking",
+            "verdict:return",
+            "verdict:fine",
+            "verdict:skip"
+          ],
+          "rule_type": "tracker"
+        },
+        "short_description": "Travel Tracker mini-app: trips as projects with a travel lifecycle, bookings as references, and a compounding atlas of places with visit history, verdicts, and attributed recommendations. Full operating rules are in this entity's lore chunks: Data Model: Trips & Bookings, Data Model: The Atlas, Workflow: Trip Lifecycle & Closeout, Workflow: Log a Visit, Workflow: Queries. Read all lore before acting on travel requests."
+      },
+      "lore": [
+        {
+          "title": "Data Model: Trips & Bookings",
+          "content": "TRIP = project entity. Name: \"<Destination> <Year>\" (e.g. \"Portugal 2026\"); if two trips share the name, add the month (\"Portugal (Oct 2026)\"). Slugs derive from names. Every trip becomes a project the moment it's real: the trip is the spine everything else on the journey attaches to.\n\nRequired properties:\n- project_type: \"travel\"\n- trip_status: \"dreaming\" | \"planning\" | \"booked\" | \"underway\" | \"done\". THE SINGLE HOME for the travel lifecycle; never encode it as tags.\n- status (the built-in project status) stays coarse and mapped: \"active\" from dreaming through underway, \"completed\" once trip_status is \"done\", \"abandoned\" for a dream given up (keep the trip; its research compounds).\n- start_date / end_date: ISO dates, \"tbd\" until known.\nOptional: destination_summary (free text).\nRequired tags: [\"travel-tracker\"].\n\nRELATIONSHIPS:\n- trip RELATED_TO interest/traveling (collection anchor; every trip links here).\n- trip LOCATED_AT its primary destination place (create the place per the Atlas model).\n- each traveler person WORKS_ON trip { role: \"traveler\" } (always include the world owner).\n\nBOOKING = reference entity. Name: \"Booking: <what>\" (e.g. \"Booking: TAP Lisbon Flights\"). Properties: url when there is one, source_type: \"document\" | \"webpage\". Required tags: [\"travel-tracker\", \"booking\"]. Link: trip REFERENCES booking. Save bookings the moment they exist; a trip holding a paid booking is at least trip_status \"booked\".",
+          "display_index": 0
+        },
+        {
+          "title": "Data Model: The Atlas",
+          "content": "ONE LISBON. Before creating any place, search for it first and reuse the existing entity, watching for variant spellings (\"Lisbon\" vs \"Lisboa\"). The atlas compounds only if Lisbon is one node, not five.\n\nPLACES: cities and regions get place_type \"destination\". Restaurants get place_type \"restaurant\". Hotels and stays get place_type \"business\" with category \"hotel\" (or the closest honest category). Names are the common name in Title Case.\n\nHIERARCHY: link the city to the venue with CONTAINS (city CONTAINS restaurant). Never write \"LOCATED_IN\" as a relationship type; it is only the inverse label of CONTAINS and the schema rejects it.\n\nATLAS PROPERTIES, maintained on every visit: last_visited (ISO date) and visit_count (number) on the place.\n\nASSOCIATION EDGES: after the first visit, create person VISITED place { started: <date> }. On the third visit, upgrade: create person FREQUENTS place { started: <first visit's date> } and end the VISITED edge (set ended: <today>) in the same pass. Never log repeat visits as extra VISITED edges; only one active edge of a given type may exist between the same two entities. Individual visits live as dated visit events (see Workflow: Log a Visit), so no history is lost.\n\nVERDICT TAGS on places: exactly one of \"verdict:return\" | \"verdict:fine\" | \"verdict:skip\", set at closeout or whenever conviction arrives. Revise on a later trip by removing the old verdict tag and adding the new one. Tags are case-sensitive; use these exact spellings.",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Trip Lifecycle & Closeout",
+          "content": "WORKFLOW: a new trip is mentioned. Search projects first (the same trip may already exist as a dream). Create per the Data Model at the trip_status the words imply: someday talk = \"dreaming\"; dates and destination firming up = \"planning\"; money down = \"booked\". Link the anchor, the destination place, and the travelers as they're named.\n\nWORKFLOW: status moves. Update trip_status as reality changes, and keep the built-in status mapped (active until done, then completed). Departure day: \"underway\". Corrections are always allowed, including backward (a cancelled booking moves booked back to planning; note the reason in one line).\n\nWORKFLOW: CLOSEOUT (trip_status changes to \"done\", or the user says the trip is over). Capture verdicts while they're fresh; ten minutes now saves the next trip's planning:\n1. For every place visited on the trip: set its verdict tag (\"verdict:return\" | \"verdict:fine\" | \"verdict:skip\") and append one line of why to that place's lore.\n2. Refresh last_visited on each of those places.\n3. If gear mattered (item entities), one debrief line of lore on the item.\n4. Set trip_status \"done\" and status \"completed\".\nClose by reflecting back: the places worth returning to, what to skip, and what to book earlier next time.",
+          "display_index": 2
+        },
+        {
+          "title": "Workflow: Log a Visit",
+          "content": "Triggered by \"we ate at...\", \"we stayed at...\", \"we spent the day at...\".\n\n1. ONE LISBON first: search for the place; if new, create it per the Atlas model, including the CONTAINS link from its city.\n2. Create the VISIT = event entity. Name: \"<Activity> at <Place> (<YYYY-MM-DD>)\" (e.g. \"Dinner at Cervejaria Ramiro (2026-10-03)\"), dated so repeat visits get their own slugs. Properties: event_type: \"visit\", date (human-readable) plus date_year/date_month/date_day. Tag [\"travel-tracker\"]. Links: visit PART_OF the trip when one is underway or being recalled; visit OCCURRED_AT the place; each person present ATTENDED the visit (always include the world owner).\n3. Atlas maintenance: refresh last_visited and increment visit_count on the place; first visit creates the VISITED edge; the third triggers the FREQUENTS upgrade per the Atlas model.\n4. SAME-DAY LORE: every place worth returning to gets lore within a day, while it's fresh: the dish, the tip, the texture. A week later it's gone. If the user gushes without specifics, ask one gentle question (\"what should future-you order there?\").\n5. ATTRIBUTED RECOMMENDATIONS: when someone recommended the place, record who and when in the place's lore; if the recommender is a tracked person, also add person REFERRED place. Future-you will want to thank them.",
+          "display_index": 3
+        },
+        {
+          "title": "Workflow: Queries",
+          "content": "- \"Where should we eat in Lisbon?\" Places the city CONTAINS, tagged \"verdict:return\" first (with their lore), then unvisited places carrying recommendations (REFERRED edges and lore attributions).\n- \"When were we last in Porto?\" The place's last_visited; the story behind it via its visit events (OCCURRED_AT, or get_timeline bounded to the window).\n- \"What trips have we taken?\" / \"What's coming up?\" Projects linked RELATED_TO interest/traveling (or tagged \"travel-tracker\"), grouped by trip_status, dated by start_date.\n- \"Who recommended this place?\" The place's lore attribution plus incoming REFERRED edges.\n- \"Show me everything from the Portugal trip.\" The trip's visits via PART_OF (get_timeline with entity_ids: [the trip] also works), its bookings via REFERENCES, and the places those visits OCCURRED_AT.\nPresentation: conversational; a compact list or table only when 4+ items.",
+          "display_index": 4
+        }
+      ]
+    },
+    {
+      "entity_type": "interest",
+      "name": "Traveling",
+      "slug": "interest/traveling",
+      "data": {
+        "tags": [
+          "travel-tracker"
+        ],
+        "properties": {
+          "interest_type": "travel"
+        },
+        "short_description": "Collection anchor for the Travel Tracker app. All trips link here via RELATED_TO so the full travel history can be queried from one hub."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_type": "APPLIES_TO",
+      "source_id": "rule/app_travel_tracker",
+      "target_id": "interest/traveling",
+      "properties": {
+        "note": "Collection anchor managed by the Travel Tracker app"
+      }
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

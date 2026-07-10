@@ -1,0 +1,464 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "Character Creation",
+      "slug": "rule/character_creation",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "character",
+          "creation"
+        ],
+        "properties": {
+          "scope": "person",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "starting a new campaign, new player, making a character, character creation, rolling up a PC, the Wanderer, attribute spread, who am I",
+          "priority": 88,
+          "owns_tags": [],
+          "rule_type": "workflow",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "How a player character is made at the start of a campaign. The character is a `person` entity tagged `player-stats` (the Wanderer template is the default, reshapeable). Six attributes via a default spread of +2, +1, +1, 0, 0, -1, or derived conversationally; everyone starts at Level 1, 0 XP, humble gear. The player also picks a name, a short who-am-I, one thing they're good at, and one thing they long for (which seeds the first quest). Run it as conversation, not a form, with the math hidden until play begins. Read all lore before making a fresh player character."
+      },
+      "lore": [
+        {
+          "title": "Procedure — spread, picks & the quest seed",
+          "content": "How a player character is made at the start of a campaign. Present it as conversation, not a form: ask a few evocative questions, translate answers into the sheet privately, and confirm in plain terms before play. (The math stays hidden during creation — see the seam lore.)\n\nTHE CHARACTER is a `person` entity tagged `player-stats`. The Wanderer template is the default starting point, but the player may reshape it freely.\n\nATTRIBUTES — DEFAULT SPREAD: assign +2, +1, +1, 0, 0, -1 across the six (Might, Agility, Wits, Resolve, Presence, Luck) as the player chooses. Quick and classless; no math shown. Alternatively, derive the spread conversationally from how the player describes who they are, then confirm it.\n\nVITALITY: a modest baseline plus the Might modifier (exact number per Character Sheet & Progression). Everyone begins at Level 1 with 0 XP.\n\nTHE PLAYER ALSO PICKS:\n- a NAME,\n- a short who-am-I,\n- one thing they're GOOD AT,\n- one thing they LONG FOR — this seeds the first quest.\n\nSTARTING GEAR is humble (a few fitting items per Inventory & Equipment).\n\nCONFIRM the finished character in plain language, then begin the opening scene — at which point the dice become visible (see the seam lore).",
+          "display_index": 0
+        },
+        {
+          "title": "Edge Cases — the creation/play seam (hidden math vs. open dice)",
+          "content": "A note on the seam between creation and play, so a model doesn't over-apply one rule to the other.\n\nDURING CREATION the math is HIDDEN: ask evocative questions, translate answers into attributes/Vitality privately, and confirm the character in plain language — no dice, no modifiers shown. Creation is conversation, not a character sheet handed across the table.\n\nTHE MOMENT PLAY BEGINS this flips: rolls become VISIBLE per Narration Style — every Core Resolution roll is shown in full (d20, modifier, total, difficulty). The hidden-math stance applies ONLY to building the character; once the opening scene is narrated, the dice are open.\n\nSo: hidden at the workbench, open at the table. If you find yourself hiding an in-play roll, you've carried the creation rule too far; if you find yourself showing creation math, you've carried the play rule too early.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Character Sheet & Progression",
+      "slug": "rule/character_sheet_progression",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "character"
+        ],
+        "properties": {
+          "scope": "person",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "attribute modifier, Might Agility Wits Resolve Presence Luck, stats, Vitality, HP, XP, experience, leveling up, gaining a level, new ability, character sheet",
+          "priority": 90,
+          "owns_tags": [
+            "player-stats"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "Defines and owns the player character's stats. Six attributes on a roughly -1 to +4 modifier scale — Might, Agility, Wits, Resolve, Presence, Luck — plus Vitality (HP), Level, and XP. The character is a `person` entity tagged `player-stats` holding current values. XP from challenges and quests raises Level, granting more Vitality and an attribute bump or new ability. This is the single source of truth the GM consults before any Core Resolution roll to apply the right modifier. Read all lore before applying a modifier, awarding XP, leveling up, or changing Vitality or abilities."
+      },
+      "lore": [
+        {
+          "title": "Basics — the six attributes & modifier scale",
+          "content": "The character's core stats. This rule is the single source of truth for what the character can do; the GM consults it before any Core Resolution roll to apply the right modifier.\n\nTHE SIX ATTRIBUTES, each a modifier on a roughly -1 to +4 scale:\n- MIGHT — physical force, melee, lifting, toughness (also sets base Vitality).\n- AGILITY — speed, balance, stealth, precision, reflexes.\n- WITS — perception, reasoning, knowledge, quick thinking.\n- RESOLVE — willpower, focus, courage, resistance to fear/pressure.\n- PRESENCE — charisma, persuasion, intimidation, leadership (social rolls; standing stacks on top).\n- LUCK — fortune, intuition, the long shot; the GM may call on it when nothing else fits.\n\nTHE MODIFIER IS WHAT THE DICE USE: a roll is d20 + the single most relevant attribute (Core Resolution), never two attributes stacked. +2 is a clear strength, 0 is ordinary, -1 a weak spot; +4 is exceptional (the soft cap, see progression lore).\n\nSTORAGE: the character is a `person` entity tagged `player-stats`, holding current attribute values, Vitality, Level, and XP in its properties or lore. Vitality/XP/leveling numbers are pinned in the progression lore.",
+          "display_index": 0
+        },
+        {
+          "title": "Procedure — progression numbers (Vitality, XP, leveling)",
+          "content": "Pins the numbers the summary leaves as vibes. Keep these light — this is a fair-but-forgiving engine, not a crunch sim.\n\nVITALITY: base 10 + (Might modifier) at Level 1. Each level gained adds +3 to maximum Vitality (and the character heals to full on leveling). A character with Might +2 is thus 12 Vitality at L1, 15 at L2, and so on.\n\nXP THRESHOLDS (cumulative XP to REACH a level): L2=10, L3=25, L4=45, L5=70, L6=100, then +35 per level beyond. XP is awarded in small grains — roughly 1–3 for a solved problem or strong scene, 3–5 for a quest beat — so leveling lands every few sessions, not every fight.\n\nON LEVEL-UP, the player picks ONE: a +1 to an attribute (soft cap +4; going beyond needs a fiction reason and GM nod), OR a new named ability/knack. Vitality rises automatically per above on top of the chosen benefit.\n\nNO HARD LEVEL CAP — the curve just slows. Most campaigns live in the L1–6 band.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Core Resolution",
+      "slug": "rule/core_resolution",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "resolution"
+        ],
+        "properties": {
+          "scope": "world",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "uncertain action, skill check, attack, combat, contest, opposed roll, social push, persuade, intimidate, deceive, risky maneuver, saving throw, anything with a meaningful chance of failure",
+          "priority": 100,
+          "rule_type": "game_mechanic",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "How uncertain actions resolve: roll d20 + the most relevant attribute modifier against a difficulty (Easy ~8, Moderate ~13, Hard ~18). Trivial actions auto-succeed. Results are a spectrum, not pass/fail — strong success adds a benefit, bare success costs something small, failure complicates rather than dead-ends (fair-but-forgiving stance). ALWAYS show the roll in full (d20, modifier, total, difficulty) alongside the narrative outcome, per Narration Style. Highest-priority rule; standing and equipment feed in as modifiers. Read all lore before acting on any roll, check, contest, or contested outcome."
+      },
+      "lore": [
+        {
+          "title": "Basics — the roll, difficulty, result spectrum",
+          "content": "THE ROLL: d20 + the single most relevant attribute modifier, compared against a difficulty. Trivial actions auto-succeed with no roll; only roll when the outcome is uncertain and failure is meaningful.\n\nDIFFICULTY BANDS (the GM sets one): Easy ~8, Moderate ~13, Hard ~18. Pick by fiction, not by desired odds.\n\nRESULT SPECTRUM (not just pass/fail): a strong success (beat the difficulty well) grants an extra benefit; a bare success (meet it exactly, see ties lore) works but costs something small; a failure introduces a complication, setback, or escalation — never a flat dead end. Under the fair-but-forgiving stance, failure bends the story rather than ending it; death/hard stops are reserved for stakes the player knowingly took (see Death, Downing & Recovery).\n\nADVANTAGE: when the fiction clearly favors the actor, roll favorably (see the advantage/disadvantage lore for the exact two-die mechanic). Whenever a roll happens, show it in full per Narration Style — the dice are visible; only creation-time math is hidden.",
+          "display_index": 0
+        },
+        {
+          "title": "Edge Cases — opposed rolls, ties, advantage",
+          "content": "Pins the cases the summary leaves open.\n\nOPPOSED ROLLS (PC vs. NPC, e.g. a contest of strength or a social push against a willful target): both sides roll d20 + relevant attribute modifier. Higher total wins; the margin sets how decisive it is. On a tie, the defender/status-quo holds (the actor must try another way).\n\nTIES vs. a fixed difficulty: total equal to the difficulty is a bare success (it works, but costs something small) — never a failure. \"Meet it, beat it.\"\n\nADVANTAGE / DISADVANTAGE: roll two d20 and take the better (advantage) or worse (disadvantage) die, then apply the modifier once. They cancel one-for-one; net them before rolling. Show both dice and which was kept (\"d20: [16, 4] adv → 16, +2 Wits = 18 vs 13 — success\").\n\nMULTI-ATTRIBUTE ACTIONS: pick the single most relevant attribute; do not stack two modifiers on one roll. If two skills genuinely both apply, resolve as two rolls or grant advantage instead of adding modifiers.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Death, Downing & Recovery",
+      "slug": "rule/death_downing_recovery",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "survival",
+          "health"
+        ],
+        "properties": {
+          "scope": "person",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "Vitality reaches 0, downed, knocked out, dying, death, resting, short rest, long rest, healing, recovery, lasting injury, scar, condition",
+          "priority": 92,
+          "rule_type": "game_mechanic",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "What happens at 0 Vitality and how recovery works. Fair-but-forgiving: hitting 0 means Downed, not dead — out of the fight and facing one consequence from a stakes ladder (rescue, lost gear, a setback, capture, or a lasting injury), chosen by how the character went down. Short rests restore some Vitality, a full rest in safety restores all, and lasting injuries linger until treated. Death is off the ladder — reserved for stakes the player knowingly courted, always telegraphed first. Read all lore before resolving a downing, a rest, healing, or a lasting condition."
+      },
+      "lore": [
+        {
+          "title": "Basics — downing, recovery & the stance on death",
+          "content": "How Vitality comes back, and the stance around death.\n\n0 VITALITY = DOWNED, NOT DEAD. Hitting 0 takes the character out of the immediate action and exposes them to a consequence from the stakes ladder (see the ladder lore) — capture, lasting injury, lost gear, a hard setback, or rescue by an ally. It is not instant death.\n\nRECOVERY:\n- SHORT REST (a breather, safe-enough pause): restores a modest slice of Vitality and clears light conditions. Not a full heal.\n- FULL REST in genuine safety: restores all Vitality.\n- HEALING items, sites, or allies can restore Vitality mid-adventure — resolve their amounts per Inventory & Equipment.\n- A LASTING INJURY from a downing lingers until specifically treated (rest alone doesn't clear it); it gives setbacks weight without ending the story.\n\nDEATH is off the ladder entirely — reserved for stakes the player knowingly accepted or repeatedly courted, and ALWAYS telegraphed before it lands, so death never feels arbitrary.",
+          "display_index": 0
+        },
+        {
+          "title": "Procedure — choosing a rung on the stakes ladder",
+          "content": "How the GM picks a rung when a character hits 0 Vitality. The choice is driven by HOW the character went down, not GM whim — keep it legible to the player.\n\nTHE LADDER (lighter → heavier): (1) dragged to safety by an ally — costs the ally something; (2) lost or broken gear; (3) a hard narrative setback (captured objective slips, the door seals, the trail goes cold); (4) capture — the character wakes elsewhere, disarmed; (5) a lasting injury or scar (a standing -1 to one attribute or a relevant condition until treated).\n\nSELECTION: tie the rung to the fiction of the blow and the margin of the failed roll. A near-miss (failed by 1–3) takes a low rung; a blowout (failed by 6+), a reckless gamble, or ignoring a telegraphed threat takes a high rung. The presence of an ally unlocks rung 1; isolation pushes upward. Never pick two rungs for one downing.\n\nDEATH is off this ladder — reserved for a stake the player knowingly accepted or repeatedly courted, always telegraphed first.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Disposition & Standing",
+      "slug": "rule/disposition_standing",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "social",
+          "standing",
+          "graph"
+        ],
+        "properties": {
+          "scope": "person",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "an NPC would care about an action, helps betrays threatens impresses an NPC, sides with a faction, social roll against a named NPC, how does this NPC feel, NPC reaction, standing, reputation",
+          "priority": 88,
+          "owns_tags": [
+            "standing"
+          ],
+          "rule_type": "game_mechanic",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "How NPCs feel about the player character, as live graph state the dice read and the world propagates. Standing is an integer -3..+3 (Nemesis to Devoted) on a RELATED_TO edge from each NPC or faction to the player-character, and it feeds Core Resolution as a modifier on social rolls. When an action shifts one NPC's standing, the shift ripples one hop at half weight — automatically along faction (MEMBER_OF/LEADS) and rivalry (RIVAL_OF, opposite sign) edges, GM-judged along personal bonds — all under the conductor's budget. Persist every shift as an edge and surface it as attitude, never a number. Read all lore before shifting standing or making a social roll against a named NPC."
+      },
+      "lore": [
+        {
+          "title": "Basics — the standing bands (-3..+3) & dice effect",
+          "content": "The band scale and how standing feeds the dice. (Storage, propagation, and the per-turn procedure are in the procedure lore; this chunk pins the scale and its dice effect.)\n\nSTANDING is an integer from -3 to +3 on a RELATED_TO edge from an NPC (or faction) to the player-character entity, carrying { standing, band, reason }. THE SEVEN BANDS:\n- +3 Devoted\n- +2 Warm\n- +1 Friendly\n-  0 Neutral (the default; no edge = Neutral)\n- -1 Wary\n- -2 Hostile\n- -3 Nemesis\n\nIT FEEDS CORE RESOLUTION: on a social roll against that NPC (persuade, intimidate, deceive, ask a favor), add the standing value as a modifier, exactly like an equipment bonus — and show it in the roll line.\n\nTHE TWO EXTREMES bend the dice further:\n- At +3 (Devoted), social rolls against them gain ADVANTAGE (roll two d20, keep the better — see Core Resolution).\n- At -3 (Nemesis), they will not be moved by an ordinary ask at all; only a deadly or desperate fiction gives any chance.\n\nSURFACE THE BAND, NOT THE NUMBER: narrate Warm/Wary/Devoted as attitude in how they speak and what they offer. The number is for the dice; the band and reason are for the fiction (per Propagation Budget & Surfacing).",
+          "display_index": 0
+        },
+        {
+          "title": "Procedure — storing, shifting, propagating, reading",
+          "content": "The per-turn procedure for an LLM GM. Keep it auditable: every shift you make, you can name and justify.\n\nSTORAGE: standing lives on a RELATED_TO edge, source = NPC, target = the player-character entity. Properties: { standing: int -3..+3, band: word, reason: short string }. One such edge per NPC who has met the PC. No edge = Neutral (0); create one the first time an NPC forms an opinion.\n\nWHEN AN ACTION LANDS: (1) Decide the direct shift to the involved NPC — usually +/-1, +/-2 for something major. Update that edge's standing, recompute band, rewrite reason. (2) PROPAGATE one hop, halved toward zero: walk the NPC's MEMBER_OF/LEADS edges (faction, automatic) and RIVAL_OF edges (rival, automatic, opposite sign); for MENTORS/ALLIED_WITH/FRIENDS_WITH decide per fiction whether it ripples. A halved value of 0 means no ripple — stop. (3) Clamp every result to [-3,+3]. (4) Persist each changed edge. (5) Note the shift in the save's open threads so it survives the session.\n\nREADING IT AT THE TABLE: before any social roll against an NPC, fetch their standing edge and add it as the modifier (show it in the roll line). No edge → +0.",
+          "display_index": 1
+        },
+        {
+          "title": "Edge Cases — defaults & guard-rails",
+          "content": "Guard-rails so standing stays fun and legible, not a spreadsheet.\n\nDON'T OVER-TRACK: only NPCs the player has meaningfully interacted with get a standing edge. Background crowds stay Neutral and need no edge. Don't roll standing for trivial pleasantries — it moves on actions with weight (help, betrayal, threat, gift, taking a side).\n\nGROUPS CAN HOLD STANDING TOO: a RELATED_TO edge from a group to the PC works the same way, and is how faction propagation lands. A faction's standing colors how unmet members of it treat the PC on first contact (start them near the faction's band, not at 0).\n\nBAND IS THE PLAYABLE SURFACE: narrate the band, not the number. The player should feel an NPC warming, not see '+2'. The number is for the dice; the band and reason are for the fiction.\n\nCHANGING THE PC: standing edges point AT the player-character entity. If the PC is a template made concrete at creation, re-point any seeded edges to the created character. Most campaigns start with no standing edges — they accrue in play.\n\nDECAY IS OPTIONAL: standing generally persists. The GM may drift an extreme value one step toward 0 after a long stretch of no contact, if it serves the story — never automatically.",
+          "display_index": 2
+        },
+        {
+          "title": "Worked Example — a kindness ripples through factions",
+          "content": "A generic walk-through so the propagation rule is unambiguous. (Swap in this world's real NPCs and factions once World Canon is defined.)\n\nSETUP: the player risks themselves to protect an NPC — call her Vara — and proves they're on her side. GM sets the DIRECT shift: Vara +2 (Neutral -> Warm), reason 'you protected her when no one else would'.\n\nNOW PROPAGATE ONE HOP, HALVED:\n- Vara MEMBER_OF the Hollow Guild (faction, automatic): +2 halved = +1. The Guild as a group warms to +1. Apply standing to the group edge the same way.\n- The Hollow Guild is RIVAL_OF the Iron Pact (faction, automatic, OPPOSITE sign): the +1 the Guild gained becomes -1 toward the Pact. The Iron Pact drifts to -1.\n- The Pact's leader LEADS the Iron Pact. That is the GM walking the NEXT edge deliberately (a fresh single hop from the Pact's shift, halved again: -1 -> 0) — so the leader may not move yet. Good: the faction cooled, but its head hasn't personally noticed.\n\nThe same single action warmed a faction and cooled its rival through one rivalry edge — no special casing, just the graph's topology. Disposition is emergent from structure, not a row of hand-tuned dials.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Inventory & Equipment",
+      "slug": "rule/inventory_equipment",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "inventory"
+        ],
+        "properties": {
+          "scope": "item",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "pick up, use, equip, drop, buy, sell, craft an item, loot, gear, weapon, tool, consumable, potion, any check where gear matters",
+          "priority": 80,
+          "owns_tags": [
+            "inventory"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "Tracks what the player carries, wields, and wears. Items are `item` entities linked to the character by OWNS, with equipped gear flagged on the relationship or item; this rule owns the `inventory` tag. Equipped weapons and tools grant a situational +1 to +3 that feeds Core Resolution (one item's bonus per roll, never stacked). Consumables carry a count that depletes with use. Encumbrance is handled narratively — forgiving, but absurd hauls are reined in. Read all lore before resolving a pickup, use, equip, trade, or any check where gear would matter."
+      },
+      "lore": [
+        {
+          "title": "Procedure — how gear feeds the dice",
+          "content": "Pins how gear touches the dice so bonuses don't drift.\n\nEQUIPMENT BONUS: a weapon or tool grants a situational +1 to +3 on Core Resolution rolls where it plainly applies (a fitting weapon in a fight, a pry-bar on a stuck hatch). +1 is ordinary gear, +2 is fine/specialized, +3 is rare/relic-grade. One item's bonus per roll — the most relevant — never stack multiple items onto a single check. The bonus is added alongside the attribute modifier; show it in the roll line (\"d20: 11 +2 Might +1 pry-bar = 14 vs 13\").\n\nEQUIPPED STATE lives on the OWNS relationship (equipped: true) or item properties; only equipped gear grants its bonus.\n\nCONSUMABLES carry a count; using one decrements it and the save reflects the new count that turn. At 0 the item is spent — drop the inventory tag or remove it.\n\nENCUMBRANCE stays narrative: no weight math, but the GM reins in absurd hauls in the fiction (\"you can't carry three ladders and swim\").",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Narration Style",
+      "slug": "rule/narration_style",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "narration"
+        ],
+        "properties": {
+          "scope": "world",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "every narrative response during play, describing a scene, showing a roll, voicing an NPC, narrating an outcome",
+          "priority": 85,
+          "rule_type": "format",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "How the story is told. Second person, vivid but tight prose (usually one to three short paragraphs), distinct NPC voices, and most turns ending on a beat that invites action. SHOW THE DICE: every roll is displayed in full (d20, modifiers, total, difficulty) alongside the narrative outcome — never numbers alone, never fiction that hides the result. Success should feel powerful; failure should stay interesting, not merely punishing. Showing dice is mechanical transparency only — it never means revealing the world's hidden truths. Read all lore before narrating."
+      },
+      "lore": [
+        {
+          "title": "Basics — voice (second person, tight prose, show the dice)",
+          "content": "How the story is told at the table.\n\nVOICE: address the player in second person (\"you\"). Keep prose vivid but tight — usually one to three short paragraphs per turn, more only for big set-pieces. Match tone to the established genre, and keep NPCs' voices distinct from each other and from the narrator.\n\nSHOW THE DICE: whenever a roll is made, display it in full — d20 result, modifier(s) applied, total, and difficulty — alongside the narrative outcome (the exact format is in Core Resolution). The roll is visible AND rendered as fiction: pair the numbers with the story beat. Never numbers alone, never fiction that hides the result. Include standing and equipment modifiers in the roll line when they apply. (This is the ONE place numbers surface — everything else stays fiction, per Propagation Budget & Surfacing.)\n\nEND ON A BEAT that invites action — a choice, a threat, an open door — most turns.\n\nTONE OF OUTCOMES: when the player succeeds well, let them feel powerful; when they fail, make it interesting (a complication, a turn), not merely punishing.\n\nNOTE: showing dice is mechanical transparency only — it does NOT mean revealing the world's hidden truths. Protect the slow burn per the Discovery Pacing lore.",
+          "display_index": 0
+        },
+        {
+          "title": "Edge Cases — discovery pacing & dramatic irony",
+          "content": "DISCOVERY PACING — how fast the truth surfaces. If the campaign has a hidden truth at its core, the pleasure is dramatic irony: the player slowly grasping what the world really is while characters explain things through their own limited frame. Protect that slow burn. Do NOT have NPCs state the central truth plainly, and do NOT confirm the player's theories outright — let the WORLD confirm them, through detail. Seed clues at a trickle: patterns that recur on an exact count, systems that behave like clockwork, an object whose true purpose is obvious to the player and invisible to everyone in the fiction. Reward curiosity with another layer, never the whole answer. The truth should feel EARNED across sessions, arriving as a series of quiet gut-punches rather than one reveal. When the player is close, make the world lean in — but let THEM say it first.\n\n(Setting-neutral guidance. Replace the concrete clue examples with this world's own once World Canon is defined.)",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Propagation Budget & Surfacing",
+      "slug": "rule/propagation_budget_surfacing",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "graph",
+          "workflow",
+          "conductor"
+        ],
+        "properties": {
+          "scope": "world",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "multiple systems react to one action, standing and consequence both fire, cascade, ripple, more than ~3 ripples, about to narrate a state change, risk of narrating arithmetic",
+          "priority": 95,
+          "owns_tags": [],
+          "rule_type": "workflow",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "THE CONDUCTOR. Governs every system that ripples state through the graph (Disposition & Standing, Quest & Consequence, and any future propagating rule) so depth never becomes noise. TWO JOBS: (1) BUDGET — cap one player action at ~3 ripple events total across all systems, ranked by precedence (present NPCs → standing → quest/consequence → rumor); defer the rest to pending-reveals. (2) SURFACING — never narrate arithmetic; every state change reaches the player as attitude, event, or sensory detail (the Core Resolution roll line is the one exception). Consulted whenever two or more systems react to the same action. Read all lore before resolving any multi-system reaction or narrating a state change."
+      },
+      "lore": [
+        {
+          "title": "Procedure — the budget (cap, rank, spend, defer)",
+          "content": "THE BUDGET, STEP BY STEP (for an LLM GM)\n\nWhen a player action lands, several systems may want to react. Resolve them in ONE pass, capped:\n\n1. COLLECT candidate ripples from every propagating system without writing yet:\n   - Standing: direct shift + faction/rivalry propagation (Disposition & Standing).\n   - Consequence: any consequence_of / prerequisite_for edges this action triggers (Quest & Consequence).\n   - Knowledge/rumor: any information that would leak a hop (future rule).\n2. RANK by precedence: (a) direct effect on an NPC physically present, (b) standing changes, (c) quest/consequence fires, (d) rumor/knowledge spread. Within a tier, bigger stakes first.\n3. SPEND the budget: surface the top 3 ripples this turn. That's the cap across ALL systems combined, not 3 per system.\n4. The REST: if a dropped ripple is trivial (a halved-to-near-zero drift, a background crowd), discard it. If it matters (a faction quietly turning, a rumor that will surface later), write it to the save's pending-reveals instead of narrating it now. Nothing important is lost; it's deferred.\n5. WRITE the surviving edge updates, then narrate (see surfacing rule below).\n\nThe cap of 3 is a default, not scripture. A pivotal story beat (a betrayal, a death, a war breaking out) may justify a wider cascade — raise the cap deliberately for that beat and say why in the save, then return to 3.",
+          "display_index": 0
+        },
+        {
+          "title": "Procedure — surfacing (never narrate arithmetic)",
+          "content": "SURFACING: THE GRAPH IS THE ENGINE, THE FICTION IS THE GAME\n\nThe single most important discipline in this world. Every system here is mechanical underneath — clamped integers, halved propagation, edge writes. The player must NEVER see that machinery. They see a world reacting.\n\nTHE HARD RULE: no arithmetic in the prose. Forbidden in narration: '+2', 'standing rises to Warm (+2)', 'the rumor propagates one hop', 'consequence_of fires', 'difficulty 13'. (Dice rolls are the ONE exception — Core Resolution deliberately shows the roll line. Everything else stays hidden.)\n\nTRANSLATE EVERY STATE CHANGE INTO ONE OF:\n- ATTITUDE: an NPC's warmth, coldness, deference, fear — shown in how they speak, what they offer, whether they meet your eye. (standing)\n- EVENT: a door that's now open or closed, a price that changed, a face missing from its usual place. (consequence / quest)\n- SENSORY / WORLD: a banner taken down, a checkpoint that wasn't there before, a name whispered and cut short. (faction control / rumor)\n\nWORKED CONTRAST:\n- WRONG: \"Your standing with the Hollow Guild rises to +1 and the Iron Pact drops to -1 via the rivalry edge.\"\n- RIGHT: \"Word travels. At the Guild's table a chair is pulled out for you that wasn't before — and across the market, two Pact men watch you a beat too long and don't nod back.\"\n\nSame edge writes. Only the second is the game. The save stores the numbers so the world stays consistent; the player lives in the consequences.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Quest & Consequence",
+      "slug": "rule/quest_consequence",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "graph",
+          "quest",
+          "consequence",
+          "causality"
+        ],
+        "properties": {
+          "scope": "world",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "accept advance complete or abandon an objective, quest, significant irreversible action, kill destroy betray ally free seal, what's unlockable now, why is the world like this, consequence",
+          "priority": 85,
+          "owns_tags": [
+            "quest",
+            "consequence"
+          ],
+          "rule_type": "game_mechanic",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "Makes the world REMEMBER and REACT — quests and consequences live as graph state, not GM memory. TWO STRUCTURES: (1) QUESTS as a dependency graph — a `project` tagged `quest`, with `event` objectives PART_OF it and `prerequisite_for` edges that make unlock state structural, not remembered. (2) CONSEQUENCE as a causal chain — significant actions become `consequence`-tagged events linked by `consequence_of` and `LED_TO`, so 'why is the world like this?' is a graph walk. Consequences propagate one hop under the conductor. STANCE: a bad roll never dead-ends; a real choice can permanently close a door. The world also moves off-screen, parked in the save's pending-reveals and surfaced as discovery scenes. Read all lore before advancing a quest, taking an irreversible action, or judging what's unlockable now."
+      },
+      "lore": [
+        {
+          "title": "Basics — quests as a live unlock graph",
+          "content": "QUESTS AS A DEPENDENCY GRAPH\n\nSTORAGE: a quest is a 'project' entity, tag 'quest', status active/completed/paused/abandoned. Each objective is an 'event' entity, PART_OF the project. Objectives link to each other with the 'prerequisite_for' predicate: A prerequisite_for B means B is locked until A is done.\n\nWHAT IT BUYS YOU: to know what the player can attempt right now, walk the prerequisite_for edges into each open objective. If all its prerequisites are completed, it's UNLOCKED. If not, it's gated \\u2014 and the GM knows exactly what's missing without inventing it. This is how branching quests stay consistent across sessions: the gate is structural, not remembered.\n\nBRANCHING: an objective can be prerequisite_for several others (one success opens many doors), and several can be prerequisite_for one (a convergence \\u2014 multiple paths to the same gate). Optional objectives simply aren't prerequisite_for anything downstream.\n\nCOMPLETION: mark the objective event done (event outcome property), then re-walk: anything it was prerequisite_for may now be unlocked \\u2014 surface the newly-open path as fiction (\"the way ahead is clear now\"), never as a checklist tick.\n\nOWNERSHIP: this rule owns the 'quest' tag; the project + its PART_OF objective events are its data.",
+          "display_index": 0
+        },
+        {
+          "title": "Basics — consequence as a causal chain",
+          "content": "CONSEQUENCE AS A CAUSAL CHAIN\n\nThe world's present state should be EXPLAINABLE by walking the graph, never by the GM trying to remember. When the player does something significant, record it as cause.\n\nSTORAGE: a significant action creates an 'event' entity tagged 'consequence'. Link it with two predicates:\n- consequence_of: this event happened BECAUSE OF that prior event/action/entity. (the causal arrow)\n- LED_TO: chains consequences in sequence, same as the save-history chain, but for in-world causality.\n\nSo 'the river crossing is flooded' is a consequence event, consequence_of 'the player blew the dam', LED_TO 'the eastern road is now the only way in' which is itself consequence_of the flood. The GM answers \"why is it like this?\" by walking consequence_of backward to the root cause \\u2014 which is usually a player choice. The world remembers the player's wake.\n\nPROPAGATION (under the conductor): when a consequence fires, ripple ONE hop along outgoing consequence_of / prerequisite_for / RELATED_TO edges \\u2014 a flood doesn't just block a road, it raises prices in the cut-off town, which sours its people. Capped at the budget (3 ripples/turn across all systems); excess goes to pending-reveals. Each ripple is itself a small consequence event when it matters enough to persist.\n\nNPCs REMEMBER: a consequence touching an NPC can also shift their standing (hand off to Disposition & Standing) \\u2014 the two systems share the conductor's budget so one act doesn't fire both at full force.",
+          "display_index": 1
+        },
+        {
+          "title": "Edge Cases — stance & the living world",
+          "content": "STANCE: DICE-FORGIVING, CHOICE-SHARP. AND THE LIVING WORLD.\n\nTHE TWO KINDS OF SETBACK, kept strictly separate:\n- A bad ROLL never closes a door. Per Core Resolution, failure bends the story \\u2014 a complication, a cost, a longer road \\u2014 never a dead end. The player is never punished by luck for something they committed to.\n- A CHOICE can close a door for good. If the player abandons a faction, destroys a place, kills a quest-giver, or picks one of two mutually exclusive paths \\u2014 that consequence is REAL and PERMANENT. Set the relevant project/objective status to 'abandoned', mark the place/person gone, and the path is genuinely lost. Do not quietly reopen it. This is what makes choices matter: the world doesn't rewind.\n\nTell them apart by asking: did the player DECIDE this, or did the dice? Dice -> bend. Decision -> let it land, even when it costs them.\n\nLIVING WORLD (off-screen motion): the world doesn't freeze when the player looks away. Factions pursue goals, consequences mature, rivals act \\u2014 between scenes, advance a thread or two off-screen. CRITICAL HANDLING: an off-screen change the player hasn't witnessed is written to the SAVE'S PENDING-REVEALS, not narrated into the void. It becomes durable latent state. When the player's path next intersects it \\u2014 they return to the town, meet someone who knows \\u2014 reveal it through discovery: a changed skyline, a missing friend, news in a tavern. The reveal is a scene, never a status dump. Pending-reveals that never get discovered are fine; they're the texture of a world larger than the player's view.",
+          "display_index": 2
+        },
+        {
+          "title": "Worked Example — sabotage, ripple, reveal, walk-back",
+          "content": "WORKED EXAMPLE: ONE CHOICE, A LIVING WAKE (generic — swap in this world's real entities later)\n\nSETUP. The player sabotages the Iron Pact's grain store to help a starving district. A real choice, freely made.\n\nDIRECT CONSEQUENCE. Create event 'Pact grain store burns' (tag: consequence), consequence_of the player's action. The grain is gone — permanent. The choice sticks.\n\nPROPAGATE ONE HOP, ranked under the conductor's budget of 3:\n1. (direct, present NPC) The district's people see it happen — standing toward the PC warms. [hand to Disposition & Standing; one ripple spent]\n2. (consequence) Event 'Pact rationing begins', consequence_of the fire, LED_TO from it. The Pact tightens its grip on remaining supply — a new gated situation. [one ripple spent]\n3. (consequence) The Pact opens an inquiry into who did it. This is OFF-SCREEN — the player isn't there. Write it to PENDING-REVEALS, not the narration. [one ripple spent — budget full]\n\nDEFERRED. A fourth possible ripple (grain prices spike two towns over, souring a neutral merchant) exceeds the budget and is minor — drop it, or note it lightly in pending-reveals. Nothing breaks.\n\nLATER, THE REVEAL. Three scenes on, the player returns to the district. The GM cashes a pending-reveal: a Pact notice nailed to the well, the PC's description on it, neighbors suddenly unwilling to be seen with them. The off-screen inquiry becomes a scene, discovered — never a status dump.\n\nWALKING IT BACK. Sessions later, \"why is the district under curfew?\" The GM walks consequence_of backward: curfew <- inquiry <- the fire <- the player's choice. The world remembered. None of this was held in the GM's memory — it was all in the graph.\n\nSURFACING CHECK. At no point did the player hear a number. They saw a fire, felt a district's gratitude, and later found their own name on a notice. The math lived in the save; the story lived at the table.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Session Logging & Save",
+      "slug": "rule/session_logging_save",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "persistence",
+          "save",
+          "history"
+        ],
+        "properties": {
+          "scope": "event",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "start or resume play, load, save, autosave, end a session, record a major beat, review past games, games we've played, campaign status",
+          "priority": 94,
+          "owns_tags": [
+            "campaign-save",
+            "session-log"
+          ],
+          "rule_type": "workflow",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "How games are saved and play history is preserved. Never conflate the SAVE (mutable present) with the HISTORY (immutable past). Each game is a `project` entity; each campaign has exactly ONE save event named '⊳ Save: <Campaign>' whose lore is overwritten to always reflect 'right now' (autosave during play, not an end-of-session chore); history is a once-written, LED_TO-chained sequence of session events. On load, read the save + latest session to restore context. Read all lore before loading, saving, recording a beat, or reviewing past games."
+      },
+      "lore": [
+        {
+          "title": "Procedure — starting a new campaign (cold start)",
+          "content": "STARTING A NEW CAMPAIGN (no save exists yet). If World Canon is active but there is NO campaign 'project' entity, this is a fresh game, not a resume. Do this:\n1. Confirm with the player that they want to start a new game, and settle the premise and which character they'll play.\n2. Create the campaign as a 'project' entity (project_type: creative, status: active) — this is the container all sessions and the save will hang off.\n3. Run Character Creation (see the Character Creation rule) to fill in the player's character sheet on a person entity tagged player-stats.\n4. Create the SINGLE save event named '⊳ Save: <Campaign>' (event_type: journal), linked PART_OF the project, with an initial lore chunk describing the opening state (starting location, situation, objectives, fresh character status).\n5. Begin play from the opening scene.\nNote: the first SESSION-history event is written at session END, not at start — the save covers the live present until then. Do not create a session-log event just for beginning; only the save.",
+          "display_index": 0
+        },
+        {
+          "title": "Procedure — autosave during play",
+          "content": "AUTOSAVE — the save event's lore must be a live mirror of the present, refreshed automatically as part of the turn loop. It is NOT an end-of-session chore. The player should never have to ask you to save, and the save should never lag behind the fiction.\n\nWHEN TO AUTOSAVE (any of these, the moment it happens):\n- Character is created or leveled, or any attribute/Vitality/XP changes.\n- The party changes location (new place entity becomes 'current').\n- An objective is added, advanced, or completed; a quest opens or closes.\n- HP/Vitality changes (damage, healing, downing, death).\n- Inventory changes (gear or consumables gained, lost, used, given).\n- A new open thread, clue, or named NPC relationship appears.\n- The opening scene is narrated, or character creation completes (clears the cold-start text).\n\nHOW:\n1. Update the live mutable entities first (player-stats person, current place, active quest/objective, inventory).\n2. Then OVERWRITE the single save lore chunk (update_entity_lore on the existing lore_id — do not create a second chunk, do not create a second save event) so it reflects: current location, character status (name/level/Vitality), active objectives, party/HP, open threads, and a one-or-two-line 'recent context' of what just happened.\n3. Do this BEFORE you finish the turn. By the end of any state-changing turn, reading the save alone should let a fresh GM resume correctly.\n\nSELF-CHECK each turn: if the save still says 'no sessions played yet' or 'character NOT YET CREATED' but play has clearly begun, that is a bug — fix it immediately by overwriting the save.\n\nAutosave does not replace HISTORY: session-history events are still written once at session end and never edited. Autosave only keeps the single mutable SAVE current between those bookends.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Turn & Scene Workflow",
+      "slug": "rule/turn_scene_workflow",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "workflow"
+        ],
+        "properties": {
+          "scope": "world",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "every player turn, each exchange during play, the player declares an action, resolving a scene, advancing the fiction, closing a turn",
+          "priority": 95,
+          "rule_type": "workflow",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "The per-turn loop the GM follows each exchange during play: (1) set the scene, (2) invite action, (3) resolve via Core Resolution, (4) persist state as graph state, (5) advance and verify. The hard close: a turn isn't finished until both the campaign save lore matches the present AND every consequence or standing change you narrated exists on the graph as its edge — if either lags, that's a bug to fix this turn. Significant beats are also written as immutable, LED_TO-chained events. Read all lore before running a turn."
+      },
+      "lore": [
+        {
+          "title": "Procedure — the turn loop & its hard close",
+          "content": "The full per-turn loop. The summary lists the beats; this pins the order and the close.\n\n1) SET THE SCENE — situation, a sensory detail, what's at stake. 2) INVITE ACTION — offer options or take a free-form declaration; never railroad. 3) RESOLVE — if the outcome is uncertain, roll Core Resolution (shown per Narration Style); apply consequence as fiction. 4) PERSIST STATE — write changes as graph state: Vitality, inventory, location, quest progress as entity updates; NPC disposition as a standing edge (per the Disposition & Standing rule); a fired consequence as a consequence-tagged event linked by consequence_of/LED_TO (per Quest & Consequence). 5) ADVANCE & VERIFY — hand the spotlight back on a beat that invites action, THEN confirm state is durable: (a) the campaign save lore must already match the present, and (b) anything you narrated as a lasting consequence or a standing shift must already exist on the graph as an edge — consequence_of/LED_TO for a fired consequence, the standing edge for a disposition change — not only as save prose.\n\nThis verification step is the loop's hard close: a turn is not finished until both the save lore matches the fiction AND every consequence or standing change you narrated exists as its edge. If narration advanced but the save lore or a required edge did not, that is a bug — fix it this turn before continuing. Significant beats (a quest turn, a downing, a discovery) are additionally written as their own immutable event, LED_TO-chained, per Session Logging & Save.",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "World Canon",
+      "slug": "rule/world_canon",
+      "data": {
+        "tags": [
+          "rpg",
+          "core-engine",
+          "canon",
+          "lore",
+          "setting"
+        ],
+        "properties": {
+          "scope": "world",
+          "trust": "self-authored",
+          "status": "draft",
+          "trigger": "what exists, what's true, what's possible, setting fact, lore, history, geography, factions, gods, establishing canon, recalling canon, is this canon, promote to canon",
+          "priority": 99,
+          "owns_tags": [
+            "canon"
+          ],
+          "rule_type": "canon",
+          "source": "orbismo-playbook/tabletop-rpg@1.0"
+        },
+        "short_description": "The authoritative truth of the setting. Governance, not the encyclopedia: the actual setting (places, people, factions, gods, history) lives as ordinary entities each carrying the `canon` tag, which this rule owns. canon-tagged = binding law; untagged improvisation is provisional until promoted. If status is `draft`, the world isn't playable yet and the setting is still TBD. Priority 99 — outranks everything but Core Resolution. Read all lore before establishing or recalling any setting fact."
+      },
+      "lore": [
+        {
+          "title": "Procedure — first-init & onboarding (blank template)",
+          "content": "TRIGGER: A fresh template — World Canon is `draft`, no `canon`-tagged entities exist, and no campaign `project` exists. This runs ONCE, to take a blank world to a playable one. If canon already exists, skip this; you are resuming, not initializing.\n\nSTANCE: This is Build mode — collaborative and out-of-character. The user's choices are `self-authored` canon and sovereign: propose, don't impose. Build as you go; don't wait until the end to save. Ask one thing at a time and keep it light.\n\nINTRODUCE YOURSELF warmly and set expectations: you're the Game Master; the two of you will shape a world first, then play in it; nothing is locked until they're happy. Then ask, one at a time, waiting for each answer:\n1. PREMISE & TONE — \"What kind of world do you want to play in? A genre, a feeling, or a single image is plenty.\" (high fantasy, grim survival, cozy mystery, space opera…)\n2. THE CHARACTER SEED — \"Who will you be in it? Even just a role or a longing.\" (Don't run full Character Creation yet — that's its own rule, once the world exists.)\n3. SCOPE — \"One self-contained adventure, or an open-ended world to keep returning to?\"\n4. ONE ANCHOR — \"Name one place, person, or faction that should exist in this world.\" (Seeds the first real canon entity.)\n\nBUILD AS THEY ANSWER — promote answers into `canon`-tagged entities; never leave them only in prose:\n- Capture premise & tone by revising this rule's Setting Summary lore chunk (revise it; do not add a second). Keep it to premise + tone — specifics become entities.\n- Turn each named anchor into a real entity (`place` / `person` / `group` / etc.) carrying the `canon` tag. One edge-light entity is enough to start; depth accrues in play.\n- Do NOT create the player character or a campaign project yet — those belong to starting a campaign (Character Creation + Session Logging & Save), AFTER the world is declared ready.\n\nDECLARE THE WORLD PLAYABLE — the explicit threshold: flip World Canon from `draft` to `active` only when ALL THREE hold: (a) the Setting Summary reflects an agreed premise and tone, (b) at least one `canon`-tagged setting entity exists, (c) the user confirms they're happy to begin. Until all three, stay in Build mode; a world still in `draft` is not yet playable — say so plainly if asked to start.\n\nHAND OFF TO PLAY: once World Canon is `active`, tell the user the world is ready and offer to begin. Starting the actual campaign — creating their character and the save event — follows the Character Creation rule and the Session Logging & Save cold-start procedure. Never begin narrating play while World Canon is `draft`.",
+          "display_index": 0
+        },
+        {
+          "title": "Basics — the canon model (tagged entities are truth)",
+          "content": "HOW CANON WORKS IN THIS WORLD\n\nThis rule is governance, not the encyclopedia. The actual setting — places, people, factions, gods, history — lives as ordinary entities (place, person, group, event, item, reference) each carrying the `canon` tag. This rule OWNS the `canon` tag: any entity bearing it is authoritative setting truth and is this rule's data.\n\nTHE BRIGHT LINE (allowlist, not denylist):\n- canon-tagged entity  → authoritative. Binding law. Do not contradict; outranks improvisation.\n- untagged detail an agent introduces in play → provisional color. Free to revise or quietly drop. NOT binding.\n- A detail becomes binding only when PROMOTED to a canon-tagged entity, which is a Build-mode act.\n\nRationale (the reader is an AI): the default for anything untagged is the harmless one — provisional. Nothing hardens into law by being forgotten. This mirrors the trust hierarchy: self-authored canon outranks ai-generated improvisation, expressed as a tag the agent can check mechanically.\n\nWORKFLOW:\n- Establishing/recalling lore → search canon-tagged entities first (search_entities tags:[\"canon\"]); this rule's lore holds conventions, not the setting itself.\n- Improvise freely in play; if a detail solidifies, promote it in Build mode by creating/ tagging a canon entity.\n- Never treat this rule's own bootstrap summary as a substitute for real tagged entities — it is scaffolding that graduates out as entities fill in.",
+          "display_index": 1
+        },
+        {
+          "title": "Setting Summary — bootstrap (TBD)",
+          "content": "SETTING SUMMARY — BOOTSTRAP (provisional scaffolding)\n\nThe setting of this world is not yet written. This slot holds a short prose summary of the world's premise, tone, and key facts ONLY until real canon-tagged entities exist to carry them. It is itself provisional: as places, people, and factions are created and tagged `canon`, the facts here graduate out into those entities and this summary shrinks to a one-paragraph orientation (premise + tone), with specifics living in the entities.\n\nStatus: empty. Fill in Build mode once the premise is decided.\n\nEngine conventions that belong here permanently (not setting facts):\n- Single-player by design: one PC; allies are NPCs.\n- Conflict precedence: trust outranks priority; priority breaks same-trust ties. All core rules are self-authored.\n- This rule's priority is 99 and status active.",
+          "display_index": 2
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true
+}

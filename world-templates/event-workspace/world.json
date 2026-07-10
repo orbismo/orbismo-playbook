@@ -1,0 +1,234 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "App: Event Brief",
+      "slug": "rule/app_event_brief",
+      "data": {
+        "tags": [
+          "app",
+          "event"
+        ],
+        "properties": {
+          "scope": "project, person, group, event",
+          "trust": "imported",
+          "status": "active",
+          "trigger": "the event overall, its name, kind, or date, the client, headcount, vision, theme, style, formality, budget target, or who is involved in planning",
+          "priority": 100,
+          "owns_tags": [
+            "event"
+          ],
+          "rule_type": "workflow",
+          "source": "orbismo-playbook/event-workspace@1.0"
+        },
+        "short_description": "Event Brief mini-app: the central anchor of this world. Holds the one event project, the client and coordinator, the event date, headcount, and vision, plus the first-session onboarding interview. Full operating rules are in this entity's lore chunks: Data Model, Workflow: New Event Onboarding, Workflow: Updates & Queries. Read all lore before acting."
+      },
+      "lore": [
+        {
+          "title": "Data Model",
+          "content": "THIS WORLD HOLDS EXACTLY ONE EVENT. One world per event is the design: each event gets its own world so its client and collaborators can be granted access (read/write or read-only) without seeing any other event. If the user starts describing a second, unrelated event, suggest starting a new world for it rather than mixing events here. Related gatherings around the same event (an after-party, a welcome dinner) belong in THIS world: model them as Run of Show blocks and, where separately hired, their own vendor engagements. The project's venue_confirmed refers to the primary venue.\n\nEVENT PROJECT = project entity. Name: the event's working name in Title Case (e.g. \"Harvest Gala 2026\"). THIS IS THE CENTRAL ANCHOR and the signal that onboarding has happened. There is exactly one per world. Locate it by entity_type \"project\" plus the \"event\" tag, never by a hardcoded slug (the slug derives from whatever name was chosen).\nRequired properties (\"unknown\" for unknown strings, never null on required fields):\n- project_type: \"event_planning\"\n- status: \"active\" | \"completed\" | \"paused\" | \"abandoned\"\n- event_category: exactly one of \"gala\" | \"conference\" | \"corporate\" | \"party\" | \"fundraiser\" | \"retreat\" | \"festival\" | \"other\"\n- event_date: ISO date (YYYY-MM-DD) once known, else \"tbd\". SINGLE SOURCE OF TRUTH for the date; nothing else stores it authoritatively.\n- event_date_confirmed: \"yes\" | \"no\" (\"yes\" only once a venue is booked for that date)\n- event_end_date: ISO date for multi-day events, else \"same_day\"\n- guest_count_target: number (0 until known)\n- guest_count_max: number (venue capacity, 0 until known)\n- formality: \"black_tie\" | \"formal\" | \"semi_formal\" | \"cocktail\" | \"business\" | \"casual\" | \"other\" | \"unknown\"\n- budget_target: number or \"unknown\"\n- venue_confirmed: \"yes\" | \"no\" | \"unknown\"\n- client_display_name: string (how to refer to the client in conversation)\n- onboarding_complete: \"yes\" | \"no\"\nRequired tags: [\"event\"].\n\nPEOPLE AND ROLES. Everyone involved is a person entity, named \"First Last\" (slugs derive from names; if two people share a name, add a distinguishing token to the name, e.g. \"Sam Lee (2)\").\n- COORDINATOR: whoever runs the planning. Tags: [\"coordinator\"]. Link WORKS_ON project { role: \"coordinator\" }.\n- CLIENT: who the event is for. Either a person (tags: [\"client\"], WORKS_ON project { role: \"client\" }) or an organization as a group entity (group_type: \"organization\", tags: [\"client\"], group WORKS_ON project { role: \"client\" }). An organization client still gets its human contacts as person entities: tags [\"client\"], linked MEMBER_OF the group { role: their job title or \"contact\" }. If such a contact also attends the event, the Guest List rule adds its guest tags and edges to the same person.\n- STAFF AND HELPERS (the planning team): tags: [\"planning-team\"], WORKS_ON project { role: <their role> }. Do NOT tag planning helpers \"staff\"; that word is a guest segment in the Guest List rule (people attending the event day in a working capacity). A hired professional planner is the COORDINATOR here as a person; if their firm is being paid for the event, the firm is also a vendor under the Vendors & Venues rule. Both can be true at once.\nThis world may be shared. Never assume which person is speaking; the speaker may be the coordinator, the client, or staff.\n\nEVENT DAY = event entity. Name: \"Event Day\" exactly, so its derived slug is event/event_day (one per world). Required properties: event_type: \"milestone\", date_display: human-readable date string or \"Date not set\". It does NOT store the authoritative date (that is event_date on the project); refresh date_display whenever event_date changes. Link: Event Day PART_OF event project. Required tags: [\"event\"]. For multi-day events keep this single anchor and put per-day detail in the Run of Show.\n\nVISION = lore on the event project, in a chunk titled \"Vision & Theme\". Revise that chunk as the vision evolves; do not scatter vision notes across entities.\n\nCORRECTIONS: any property may be corrected, including backward. When correcting a significant fact (date, client, confirmed status), add a one-line lore note on the project: \"Corrected [field] from [old] to [new] on [date].\" Accuracy beats immutability.",
+          "display_index": 0
+        },
+        {
+          "title": "Workflow: New Event Onboarding",
+          "content": "TRIGGER: no project tagged \"event\" exists at session start, OR it exists but onboarding_complete is not \"yes\".\n\nIf onboarding is partially done, do NOT restart and do NOT greet as a returning user. Read what exists, say warmly that you're picking up where things left off, and ask only for what's missing. Set onboarding_complete: \"yes\" once the project, at least one client or coordinator person, and the Event Day entity all exist.\n\nFor a fresh start, introduce yourself briefly: \"Hi, I'm Orbismo. This world is the home for one event: I'll keep track of the vendors, the guest list, the budget, the schedule, and the to-dos, so nothing falls through the cracks. A few quick questions to get set up.\"\n\nThen ask these one at a time, waiting for each answer:\n1. \"What's the event? Give me a working name and what kind of event it is.\"\n2. \"Who's the client?\"\n3. \"And so I get things right: am I talking with the coordinator or the client?\"\n4. \"Is there a date yet, or a target window?\"\n5. \"Roughly how many guests are you planning for?\"\n6. \"Is there a venue already, or is that still open?\"\n7. \"Do you have a budget target you're working toward?\"\n\nBuild as you go, searching before every create:\n- Create the event project (named with the working name; tags, properties, and category per the Data Model; onboarding_complete: \"no\" until the end). Required properties the interview doesn't cover (like formality) start as \"unknown\" until they come up naturally.\n- Create the coordinator and client entities with their tags and WORKS_ON edges. If the client is an organization, create the group plus any named human contacts.\n- Create the Event Day entity (name \"Event Day\", date_display from the date or \"Date not set\") and link it PART_OF the project.\n- If a venue already exists, hand off to the Vendors & Venues rule to record it properly (business place + engagement).\n- If they describe a vibe or theme, save it as the \"Vision & Theme\" lore chunk on the project.\n- Set onboarding_complete: \"yes\" when the pieces above exist.\n\nClose by reflecting back in plain language: \"You're set up: [event name], [category], [date or 'date open'], around [n] guests for [client]. What's top of mind first?\" ",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Updates & Queries",
+          "content": "DATE CHANGES: update event_date (and event_date_confirmed if the change affects it) on the project, then refresh date_display on the Event Day entity in the same pass. If the date was previously confirmed, add the one-line correction note on the project.\n\nVENUE CONFIRMATIONS AND BOOKINGS: these belong to the Vendors & Venues rule. Load that rule's lore and follow its booking (or cancellation) checklist; it updates venue_confirmed and event_date_confirmed on this project as part of that workflow.\n\nVISION UPDATES: revise the \"Vision & Theme\" lore chunk on the project. Keep it current rather than appending contradictory notes.\n\nHEADCOUNT AND BUDGET TARGET: update guest_count_target / budget_target on the project. The real attending count always comes from the Guest List rule (ATTENDED edges), not from these planning targets.\n\n\"WHERE DO THINGS STAND?\" Give a warm one-paragraph summary assembled live: the date and venue status from the project, booked vendors (engagements with status \"booked\" or later), attending count (ATTENDED edges on Event Day), open tasks due soon (Tasks & Milestones rule). Never expose slugs, property names, or internal labels; speak in plain language and real names.\n\n\"WHEN IS THE EVENT?\" Read event_date from the project (the single source of truth). Never infer the date from an entity name or from date_display.",
+          "display_index": 2
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "App: Vendors & Venues",
+      "slug": "rule/app_vendors_venues",
+      "data": {
+        "tags": [
+          "app",
+          "vendor",
+          "vendor_engagement"
+        ],
+        "properties": {
+          "scope": "place, item, person, event",
+          "trust": "imported",
+          "status": "active",
+          "trigger": "any vendor or venue by name or category (venue, caterer, bar service, AV, entertainment, photographer, videographer, florist, rentals, signage, transportation, staffing, security, planner), quotes, contracts, deposits, vendor meetings or tours, comparing options, passing on a vendor, booking confirmations",
+          "priority": 80,
+          "owns_tags": [
+            "vendor",
+            "vendor_engagement"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/event-workspace@1.0"
+        },
+        "short_description": "Vendors & Venues mini-app. Each vendor is a business (place) plus an engagement (item) whose status is the single source of truth for the lifecycle; contacts are person entities; quotes live as lore on the engagement; money lives on Budget lines, never here. Full operating rules are in this entity's lore chunks: Data Model, Workflow: Add & Manage Vendors, Workflow: Lifecycle, Quotes & Queries. Read all lore before acting."
+      },
+      "lore": [
+        {
+          "title": "Data Model",
+          "content": "A vendor is TWO linked entities, plus its contacts as people.\n\n1) THE BUSINESS = place entity. Name: the business's common name in Title Case (e.g. \"The Magnolia Barn\"); the slug derives from it. Vendors are found by their \"vendor\" tag and category, never by a slug prefix. Required properties:\n- place_type: \"business\"\n- category: exactly one of \"venue\" | \"caterer\" | \"bar_service\" | \"av_production\" | \"entertainment\" | \"photographer\" | \"videographer\" | \"florist\" | \"decor_rentals\" | \"stationery_signage\" | \"transportation\" | \"staffing\" | \"security\" | \"planner\" | \"other\"\nOptional: address, website, phone (the business's general line), instagram, notes.\nDo NOT store contact_name / contact_email / contact_phone on the business. Contacts are person entities (below). Keep the place for place-facts only.\nRequired tags: [\"vendor\", <category>].\nMULTI-SERVICE BUSINESSES: one business place may hold several engagements (e.g. catering AND bar service). Give the place its primary category plus each engaged category's tag, and create one engagement per service so each has its own vendor_category, status, and budget line.\nVENUE-SPECIFIC (category \"venue\"): venue_capacity (number or \"unknown\"), venue_style (free text), catering_style (\"in_house\" | \"preferred_list\" | \"bring_your_own\" | \"unknown\"), indoor_outdoor (\"indoor\" | \"outdoor\" | \"both\" | \"unknown\").\n\nCONTACTS = person entities. Every person dealt with at a business is a person entity linked person WORKS_AT business. The edge carries: role (free-text job description) and is_primary: true | false. EXACTLY ONE contact per business has is_primary: true; when a new primary is named, set the old primary's edge to is_primary: false in the same update. A vendor may have zero contacts yet; add them as they appear.\n\n2) THE ENGAGEMENT = item entity. Name: \"Engagement: <Business Name>\" (deriving a slug like item/engagement_the_magnolia_barn); when a business has more than one engagement, qualify each with the service, e.g. \"Engagement: The Magnolia Barn (Bar Service)\", so the slugs differ. This event's relationship WITH that business; the lifecycle lives here. Required properties:\n- item_type: \"vendor_engagement\"\n- vendor_category: same value as the business's category\n- status: SINGLE SOURCE OF TRUTH for the lifecycle. One of \"discovered\" | \"inquired\" | \"meeting_scheduled\" | \"quote_received\" | \"shortlisted\" | \"booked\" | \"deposited\" | \"paid_in_full\" | \"passed\"\n- contract_signed: true | false\n- contract_date: ISO date or null\n- referred_by: string or \"unknown\"\n- passed_reason: string, REQUIRED when status is \"passed\"\nRequired tags: [\"vendor_engagement\", <category>].\nNO money fields on the engagement. Deposits, balances, and prices live on the matching Budget line (Budget rule), which links here via RELATED_TO.\n\nLINKS (all schema-valid):\n- engagement (item) ALLOCATED_TO event project { role: \"vendor\" }. Use ALLOCATED_TO, never PROVIDES_SERVICE_TO toward a project (the schema rejects it).\n- engagement (item) LOCATED_AT business (place). One active edge per engagement.\n- budget line (item) RELATED_TO engagement (item).\n- person WORKS_AT business { role, is_primary }.\n- person REFERRED business, when a specific person made the referral.\n- meetings, tastings, and tours = event entities OCCURRED_AT the business, with ATTENDED edges for whoever goes.\n\nQUOTE LORE lives on the engagement item, one chunk per quote. Title: \"Quote: <Package or Date>\". Exact template, \"unknown\" for any missing line, never omit a line:\nDate received: / Package or description: / Total price: / Deposit required: / Deposit due date: / Balance due date: / Includes: / Excludes: / Availability confirmed for event date: yes | no | unknown / Quote expiry date: / Notes:\nNever store quotes as properties.\n\nCORRECTIONS: forward movement is the default, but corrections are always allowed: un-book, un-pass, fix a wrong status, re-point the primary contact. Log a one-line note on the engagement when reversing a significant status. Keep the business place even when an engagement is passed.",
+          "display_index": 0
+        },
+        {
+          "title": "Workflow: Add & Manage Vendors",
+          "content": "WORKFLOW: a vendor is mentioned for the first time. (Creates the business, the engagement, and any named contacts.)\n1. Search place entities for the business name (watch for variant spellings). Reuse if found; otherwise create the business place per the Data Model.\n2. Determine category from context; if unclear, ask. Use only the exact category values.\n3. Create the engagement item with an initial status from context: just found = \"discovered\"; already contacted = \"inquired\"; meeting set = \"meeting_scheduled\"; already priced = \"quote_received\". Default \"discovered\" and confirm.\n4. Create BOTH links immediately: engagement ALLOCATED_TO event project { role: \"vendor\" } and engagement LOCATED_AT business. Never create an engagement without both, and never a business without an engagement.\n5. CONTACTS: if a person at the vendor is named (\"we've been emailing Rosa\"), create them as a person entity (email/phone if known) and link WORKS_AT { role, is_primary: true } (the first contact is primary by default).\n6. Ask how they found the vendor; set referred_by, and if a specific person referred them, add person REFERRED business.\n7. Confirm conversationally: \"[Business] is saved as your [category]; I've got them at [status].\"\n\nWORKFLOW: another contact at an existing vendor. Create the person, link WORKS_AT { role, is_primary }. If they are the main contact now, set is_primary: true on the new edge AND flip the old primary's edge to false in the same update.\n\nWORKFLOW: a venue specifically. Follow the vendor workflow with category \"venue\"; capture venue_capacity, indoor_outdoor, and catering_style when natural. For a tour, create an event named \"Venue Tour: <Venue>\" (event_type \"appointment\", full date properties), link it OCCURRED_AT the venue and ATTENDED for whoever is going. When a venue is BOOKED: set the engagement to \"booked\", set venue_confirmed: \"yes\" and event_date_confirmed: \"yes\" on the event project (Event Brief rule), refresh the Event Day date_display, and copy the venue's venue_capacity into guest_count_max on the project.\n\nIF A BOOKED VENUE FALLS THROUGH: set the engagement to \"passed\" (with passed_reason) or back to \"shortlisted\" if still possible; reset venue_confirmed and event_date_confirmed to \"no\" on the project and refresh the Event Day date_display; find Run of Show blocks OCCURRED_AT that venue and flag them for re-homing; review the linked budget line for refunds (Budget rule) and cancel obsolete linked tasks (Tasks rule).",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Lifecycle, Quotes & Queries",
+          "content": "STATUS MOVES: advance the engagement's status as things happen; it is the only place the lifecycle lives. When a quote arrives, set status \"quote_received\" (if not further along) and capture the quote as a lore chunk on the engagement using the exact template. When booking: status \"booked\", contract_signed / contract_date when known, THEN load the Budget rule's lore and ensure the matching budget line exists, created per that rule using its category crosswalk (the Budget rule owns all money). When a deposit is paid: status \"deposited\" here, then record deposit_amount, deposit_date, and payment_status on the budget line per the Budget rule's lore; load it and never leave the money unrecorded. When passing: status \"passed\" plus passed_reason, always. Keep the business place; another event world may not exist, but history matters here.\n\nQUERIES:\n- \"Who's our caterer?\" Engagements with vendor_category \"caterer\" and status \"booked\" or later, then LOCATED_AT to the business and its is_primary contact.\n- \"Compare the quotes.\" Read the quote lore chunks on each engagement and lay them out side by side in plain language: price, what's included, availability.\n- \"What's still open?\" Engagements whose status is neither \"booked\"/\"deposited\"/\"paid_in_full\" nor \"passed\", grouped by category.\n- \"Who do I call at [business]?\" The business's incoming WORKS_AT edges; the is_primary contact first.\nPresent everything grouped and conversational; never expose slugs or raw property names.",
+          "display_index": 2
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "App: Guest List",
+      "slug": "rule/app_guest_list",
+      "data": {
+        "tags": [
+          "app",
+          "guest"
+        ],
+        "properties": {
+          "scope": "person, event",
+          "trust": "imported",
+          "status": "active",
+          "trigger": "any guest or attendee, invitations, RSVPs, meal choices, dietary needs, plus-ones, VIPs, speakers, press, the guest count, who's invited, who's coming",
+          "priority": 70,
+          "owns_tags": [
+            "guest"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/event-workspace@1.0"
+        },
+        "short_description": "Guest List mini-app. Guests are person entities with a list segment and RSVP lifecycle; plus-ones become real people once named; the attending headcount is counted from ATTENDED edges on the Event Day entity, never from a stored total. Full operating rules are in this entity's lore chunks: Data Model, Workflow: Add Guests, RSVPs & Queries. Read all lore before acting."
+      },
+      "lore": [
+        {
+          "title": "Data Model",
+          "content": "GUEST = person entity. Name: \"First Last\" (slugs derive from names). If two guests share a name, add a distinguishing token to the name (e.g. \"Sam Lee (2)\").\n\nREQUIRED AT CREATION (use \"unknown\" only where genuinely not yet known; never null or blank):\n- person_type: \"human\"\n- list_segment: exactly one of \"vip\" | \"speaker\" | \"sponsor\" | \"press\" | \"staff\" | \"family\" | \"friend\" | \"general\" | \"unknown\"\n- invited_by: free text or \"unknown\" (whose list they came from; useful when the coordinator and client both add names)\n- rsvp_status: \"not_invited\" | \"invited\" | \"attending\" | \"declined\" | \"no_response\"\n- plus_one_allowed: true | false\n\nSET AT RSVP TIME (leave unset until then; do not pre-fill):\n- meal_choice: \"standard\" | \"vegetarian\" | \"vegan\" | \"child_meal\" | \"other\" | \"not_applicable\" (use \"other\" plus dietary_notes when the menu differs)\n- dietary_notes: string\n\nOPTIONAL: title_or_org (free text, e.g. \"CFO, Acme Corp\"), relationship_descriptor (color only, e.g. \"client's college roommate\").\n\nRequired tags: [\"guest\", <list_segment>].\n\nPLUS-ONES ARE REAL PEOPLE ONCE NAMED. While unnamed, the host simply has plus_one_allowed: true and nothing else. When the plus-one is named (usually at RSVP), create a proper person entity for them: the host's list_segment, their own rsvp_status, and a property plus_one_of: <host's slug>. Every attending head, plus-ones included, is a counted person entity.\n\nATTENDANCE IS EDGES. Each individual actually attending gets person ATTENDED Event Day { rsvp_status: \"attending\", meal_choice, dietary_notes }. THE PER-PERSON ATTENDED EDGES ARE THE SOURCE OF TRUTH FOR HEADCOUNT AND MEALS. Count the edges; never trust a stored total or the planning target on the project.\n\nNO HOUSEHOLD MODEL HERE. Invitations are per person in this template. For household-unit invitations with envelope addressing (common for weddings and family events), see the Wedding Planner template's Guest List pattern.",
+          "display_index": 0
+        },
+        {
+          "title": "Workflow: Add Guests, RSVPs & Queries",
+          "content": "WORKFLOW: adding guests.\n1. Search person entities for each name before creating. Never duplicate; confirm close matches.\n2. Create with the required-at-creation properties. Gather naturally, one question at a time: segment (\"Is she a VIP, press, or general list?\"), invited_by, plus-one. Set rsvp_status \"not_invited\" until invitations go out, \"invited\" after.\n3. Adding many at once: summarize the plan first and wait for a go-ahead before creating more than eight entities.\n\nWORKFLOW: RSVP comes in.\n- Attending: set rsvp_status \"attending\" and create the ATTENDED edge to Event Day with meal_choice and dietary_notes as they're known. Ask for the meal choice if the menu requires one.\n- Declined: set rsvp_status \"declined\". If an ATTENDED edge was created earlier by mistake or the guest reverses, remove the edge (a withdrawn RSVP is a correction; corrections are always allowed).\n- Plus-one named: create the plus-one as a person (per the Data Model) with their own ATTENDED edge if coming.\n\nWORKFLOW: queries and counts.\n- \"How many are coming?\" Count ATTENDED edges on Event Day (plus-ones included automatically, since they are people).\n- \"Meal counts for the caterer?\" Group the ATTENDED edges' meal_choice values; list dietary_notes separately.\n- \"Who hasn't responded?\" Guests with rsvp_status \"invited\" or \"no_response\".\n- \"Who's on the VIP list?\" Guests tagged \"vip\"; same pattern for any segment.\n- \"Whose list is [name] from?\" Read invited_by.\nPresent counts plainly and warmly; a compact table only when it genuinely helps (4+ rows).",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "App: Budget",
+      "slug": "rule/app_budget",
+      "data": {
+        "tags": [
+          "app",
+          "budget"
+        ],
+        "properties": {
+          "scope": "item, person, group",
+          "trust": "imported",
+          "status": "active",
+          "trigger": "cost, price, budget, how much something is, spending, deposits, payments, what's been paid, what's left, sponsorships, who's paying, financial contributions",
+          "priority": 60,
+          "owns_tags": [
+            "budget"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/event-workspace@1.0"
+        },
+        "short_description": "Budget mini-app: the single home for all event money. Expenses and contributions (sponsorships, client top-ups) are budget-line items linked to the project and to vendor engagements; payers are linked people or organizations; totals are always computed live from the lines. Full operating rules are in this entity's lore chunks: Data Model, Workflow: Lines, Payments & Queries. Read all lore before acting."
+      },
+      "lore": [
+        {
+          "title": "Data Model",
+          "content": "BUDGET LINE ITEM = item entity. Name: \"Budget: <Category> <vendor or short description>\" (e.g. \"Budget: Catering Magnolia Barn\"; slugs derive from names, so add a distinguishing word if the name is taken).\n\nThis is the SINGLE HOME for all event money. Vendor deposits, balances, and prices live HERE, never on the vendor engagement. A booked vendor's budget line links to its engagement via RELATED_TO (item to item).\n\nRequired properties (0 for unknown numbers, \"unknown\" for unknown strings, never null on required fields):\n- item_type: \"budget_line\"\n- line_kind: \"expense\" | \"contribution\" (expense = money out; contribution = money in: a sponsorship, a client top-up, any third-party funding. MATTERS FOR TOTALS.)\n- budget_category: exactly one of \"venue\" | \"catering\" | \"bar\" | \"av_production\" | \"entertainment\" | \"decor_rentals\" | \"photography\" | \"videography\" | \"flowers\" | \"stationery_signage\" | \"transportation\" | \"staffing\" | \"security\" | \"marketing_promotion\" | \"speaker_fees\" | \"gifts_swag\" | \"insurance_permits\" | \"planning_coordination\" | \"miscellaneous\"\n- budget_description: string\n- payment_status: \"unbudgeted\" | \"budgeted\" | \"quoted\" | \"deposit_paid\" | \"paid_in_full\"\n- estimate: number, actual: number (0 until confirmed), deposit_amount: number, deposit_paid: true | false, deposit_date: ISO date or null, balance_due: number, balance_due_date: ISO date or null\nRequired tags: [\"budget\", <budget_category>, <line_kind>].\n\nCATEGORY CROSSWALK from vendor categories (never tag a budget line with a vendor-category spelling): venue -> venue, caterer -> catering, bar_service -> bar, av_production -> av_production, entertainment -> entertainment, photographer -> photography, videographer -> videography, florist -> flowers, decor_rentals -> decor_rentals, stationery_signage -> stationery_signage, transportation -> transportation, staffing -> staffing, security -> security, planner -> planning_coordination, other -> miscellaneous.\n\nWHO PAYS IS A LINK, NOT A FLAT FIELD. The payer is linked person (or group, e.g. the client organization) OWNS budget line { role: \"payer\", share: \"full\" | \"half\" | a number | a note }. Multiple payers = one OWNS edge each with their share. If the payer isn't known yet, create no OWNS edge (assume the client covers it for planning totals; do not invent a payer).\n\nEXPENSE vs CONTRIBUTION, CRITICAL FOR TOTALS: an expense sums into total spend; a contribution OFFSETS what the client owes and is never added to spend. A sponsor covering catering does not remove or change the catering expense line. Example: a 5,000 catering expense plus a 5,000 sponsorship = 5,000 total spend, 0 net to the client, never 10,000.\n\nRELATIONSHIPS: budget line ALLOCATED_TO event project (every line); budget line RELATED_TO vendor engagement when the line corresponds to a real vendor (one expense line per engagement); payer OWNS budget line.\n\nFor contributions: estimate = the pledged amount; actual = what has actually been received so far; payment_status \"budgeted\" = promised, \"deposit_paid\" = partly received, \"paid_in_full\" = fully received.\n\nNet cost to the client = (sum of expense actuals, or estimate where actual is 0) minus (sum of contribution actuals, or estimate where actual is 0). The same precedence on both sides is deliberate: once money starts arriving, only what has arrived is netted. ALWAYS compute totals live from the lines; never trust or store an aggregate.",
+          "display_index": 0
+        },
+        {
+          "title": "Workflow: Lines, Payments & Queries",
+          "content": "WORKFLOW: a cost or budget figure is mentioned.\n1. Search for an existing line (by category and vendor) before creating one. One expense line per vendor engagement.\n2. Create or update the line per the Data Model; link ALLOCATED_TO the project and RELATED_TO the engagement if a vendor is involved.\n3. Payment events: deposit paid = deposit_paid: true, deposit_amount, deposit_date, payment_status \"deposit_paid\" (and the engagement moves to \"deposited\" under the Vendors rule). Final payment = actual confirmed, balance_due 0, payment_status \"paid_in_full\".\n3b. If a balance_due_date changes on a line, refresh any milestone task linked to the same engagement (Tasks & Milestones rule) so the reminder matches; the budget line is authoritative for the date.\n4. Sponsorships and family/third-party money: a \"contribution\" line, plus the contributor (person or organization group, created if needed) linked OWNS { role: \"payer\", share: \"full\" }.\n\nPAYMENT STATUS moves forward as a default (unbudgeted, budgeted, quoted, deposit_paid, paid_in_full), but anything entered wrongly or changed by real life (a refund, a cancelled booking) may be corrected backward. Note the reason in the line's description or a one-line lore note when reversing a paid status. Never refuse a legitimate correction.\n\nQUERIES:\n- \"Where are we against budget?\" Compare budget_target on the project with live totals: sum of expense estimates, sum of actuals, contributions subtracted for the net.\n- \"What's left to pay?\" Lines with balance_due > 0, ordered by balance_due_date.\n- \"What are we spending on [category]?\" Lines tagged with that category.\n- \"Who's paying for what?\" Traverse OWNS edges from each payer.\nPresent in plain English and whole currency amounts; never show raw property names or slugs. If the numbers are tight, stay calm and factual.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "App: Run of Show",
+      "slug": "rule/app_run_of_show",
+      "data": {
+        "tags": [
+          "app",
+          "run-of-show"
+        ],
+        "properties": {
+          "scope": "event, person, place",
+          "trust": "imported",
+          "status": "active",
+          "trigger": "the schedule, timeline, run of show, run sheet, agenda, program, what time something happens, doors, setup or teardown times, who owns a moment on the day",
+          "priority": 50,
+          "owns_tags": [
+            "run-of-show"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/event-workspace@1.0"
+        },
+        "short_description": "Run of Show mini-app: the minute-by-minute schedule for the event day(s). Each schedule block is a timed event linked to the project, with an owner and an optional location; the run sheet is read straight off the timeline in chronological order. Full operating rules are in this entity's lore chunks: Data Model, Workflow: Build & Run the Schedule. Read all lore before acting."
+      },
+      "lore": [
+        {
+          "title": "Data Model",
+          "content": "SCHEDULE BLOCK = event entity. Name: the activity in Title Case (e.g. \"Doors Open\", \"Dinner Service\", \"Keynote: Dr. Chen\"). Keep names unique within the schedule; for multi-day events add a qualifier (e.g. \"Doors Open (Day 2)\"), since slugs derive from names.\n\nRequired properties:\n- event_type: \"run_of_show\"\n- date: human-readable date AND time (e.g. \"Sep 12, 2026, 6:00 PM\")\n- date_year / date_month / date_day / date_hour / date_minute: numbers. TIMES ARE REQUIRED; a block without a time is not yet a schedule block, so ask for the time before creating it.\n- duration: free text (e.g. \"45 min\"), or \"unknown\"\nOptional: notes (cues, AV needs, handoffs).\nRequired tags: [\"run-of-show\"].\n\nRELATIONSHIPS:\n- block PART_OF event project (every block).\n- block OCCURRED_AT place, when a specific venue, room, or area applies.\n- owner person ORGANIZED block: who runs that moment (the emcee, the AV lead, the caterer's on-site contact). One owner per block is the goal; zero is a gap worth flagging.\n\nThe Event Day entity (Event Brief rule) stays the single anchor for the day; schedule blocks are the minute-by-minute detail under the project. Do not duplicate the event date onto blocks as authority; their dates are their own start times.",
+          "display_index": 0
+        },
+        {
+          "title": "Workflow: Build & Run the Schedule",
+          "content": "WORKFLOW: building the schedule. Create blocks as they're decided, searching first to avoid duplicates. Always capture the start time (ask if missing) and the owner when named (ORGANIZED edge; create the person if new, e.g. a vendor's on-site contact). Setup and teardown are blocks too.\n\nWORKFLOW: times move. Update the block's date properties in place. Schedule shifts are normal planning, not corrections; no correction note needed unless the printed/published run sheet already went out (then note it on the project).\n\nWORKFLOW: \"show me the run of show\" / day-of. Use get_timeline bounded to the event date(s) (start and end year/month/day), ascending, with event_types: [\"run_of_show\"] (the same window also holds tasks, vendor meetings, and the Event Day anchor, so the filter matters), and present a clean chronological run sheet: time, block, owner, location. Include every block; page through the timeline cursor rather than concluding from a truncated page. For multi-day events, one section per day.\n\nWORKFLOW: review the schedule. When asked to sanity-check, look for: overlapping blocks in the same location, gaps longer than the group would expect, blocks with no owner, and blocks with no location where one matters. Raise them gently as questions, not verdicts.\n\nNever rely on block names for ordering; order strictly by the date/time properties.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "App: Tasks & Milestones",
+      "slug": "rule/app_tasks_milestones",
+      "data": {
+        "tags": [
+          "app",
+          "task"
+        ],
+        "properties": {
+          "scope": "event, person, item",
+          "trust": "imported",
+          "status": "active",
+          "trigger": "tasks, to-dos, action items, deadlines, due dates, checklists, milestones, what's due, what's overdue, reminders about contracts, payments, headcounts, or permits",
+          "priority": 40,
+          "owns_tags": [
+            "task"
+          ],
+          "rule_type": "tracker",
+          "source": "orbismo-playbook/event-workspace@1.0"
+        },
+        "short_description": "Tasks & Milestones mini-app: deadline tracking for the event. Tasks are events dated by their due date with an open/done/blocked status and an owner; milestones are high-priority tasks with hard external dates. Timeline queries answer what's due and what's overdue. Full operating rules are in this entity's lore chunks: Data Model, Workflow: Track & Query Tasks. Read all lore before acting."
+      },
+      "lore": [
+        {
+          "title": "Data Model",
+          "content": "TASK = event entity, dated by its DUE date. Name: a short imperative in Title Case (e.g. \"Sign Catering Contract\", \"Send Save-the-Dates\", \"Confirm Final Headcount\"). Keep names unique; add a qualifier if a task repeats (slugs derive from names).\n\nRequired properties:\n- event_type: \"task\"\n- date: human-readable due date\n- date_year / date_month / date_day: numbers (the due date; required, ask if missing)\n- task_status: \"open\" | \"done\" | \"blocked\" | \"cancelled\"\n- priority_level: \"high\" | \"normal\" | \"low\"\nOptional: outcome (one line, set when done or cancelled), blocked_reason (REQUIRED when task_status is \"blocked\"). Cancelled = no longer applicable (the vendor was passed, the plan changed); cancel with a one-line outcome, never delete.\nRequired tags: [\"task\"].\n\nRELATIONSHIPS:\n- task PART_OF event project (every task).\n- owner person ORGANIZED task, when someone specific owns it.\n- task RELATED_TO vendor engagement (item) when the task concerns a vendor (e.g. \"Sign Catering Contract\" links to that engagement).\n\nMILESTONE = the same model with priority_level \"high\" and typically a hard external date (final headcount due to the caterer, permit deadline, balance due dates). A balance due date may also exist as a milestone task, but it is only a reminder: the budget line's balance_due_date is authoritative for both the amount and the date. When the budget line's date changes, refresh the milestone task linked to the same engagement in the same pass.",
+          "display_index": 0
+        },
+        {
+          "title": "Workflow: Track & Query Tasks",
+          "content": "WORKFLOW: a task or deadline is mentioned. Search first; create with the due date (ask if missing), priority, owner if named (ORGANIZED), and a RELATED_TO link to the vendor engagement when it concerns a vendor.\n\nWORKFLOW: a task is finished. Set task_status \"done\" and a one-line outcome. Never delete a completed task; done tasks are the planning history.\n\nWORKFLOW: a task is stuck. Set task_status \"blocked\" with blocked_reason. When the blocker clears, back to \"open\" (corrections and reversals are always fine).\n\nWORKFLOW: a task becomes moot (the vendor was passed, the plan changed). Set task_status \"cancelled\" with a one-line outcome; never delete it.\n\nWORKFLOW: \"what's due?\" Use get_timeline bounded to the window (this week, this month) with event_types: [\"task\"], then keep only tasks whose task_status is \"open\"; alternatively search entities of type event filtered on properties.task_status = \"open\" and read their dates. Present ordered by due date with high-priority items flagged first. Overdue = due date before today and still open; lead with those.\n\nHABIT: when a session starts within a few weeks of the event date, offer a short rundown of open and overdue tasks after greeting (\"Want the to-do rundown?\"), but don't force it.",
+          "display_index": 1
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true
+}
