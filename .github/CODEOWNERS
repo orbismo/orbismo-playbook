@@ -1,0 +1,3 @@
+# Auto-request review from the maintainers on every pull request.
+# GitHub skips requesting the PR author, so each PR pings the other owner.
+* @olorin-ghzlab @GhzLabDev
