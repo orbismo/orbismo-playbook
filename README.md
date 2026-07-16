@@ -30,10 +30,11 @@ New to Orbismo? The [help site](https://help.orbismo.com/) covers the underlying
 
 | App | What it does |
 | --- | --- |
-| [Movie Tracker](mini-apps/movie-tracker/) | A personal movie diary: watchlist, per-watch ratings, co-watchers, favorites, stats. |
 | [Book Tracker](mini-apps/book-tracker/) | A personal reading diary: shelves, progress, per-read ratings, authors, recommendations. |
-| [Travel Tracker](mini-apps/travel-tracker/) | Trips with a lifecycle, bookings, and a compounding atlas of places, verdicts, and recommendations. |
+| [Family Tree](mini-apps/family-tree/) | A personal family history: kinship edges, honest dates, attributed stories, heirlooms with provenance. |
+| [Movie Tracker](mini-apps/movie-tracker/) | A personal movie diary: watchlist, per-watch ratings, co-watchers, favorites, stats. |
 | [Recipe Box](mini-apps/recipe-box/) | Recipes with consistent ingredients, real provenance, and meals as social moments that carry the tweaks. |
+| [Travel Tracker](mini-apps/travel-tracker/) | Trips with a lifecycle, bookings, and a compounding atlas of places, verdicts, and recommendations. |
 
 ## Contributing
 

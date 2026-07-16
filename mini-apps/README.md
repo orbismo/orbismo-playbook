@@ -10,10 +10,11 @@ The apps here are portable: they assume only Orbismo's common entity types and a
 
 | App | What it does |
 | --- | --- |
-| [Movie Tracker](movie-tracker/) | A personal movie diary: watchlist, per-watch ratings and reviews, co-watcher history, favorites, year-in-review stats. |
 | [Book Tracker](book-tracker/) | A personal reading diary: shelves (to-read, reading, read, DNF), progress, per-read ratings, series, authors as first-class entities, recommendations. |
-| [Travel Tracker](travel-tracker/) | Trips as projects with a full lifecycle, bookings as references, and a compounding atlas of places: visit history, verdicts, and who recommended what. |
+| [Family Tree](family-tree/) | A personal family history: the tree as real kinship edges, honest dates ("abt 1893"), attributed family stories with an oral-history interview mode, and heirlooms with provenance. |
+| [Movie Tracker](movie-tracker/) | A personal movie diary: watchlist, per-watch ratings and reviews, co-watcher history, favorites, year-in-review stats. |
 | [Recipe Box](recipe-box/) | Recipes with consistent ingredients and real provenance (cookbook, website, or the relative who created them), and meals as the social events that carry the tweaks. |
+| [Travel Tracker](travel-tracker/) | Trips as projects with a full lifecycle, bookings as references, and a compounding atlas of places: visit history, verdicts, and who recommended what. |
 
 ## Anatomy of an app package
 
