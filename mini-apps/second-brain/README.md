@@ -25,7 +25,7 @@ In use, the app creates `reference` entities for notes and daily notes (tagged `
 - **Second Brain** (`rule/app_second_brain`): triggers: saving notes and pasted text word-for-word, daily notes and journaling, web clippings, quoting an earlier note exactly, what did I note about X, notebook review. Tags: `second-brain`, `daily-note`
 ```
 
-3. Test it: paste a short passage with deliberate formatting (a list, odd spacing, even a typo) and say "save this note as Fidelity Test", then ask "show me Fidelity Test word for word" and confirm the text comes back exactly as pasted — typo included.
+3. Test it: paste a short passage with deliberate formatting (a list, odd spacing, even a typo) and say "save this note as Fidelity Test", then ask "show me Fidelity Test word for word, in a code block, with a character count" and confirm the text and count match what you pasted — typo included.
 
 ## Notes
 
