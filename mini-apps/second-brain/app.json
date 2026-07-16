@@ -1,0 +1,83 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "App: Second Brain",
+      "slug": "rule/app_second_brain",
+      "data": {
+        "tags": [
+          "app",
+          "second-brain"
+        ],
+        "properties": {
+          "scope": "reference, interest",
+          "trust": "imported",
+          "source": "orbismo-playbook/second-brain@1.0",
+          "status": "active",
+          "trigger": "notes and remembering: save or note this, keep pasted text, remember something word-for-word, daily notes and journaling, clipping links or web pages, finding or quoting an earlier note, what did I write about X, reviewing or tidying the notebook",
+          "priority": 10,
+          "owns_tags": [
+            "second-brain",
+            "daily-note"
+          ],
+          "rule_type": "tracker"
+        },
+        "short_description": "Second Brain mini-app: a personal notebook with verbatim recall. Notes are stored exactly as written (a paste comes back byte-for-byte, never paraphrased), quick thoughts land in a daily note, notes link to the people and projects they're about, and recall runs exact, then graph, then semantic. Full operating rules are in this entity's lore chunks: Data Model: Notes & Verbatim Capture; Data Model: Daily Notes, Links & the Note Index; Workflow: Capture a Note; Workflow: Recall — Word for Word; Workflow: Review & Tidy. Read all lore before acting on note requests."
+      },
+      "lore": [
+        {
+          "title": "Data Model: Notes & Verbatim Capture",
+          "content": "NOTE = reference entity. Name: a short, stable title — the user's title when they give one, otherwise the first line or a plain descriptive phrase (\"API Design Notes\", \"Sourdough Hydration Table\"). Slugs derive from names; once set, keep the name stable.\n\nTHE VERBATIM LAW: the user's words are stored EXACTLY as given — byte for byte. Pasted text, dictated thoughts, quotes: keep their markdown, indentation, blank lines, code, typos, and phrasing untouched. Never correct spelling, reformat, translate, tidy whitespace, or compress. If a summary or added structure would help, it goes in its own clearly labeled chunk (\"Summary (assistant)\") — the user's text is never edited to make room. Storage is faithful; polish is a separate, labeled layer.\n\nLore layout: the note body lives in a lore chunk titled \"Note\". Content over the 10,000-character chunk limit is split at paragraph boundaries into parts titled \"Note (1/3)\", \"Note (2/3)\", \"Note (3/3)\" with sequential display_index — no text dropped or reworded at the seams. LORE UPDATES REPLACE THE WHOLE CHUNK: to append to a note, read the current chunk first (get_entity_lore), then write existing text plus the addition; sending only the addition wipes the rest.\n\nProperties:\n- reference_type: \"note\"\n- captured: ISO date of first capture (\"2026-07-15\")\n- url: for web clippings, the source URL\n- source: one line on where the text came from when it isn't the user's own words (\"pasted from the team wiki\", \"dictated in the car\")\n- status: omit normally; \"superseded\" when a newer note replaces it (the successor is named in a final lore line)\n\nTags (exact spellings; tags are case-sensitive): every note gets \"second-brain\"; daily notes also get \"daily-note\"; topic tags come from the Note Index (next chunk). TAG EDITS REPLACE THE WHOLE ARRAY: when retagging, read current tags first (get_entities), then write the complete new set, keeping every tag already there.\n\nRETRIEVAL IS BY TAG: \"second-brain\" finds every note (search_entities with tags). interest/second_brain is the app's hub: its lore holds the Note Index; notes do not link to the hub.",
+          "display_index": 0
+        },
+        {
+          "title": "Data Model: Daily Notes, Links & the Note Index",
+          "content": "DAILY NOTE = the capture inbox: one reference entity per day, created on the day's first quick capture, never in advance. Name exactly \"Daily Note YYYY-MM-DD\" (\"Daily Note 2026-07-15\" → reference/daily_note_2026_07_15) — the deterministic name is the lookup key for time-based recall. reference_type \"note\", captured set, tags [\"second-brain\", \"daily-note\"].\n\nQuick captures append as separate lore chunks, one chunk per capture, titled \"HH:MM — <label>\" (\"09:42 — standup follow-up\"), body verbatim. Never merge captures into one chunk: separate chunks make appending safe (no read-modify-write risk) and keep each capture individually findable by search_lore.\n\nPROMOTION: when a capture outgrows the inbox — it has a lasting subject, or the user keeps returning to it — create a proper note entity carrying the verbatim text, then rewrite the daily chunk as a one-line pointer (\"→ promoted to reference/api_design_notes\"). Promotion is the ONE sanctioned edit of captured text, and the text itself moves untouched. Offer promotion; don't force it.\n\nLINKS: attach a note to the tracked entities it is about — person/project/event/place/item REFERENCES note, the same edge other apps use to attach documents. \"What notes touch the kitchen remodel?\" is then query_relationships on the project. Cross-references between notes (\"see also\") use REFERENCES note → note. Create edges for the real subjects of a note, not every passing mention — two or three edges beat ten.\n\nNOTE INDEX = lore chunk titled exactly \"Note Index\" on interest/second_brain: the controlled vocabulary of topic tags, one line each (\"sourdough — baking experiments, starters, and links\"). Before inventing a topic tag, read the index and reuse a fit; add a line when a genuinely new topic appears (read the current chunk first — LORE UPDATES REPLACE THE WHOLE CHUNK). The index is the map of the notebook: small, current, and read at the start of any capture or recall that involves topics.",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Capture a Note",
+          "content": "Triggered by save intent: \"note this\", \"save this\", \"remember this exactly\", \"clip this\", a paste followed by \"keep this somewhere\".\n\n1. Choose the shelf: a quick, untitled thought → today's daily note (create it if this is the day's first capture). A titled or lasting subject → its own note entity. When unsure, capture to the daily note and say so — capture must never stall on questions.\n2. Search before creating (search_entities by likely title words and the second-brain tag): if a note on the subject exists, offer append vs. new note. Never create a second note with a near-identical title.\n3. Store per the Data Model: verbatim lore, captured date, url/source when applicable.\n4. Tag: \"second-brain\" plus topic tags from the Note Index. A new topic tag needs no permission but must be recorded in the index in the same breath.\n5. Link the subjects: REFERENCES edges from the tracked entities the note is about.\n6. CONFIRM WHAT WAS WRITTEN, every time: entity name, tags, chunk count, word count, and links (\"Saved 'API Design Notes' — 1 chunk, 312 words, tags second-brain + work; linked from project/platform_redesign.\"). A capture the user can't see is a note they'll never trust. Report skips and splits honestly.\n7. NO AMBIENT CAPTURE: the app saves when asked or when intent is unmistakable — it never quietly hoovers conversation into notes. When something in passing seems worth keeping, offer to save it.\n\nInterview the paste, don't edit it: if text arrives with no title or topic, ask for or propose one — but the body is already final.",
+          "display_index": 2
+        },
+        {
+          "title": "Workflow: Recall — Word for Word",
+          "content": "THE RECALL LAW: when the user asks for a note back, re-read it (get_entity_lore) and reproduce the stored content EXACTLY — never from conversational memory, never summarized unless a summary was asked for. Multi-part notes are reassembled in display_index order, seams invisible. When whitespace or formatting matters (code, tables, anything they'll paste onward), return the text in a fenced block so nothing renders away. Any commentary stays clearly separated from the quoted text.\n\nThe retrieval ladder — run in order, stop when found:\n1. EXACT: search_entities by title words and by tags (\"second-brain\", \"daily-note\", topic tags). \"Yesterday's notes\" and \"last Tuesday\" resolve by deterministic daily-note names — no search needed.\n2. GRAPH: notes about a tracked thing → query_relationships on that entity for REFERENCES edges to notes (\"what did I note about Grandma?\" walks her edges).\n3. SEMANTIC: search_lore in natural language for half-remembered content (\"that note with the hydration table\"), scoped to entity_type \"reference\" when the world is busy. Results carry full chunk content — quote from a result only when it is the complete chunk; otherwise fetch the chunk itself.\n\nPresentation: for \"find my notes on X\", list the matches (title, captured date, one-line gist) and offer full text; for \"show me the note\", the verbatim text IS the answer. Distinguish quoting (\"your note says:\") from loose recall (\"you have a note about that\"). If nothing is found, say so and name the nearest misses — never improvise a note's contents.",
+          "display_index": 3
+        },
+        {
+          "title": "Workflow: Review & Tidy",
+          "content": "Triggered by \"review my notes\", \"tidy my notebook\", a weekly review habit, or when inbox clutter is genuinely in the way of a task.\n\nSurface, don't act — every change below waits for a yes:\n1. Unpromoted captures: daily-note chunks that clearly outgrew the inbox — offer promotion.\n2. Untagged and unlinked notes: notes missing topic tags or subject links — propose tags from the Note Index.\n3. Near-duplicates: notes whose titles or contents overlap — offer a merge. A merge keeps BOTH texts verbatim as separate chunks in the surviving note (\"Note\", \"Note (merged from <name>, <date>)\"), moves the incoming note's edges, then deletes the empty shell. Nothing is reworded during a merge.\n4. Superseded notes: when the user says a note is out of date, set status: \"superseded\", add one final lore line naming the successor, and leave the text intact — old notes are history, not garbage.\n5. Index drift: Note Index lines whose tags match no note — offer to strike them; topic tags in use but missing from the index — add them.\n\nCadence: run a review when asked; mention it unprompted only when the daily-note backlog is blocking something. Never nag. Afterwards report what was checked and what changed, honestly, including \"nothing needed\".",
+          "display_index": 4
+        }
+      ]
+    },
+    {
+      "entity_type": "interest",
+      "name": "Second Brain",
+      "slug": "interest/second_brain",
+      "data": {
+        "tags": [
+          "second-brain"
+        ],
+        "properties": {
+          "interest_type": "practice"
+        },
+        "short_description": "Hub for the Second Brain app. Notes are found by the second-brain tag; this entity holds notebook-wide lore, including the Note Index — the controlled vocabulary of topic tags."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_type": "APPLIES_TO",
+      "source_id": "rule/app_second_brain",
+      "target_id": "interest/second_brain",
+      "properties": {
+        "note": "App hub managed by the Second Brain app"
+      }
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}
