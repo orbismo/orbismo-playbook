@@ -1,0 +1,84 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "App: Family Tree",
+      "slug": "rule/app_family_tree",
+      "data": {
+        "tags": [
+          "app",
+          "family-tree"
+        ],
+        "properties": {
+          "scope": "person, event, place, item, reference, interest",
+          "trust": "imported",
+          "source": "orbismo-playbook/family-tree@1.0",
+          "status": "active",
+          "trigger": "family history or ancestry: ancestors, grandparents and earlier generations, the family tree, how relatives are related, maiden names, where the family came from, immigration stories, family stories and legends, interviewing a relative about the past, heirlooms and things passed down",
+          "priority": 10,
+          "owns_tags": [
+            "family-tree",
+            "ancestor",
+            "heirloom"
+          ],
+          "rule_type": "tracker"
+        },
+        "short_description": "Family Tree mini-app: a personal family history. The tree lives as kinship edges (PARENT_OF, SPOUSE_OF), relatives carry honest dates (\"abt 1893\" stays \"abt 1893\"), family stories are captured as attributed lore with an oral-history interview mode, and heirlooms keep their provenance. Full operating rules are in this entity's lore chunks: Data Model: People & Kinship; Data Model: Milestones, Heirlooms, Places & Sources; Workflow: Build the Tree; Workflow: Capture a Story (Oral History); Workflow: Queries & Rendering the Tree. Read all lore before acting on family-history requests."
+      },
+      "lore": [
+        {
+          "title": "Data Model: People & Kinship",
+          "content": "RELATIVE = person entity. ONE GRANDMA: one node per real person — the tree compounds only if Grandma is one node, not three. Before creating any relative, search for them, checking maiden vs married names, nicknames (Peggy is Margaret), and spelling drift (Schmidt vs Smith). Relatives already tracked in the world (your mother, your uncle) are REUSED and woven in, never duplicated: the tree extends the world's living graph backward.\n\nName: the name the family actually uses, in Title Case. When two tracked people share a name (common across generations), disambiguate with the lifespan in the name: \"John Smith (1832–1901)\", or \"John Smith (b. 1832)\" when the death year is unknown. Disambiguate the new arrival only; never rename an already-tracked person to make room. Slugs derive from names; once set, keep the name stable.\n\nProperties:\n- person_type: \"human\"\n- living: true | false — set on every relative the app touches. When uncertain, ask; a person born more than ~110 years ago may be recorded living: false without asking.\n- birth_date / death_date: exactly as precisely as the family knows, with honest qualifiers: full ISO (\"1893-06-14\"), partial (\"1893-06\", \"1893\"), or qualified (\"abt 1893\", \"bef 1901\", \"aft 1850\", \"between 1890 and 1895\"). NEVER invent precision the family didn't give.\n- birth_year / death_year: numbers, set whenever even an estimate exists (\"abt 1893\" → birth_year: 1893) — sorting and filtering read these, since search property filters can't parse qualified strings.\n- birth_name: the name at birth (maiden names), when it differs from the display name.\n- also_known_as: array of nicknames, married names, and spelling variants — checked during every ONE GRANDMA search.\n- birthplace / deathplace: free text (\"Bavaria\", \"Cleveland, Ohio\"). Real place entities only per the Places rule in the next chunk.\n- occupation: optional free text.\n\nTags (exact spellings; tags are case-sensitive): every relative the app creates or weaves into the tree gets \"family-tree\". Deceased relatives from before the owner's time also get \"ancestor\" — this keeps them out of everyday \"which Kevin?\" disambiguation, like the Book Tracker's author tag keeps novelists out of the contact list. TAG EDITS REPLACE THE WHOLE ARRAY: when tagging an existing person, read their current tags first (get_entities), then write the complete new set, keeping every tag they already had.\n\nRETRIEVAL IS BY TAG. The \"family-tree\" tag finds every relative (search_entities with tags); relatives do NOT link to the anchor — the schema allows RELATED_TO only from projects, groups, events, and items, never persons. interest/family_history is the app's hub: its lore holds tree-wide notes (Open Threads), and the world owner may link owner PRACTICES interest/family_history to mark the pursuit as theirs.\n\nKINSHIP IS EDGES, AND ONLY THESE EDGES:\n- PARENT_OF (parent → child): the spine of the tree. Property shapes, not combined: bare edge = biological; { adoptive: true } = adoptive; { step: true } = step-parent; { biological: false } alone = non-biological, kind unknown.\n- SPOUSE_OF with { status: \"married\" | \"divorced\" | \"widowed\", started, ended }: set status \"married\" when creating an active marriage; started is the marriage date or year and is THE ONE HOME of the wedding date; ended plus status \"divorced\" or \"widowed\" closes it. Remarriage — including to the same person — is a new edge; historical and active edges of the same type coexist.\n- PARTNER_OF for unmarried partners, with { started, ended }: a set ended marks a former partnership.\n- SIBLING_OF ONLY when the shared parents are unknown and untracked. When two siblings have a tracked common parent, siblinghood is DERIVED from their PARENT_OF edges — never stored. (Half-siblings derive correctly this way; a stored SIBLING_OF can't say which side.)\n\nHARD RULE — derived kinship is never an edge. Grandparent, aunt, uncle, cousin, great-anything are computed by walking PARENT_OF/SPOUSE_OF chains, never written as relationship types (the schema rejects invented types anyway). If the user says \"my cousin Sara\", record what is actually known: create the PARENT_OF edges that are known, or, when the linking relatives aren't known yet, park the connection as one line of lore on Sara (\"cousin on Mom's side — exact link not yet mapped\") and add it to Open Threads.",
+          "display_index": 0
+        },
+        {
+          "title": "Data Model: Milestones, Heirlooms, Places & Sources",
+          "content": "VITAL FACTS ARE PROPERTIES; STORIES ARE EVENTS. Birth and death dates live on the person. Create a MILESTONE event only when a moment carries story weight — attendees, a place, lore worth keeping: the wedding whose story survived, the crossing to America, a war deployment, a reunion. Never stub an event per birth per ancestor; hundreds of empty events bury the world's timeline.\n\nMILESTONE = event entity. Name: \"<Moment> (<year or date>)\" — \"Wedding of Anna Koch & Peter Smith (1893)\", \"The Smiths Arrive in Cleveland (1902)\". Properties: event_type: \"family_milestone\"; milestone: \"marriage\" | \"immigration\" | \"military_service\" | \"birth\" | \"death\" | \"reunion\" | \"other\"; date (human-readable, honest qualifiers allowed) plus date_year (required — the timeline reads it) and date_month/date_day when known. Tags: [\"family-tree\"]. Links: each person in the moment ATTENDED it; OCCURRED_AT the place when tracked; REFERENCES its sources. For a marriage milestone, the SPOUSE_OF edge's started stays the one home of the date; the event carries the story.\n\nPLACE: create place entities only for places the family story keeps returning to — the homestead, the origin village, the church. place_type \"destination\" for towns and regions, or the closest honest type. Tag app-created places [\"family-tree\"]; when reusing a place another app already tracks, add the tag to its existing set (read current tags first — tag edits replace the whole array). One place per real place: search for variant spellings first (\"Kraków\" vs \"Cracow\"). Link residencies person LIVES_AT place { started, ended } — a fully past residence has both. Passing mentions stay in the birthplace/deathplace properties.\n\nHEIRLOOM = item entity. Name: the object as the family calls it (\"Grandma's Singer Sewing Machine\"). Properties: item_type: \"heirloom\"; origin (one line: where it entered the family). Tags: [\"family-tree\", \"heirloom\"]. Links: the current keeper OWNS it; when an ancestor made it, link heirloom CREATED_BY that person. (Worlds created before the CREATED_BY type existed reject that edge — get_world_context tells you; there, name the maker in the origin property instead.) Either way, its lore chunk titled exactly \"Provenance\" records the chain of hands, one line per handoff, newest last (read the current chunk before adding a line — lore updates replace the whole chunk).\n\nSOURCE = reference entity, personal-scale: the scanned certificate, the obituary link, the census page image. Name by what it shows (\"Obituary: Peter Smith, Cleveland Plain Dealer 1931\"); source_type \"webpage\" or \"document\"; url when there is one. Tag [\"family-tree\"]. Link the person or event REFERENCES the source, one reference per distinct document, reused on a match. This is the family shoebox, not a citation system: keep the link and one line of what it shows; don't build evidence chains or confidence scores.",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Build the Tree",
+          "content": "Triggered when relatives or lineage are described: \"my grandfather came over from Bavaria in 1902\", \"Mom's mother was Ruth; her people were from Kentucky\".\n\n1. ONE GRANDMA first: search every person mentioned, including birth_name and also_known_as variants. Reuse matches; confirm near-matches instead of assuming.\n2. Reconcile before creating: for a mention rich in people, sort out who's new versus already tracked. If a single message would create more than eight new entities, summarize the plan and wait for a go-ahead.\n3. Create new relatives per the Data Model — living flag, dates with honest qualifiers, tags. Batch with create_entities (up to 100 per call), then create_relationships for the kinship edges; pass skip_existing / skip_duplicates as a safety net and report skips honestly.\n4. Wire kinship exactly: PARENT_OF chains; SPOUSE_OF with started; siblings derived, not stored (unless parents are unknown).\n5. Unknowns are normal and recorded as unknowns. A linking parent known only as \"his mother, a Miller from Ohio\" may be created as a placeholder — \"(Unknown) Miller\" — when the tree needs her to hold together, with one lore line stating what's known and what isn't. Otherwise park the fragment in lore on the nearest relative. NEVER invent a name, a date, or a place to fill a gap.\n6. OPEN THREADS: keep a lore chunk titled exactly \"Open Threads\" on interest/family_history — one line per loose end (\"Anna's parents — unknown; Ruth says the records burned\", \"cousin Sara — exact link not yet mapped\"). Add threads as they appear; strike them when resolved. LORE UPDATES REPLACE, THEY DON'T APPEND: update_entity_lore overwrites the chunk's whole content, so read the current text first (get_entity_lore) and write the complete revised list — sending only the new thread wipes the rest. When the user asks what's missing, read from here. Offer a thread occasionally when context invites it; never nag.\n7. Confirm back with the shape, not a form: \"Added Peter (your great-grandfather, 1868–1931) and Anna (1871–1940), married 1893 — parents of your grandpa John.\"",
+          "display_index": 2
+        },
+        {
+          "title": "Workflow: Capture a Story (Oral History)",
+          "content": "The stories are the point; the tree is the shelf they sit on. Triggered when the user shares or relays a family story (\"Grandma used to tell us how...\"), or wants help interviewing a relative.\n\n1. Lore goes on the most specific entity: a story about Grandma → her lore; a moment with its own attendees or place → promote it to a milestone event and put the lore there; the sewing machine's story → the heirloom.\n2. One story per chunk, titled \"Story: <short name>\" (\"Story: The Ellis Island Name Change\").\n3. FIDELITY: record only what was said, in warm natural prose; never fill gaps with plausible detail. Family legends are recorded AS legends (\"the story goes that...\"), doubts kept visible. A legend retold as fact corrupts the record; a legend recorded as a legend IS a fact.\n4. ATTRIBUTION: end every story chunk with \"— as told by <name>, <month year>\". Who tells a story matters as much as the story. A second telling that differs gets its own chunk, not an overwrite — both versions are worth keeping, attributed.\n5. INTERVIEW MODE: when a relative is present (a shared world, or the user relaying live), ask one open question at a time and follow the thread, never a form. Good openers: how their parents met, what the house was like, what Sundays were, who they were named after, what their mother's kitchen smelled like. Capture as you go; close by reading back what was kept and asking what was missed.\n6. Facts inside stories feed the tree: a story that surfaces a date, a maiden name, or a sibling flows into the Data Model with its honest qualifier (\"abt\" if remembered loosely). The story stays lore; the facts get structure. New loose ends go to Open Threads.",
+          "display_index": 3
+        },
+        {
+          "title": "Workflow: Queries & Rendering the Tree",
+          "content": "- \"How am I related to X?\" Walk PARENT_OF/SPOUSE_OF edges between Me and X with query_relationships (mode: neighbors, generation by generation), then say the kinship in plain words: \"she's your great-grandmother's sister — your great-great-aunt.\" Never answer from memory of the tree; walk the edges.\n- \"Who were my great-grandparents?\" Walk PARENT_OF upward from Me two generations; report by branch, flagging unknowns explicitly (\"on your dad's side, only Peter is mapped so far\").\n- \"Show me the tree.\" Render as a compact indented outline, one branch at a time (whole trees overwhelm; default to the branch asked about). Lifespans in parentheses, marriages on one line, unknowns marked: \"Peter Smith (1868–1931) m. Anna Koch (1871–1940), 1893\" / \"  └ John Smith (1893–1967)\". Offer other branches rather than dumping everything.\n- \"Where does the family come from?\" birthplace properties, LIVES_AT edges, and immigration milestones, grouped by branch.\n- \"What do we know about X?\" get_entities with lore.include_content: true — dates, edges, stories, sources, in one call. Lead with the stories.\n- \"When did Grandma and Grandpa marry?\" The SPOUSE_OF edge's started; the milestone event, if one exists, for the story.\n- \"Whose birthday is coming up?\" Search persons tagged \"family-tree\" with filter living = true (search hits don't include properties), then get_entities on the hits and read birth_date, matching the window. (Birthdays are properties, not timeline events.)\n- \"What happened in 1902?\" get_timeline bounded to the year for milestones, plus a birth_year/death_year sweep of relatives for vitals that never earned an event.\n- \"Find the story about the name change.\" search_lore — stories are semantically searchable prose.\n- \"What are we missing?\" Read \"Open Threads\" on interest/family_history.\nPresentation: conversational and warm; the indented tree or a table only when it genuinely helps (4+ people). Always distinguish \"unknown\" from \"not yet asked\".",
+          "display_index": 4
+        }
+      ]
+    },
+    {
+      "entity_type": "interest",
+      "name": "Family History",
+      "slug": "interest/family_history",
+      "data": {
+        "tags": [
+          "family-tree"
+        ],
+        "properties": {
+          "interest_type": "heritage"
+        },
+        "short_description": "Hub for the Family Tree app. Relatives are found by the family-tree tag (the schema doesn't allow person RELATED_TO interest); this entity holds tree-wide lore, including the Open Threads list of unknowns."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_type": "APPLIES_TO",
+      "source_id": "rule/app_family_tree",
+      "target_id": "interest/family_history",
+      "properties": {
+        "note": "App hub managed by the Family Tree app"
+      }
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}
