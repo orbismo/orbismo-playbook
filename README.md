@@ -32,6 +32,7 @@ New to Orbismo? The [help site](https://help.orbismo.com/) covers the underlying
 | --- | --- |
 | [Book Tracker](mini-apps/book-tracker/) | A personal reading diary: shelves, progress, per-read ratings, authors, recommendations. |
 | [Family Tree](mini-apps/family-tree/) | A personal family history: kinship edges, honest dates, attributed stories, heirlooms with provenance. |
+| [How-To Library](mini-apps/how-to-library/) | A library of how you do things: guides captured once, walked through step by step, improved with every run. |
 | [Movie Tracker](mini-apps/movie-tracker/) | A personal movie diary: watchlist, per-watch ratings, co-watchers, favorites, stats. |
 | [Recipe Box](mini-apps/recipe-box/) | Recipes with consistent ingredients, real provenance, and meals as social moments that carry the tweaks. |
 | [Second Brain](mini-apps/second-brain/) | A personal notebook with verbatim recall: notes saved exactly as written, daily notes, backlinks. |

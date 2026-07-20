@@ -12,6 +12,7 @@ The apps here are portable: they assume only Orbismo's common entity types and a
 | --- | --- |
 | [Book Tracker](book-tracker/) | A personal reading diary: shelves (to-read, reading, read, DNF), progress, per-read ratings, series, authors as first-class entities, recommendations. |
 | [Family Tree](family-tree/) | A personal family history: the tree as real kinship edges, honest dates ("abt 1893"), attributed family stories with an oral-history interview mode, and heirlooms with provenance. |
+| [How-To Library](how-to-library/) | A library of procedures as guides: structured write-ups that never invent a step, walked through one step at a time, revised when reality diverges, each carrying its own dated change log. |
 | [Movie Tracker](movie-tracker/) | A personal movie diary: watchlist, per-watch ratings and reviews, co-watcher history, favorites, year-in-review stats. |
 | [Recipe Box](recipe-box/) | Recipes with consistent ingredients and real provenance (cookbook, website, or the relative who created them), and meals as the social events that carry the tweaks. |
 | [Second Brain](second-brain/) | A personal notebook with verbatim recall: notes stored exactly as written (never paraphrased), a daily note as the capture inbox, backlinks to the people and projects notes mention, and exact-then-semantic recall. |

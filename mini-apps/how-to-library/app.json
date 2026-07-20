@@ -1,0 +1,82 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "App: How-To Library",
+      "slug": "rule/app_how_to_library",
+      "data": {
+        "tags": [
+          "app",
+          "how-to"
+        ],
+        "properties": {
+          "scope": "reference, interest (created); person, project, event, place, item (linked from)",
+          "trust": "imported",
+          "source": "orbismo-playbook/how-to-library@1.0",
+          "status": "active",
+          "trigger": "procedures and know-how: how do I / how do we do something, walk me through a task, document or save a procedure's steps, make a how-to or runbook, update a guide after doing it differently, review or tidy the how-to library",
+          "priority": 10,
+          "owns_tags": [
+            "how-to"
+          ],
+          "rule_type": "tracker"
+        },
+        "short_description": "How-To Library mini-app: a library of procedures as guides. Each guide is a structured write-up of how the user does a task (steps organized by the assistant, but no step, tool, or value ever invented), walked through one step at a time on request, revised when reality diverges, and carrying its own dated change log. Full operating rules are in this entity's lore chunks: Data Model: Guides; Data Model: The Guide Index & Links; Workflow: Capture a Guide; Workflow: Run a Guide; Workflow: Revise & Review. Read all lore before acting on how-to requests."
+      },
+      "lore": [
+        {
+          "title": "Data Model: Guides",
+          "content": "GUIDE = reference entity, one per procedure. Name: short, stable, and task-named — \"Winterize the House\", \"Onboard a New Volunteer\", \"Restore the Database from Backup\" — not \"How to …\" prefixed (the library makes that redundant). Slugs derive from names; once set, keep the name stable.\n\nSTRUCTURED, NOT VERBATIM: a guide is the assistant's organized write-up of the user's procedure. Reordering, numbering, and formatting are the job — but NEVER invent a step, tool, quantity, or setting the user didn't give. Anything unknown stays visibly marked in place (\"(confirm which breaker)\") until the user fills it in. When the procedure comes from somewhere (a wiki page, a manual, a relative's walkthrough), say so in the source property; the write-up may condense a source but must not contradict it.\n\nLore layout — three fixed chunk titles, in this display_index order:\n- \"Overview\": what the task accomplishes, when it applies, prerequisites (tools, access, ingredients), and rough duration. A few lines, not an essay.\n- \"Steps\": the procedure as one numbered list. Sub-steps nest under their step; decision points branch inline (\"If the tank is empty … otherwise …\"); warnings sit at the step where they bite (\"Watch out: the valve is mislabeled\"), never collected in a separate section the runner won't read in time. Content over the 10,000-character chunk limit splits at step boundaries into \"Steps (1/2)\", \"Steps (2/2)\" with sequential display_index.\n- \"Log\": the guide's dated history, newest first, one line or short paragraph per entry: \"2026-07-20 — captured from a kitchen walkthrough\", \"2026-08-02 — step 4 revised: shutoff moved to the crawlspace (was: north wall)\". Every revision gets a line naming what changed and what it was before.\n\nLORE UPDATES REPLACE THE WHOLE CHUNK: before revising Steps or prepending to Log, read the current chunk (get_entity_lore) and write the complete new text.\n\nProperties:\n- source_type: \"how-to\"\n- documented: ISO date of first capture (\"2026-07-20\")\n- source: one line on where the procedure came from when it wasn't authored in this conversation (\"team wiki\", \"learned from Dad\", \"manufacturer's manual\")\n- status: omit normally; \"superseded\" when a newer guide replaces it (successor named in a final Log line); \"retired\" when the task itself no longer exists\n\nTags (exact spellings; tags are case-sensitive): every guide gets \"how-to\". TAG EDITS REPLACE THE WHOLE ARRAY: read current tags first (get_entities), then write the complete new set.\n\nRETRIEVAL IS BY TAG: \"how-to\" finds every guide (search_entities with tags). interest/how_to_library is the app's hub: its lore holds the Guide Index; guides do not link to the hub.",
+          "display_index": 0
+        },
+        {
+          "title": "Data Model: The Guide Index & Links",
+          "content": "GUIDE INDEX = lore chunk titled exactly \"Guide Index\" on interest/how_to_library: the library's catalog, one line per guide — name, slug, one-line purpose — grouped under plain headings the user's library suggests (\"Home\", \"Kitchen\", \"Ops\"):\n\n  ## Home\n  - Winterize the House — reference/winterize_the_house — shut down outdoor water before first frost\n\nThe index is the map of the library: read it at the start of any request that might match an existing guide, and update it in the same breath as creating, renaming, superseding, or retiring one (read the current chunk first — LORE UPDATES REPLACE THE WHOLE CHUNK). A guide missing from the index is invisible; an index line with no guide is a lie. Keep both from happening.\n\nLINKS: attach a guide to the tracked entities it involves — person/project/event/place/item REFERENCES guide, the same edge other apps use to attach documents. \"What how-tos involve the cabin?\" is then query_relationships on the place. Link the entities a runner actually needs (the place it happens, the project it serves, the person who taught it), not every noun in the steps — two or three edges beat ten.\n\nCross-references between guides (\"see also\", a guide whose last step launches another) use REFERENCES guide → guide; if the world rejects a reference-sourced edge (get_world_context lists what's allowed), record a \"See also: reference/<slug>\" line in the guide's Overview instead.",
+          "display_index": 1
+        },
+        {
+          "title": "Workflow: Capture a Guide",
+          "content": "Triggered by document intent: \"save this as a how-to\", \"document how we do this\", \"write down these steps\", a narrated walkthrough (\"first I shut the main valve, then…\"), or the moment after the assistant just walked the user through something undocumented.\n\n1. Search before creating: read the Guide Index and search_entities by the how-to tag and likely title words. A near-match → offer to revise or extend the existing guide (see Revise & Review); never create a second guide for the same task under a near-identical name.\n2. Gather the procedure: from the user's narration, from a pasted document (attributed in source), or by interviewing — \"what's step one?\", \"anything to have ready before starting?\", \"where does this usually go wrong?\". Take what's given; don't pad. A three-step task is a three-step guide.\n3. Write per the Data Model: Overview, Steps, and an initial Log line (\"captured from …\"). Unknowns marked in place, never invented.\n4. Read the Steps back for confirmation — the user checks the write-up before it becomes the way the task is done. Apply corrections, then save.\n5. Tag \"how-to\", set documented and source, link the entities involved, and add the guide's line to the Guide Index — all in the same pass.\n6. CONFIRM WHAT WAS WRITTEN: name, step count, links, index line (\"Saved 'Winterize the House' — 9 steps, linked from place/home, indexed under Home.\").\n7. NO AMBIENT CAPTURE: the app documents when asked or when intent is unmistakable. When a conversation walks through something clearly worth keeping, offer — don't quietly file it.",
+          "display_index": 2
+        },
+        {
+          "title": "Workflow: Run a Guide",
+          "content": "Triggered by do intent: \"how do I X\", \"how do we X\", \"walk me through X\", \"let's do X\".\n\n1. Find the guide: Guide Index first, then search_entities by the how-to tag and title words, then search_lore in natural language for half-remembered content. If nothing covers it, say so plainly — then either answer from general knowledge, CLEARLY marked as not from the library, or offer to capture a guide as the user works through it. Never present an improvised procedure as a stored one.\n2. Read ALL the guide's lore before starting (get_entity_lore) and run from the stored text — never from conversational memory of it.\n3. Walk one step at a time: give the current step, wait for done, then the next. Deliver each warning at its step. If the user asks for the whole thing instead, present the full Steps content and stand by.\n4. Note deviations as they happen (\"the valve was already closed\", \"we skipped step 6\") — but don't edit mid-run. When the run ends, offer to fold the differences back into the guide (see Revise & Review).\n5. Log notable runs only: a run that surfaced a deviation, failure, or revision gets a dated Log line; a routine, uneventful walkthrough does not. The Log is the guide's history, not an attendance sheet.",
+          "display_index": 3
+        },
+        {
+          "title": "Workflow: Revise & Review",
+          "content": "REVISE — when reality diverges from the doc, or the user says a step changed:\n1. Propose the exact edit (\"step 4 becomes: …\") and wait for a yes.\n2. Read the current Steps chunk, write the complete revision, and add a Log line naming what changed and what it was before (\"step 4 revised: shutoff moved to the crawlspace (was: north wall)\"). The old way survives in the Log — nothing is silently erased.\n3. Keep the Overview and index line true to the revised guide.\n\nSUPERSEDE & RETIRE: when a new guide replaces an old one, set the old guide's status to \"superseded\", add a final Log line naming the successor, and update the index — the text stays; old procedure is history, not garbage. When the task itself no longer exists, status \"retired\", same treatment.\n\nREVIEW — triggered by \"review my how-tos\", \"tidy the library\", or when library confusion is genuinely blocking a task. Surface, don't act — every change waits for a yes:\n1. Stale guides: a long-quiet Log on a task whose tools or context have likely changed — ask whether it's still accurate; never mark stale on a guess.\n2. Index drift: index lines pointing at no guide (offer to strike), guides missing from the index (offer to add).\n3. Overlapping guides: two guides for one task — offer a merge. A merge keeps history: the surviving guide's Steps are revised with the user confirming each difference, the retired guide's Log entries are copied over under \"Log (merged from <name>)\", its edges move to the survivor, and only then is the empty shell deleted.\n4. Unlinked or thinly-described guides: missing Overview fields, no entity links — propose fixes.\n\nCadence: run a review when asked; mention it unprompted only when drift is actually in the way. Never nag. Afterwards report what was checked and what changed, honestly, including \"nothing needed\".",
+          "display_index": 4
+        }
+      ]
+    },
+    {
+      "entity_type": "interest",
+      "name": "How-To Library",
+      "slug": "interest/how_to_library",
+      "data": {
+        "tags": [
+          "how-to"
+        ],
+        "properties": {
+          "interest_type": "practice"
+        },
+        "short_description": "Hub for the How-To Library app. Guides are found by the how-to tag; this entity holds library-wide lore, including the Guide Index — the one-line-per-guide catalog of the library."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "relationship_type": "APPLIES_TO",
+      "source_id": "rule/app_how_to_library",
+      "target_id": "interest/how_to_library",
+      "properties": {
+        "note": "App hub managed by the How-To Library app"
+      }
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}
