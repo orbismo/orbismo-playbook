@@ -1,0 +1,35 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Genre Pack: Sci-Fi",
+      "slug": "reference/genre_pack_sci_fi",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "genre-pack",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/sci-fi@1.0"
+        },
+        "short_description": "Sci-Fi genre pack for the Novel Studio app: technology and anomaly thread types, plus review lenses that hold the story to its own physics. A novel adopts the pack in its Blueprint; its threads may then use these types, and reviews run these lenses. Pairs with canon rules for the world's constraints."
+      },
+      "lore": [
+        {
+          "title": "Thread Types",
+          "content": "Additional thread_type values for novels that adopt this pack. Exact spellings; each entry says what the type is and what its payoff owes the reader.\n\ntechnology — a technology introduced with stated constraints: the drive and its limits, the implant and its price, the AI and its leash. Its payoff is consequences on the page — the constraint bites at the worst moment, or the capability visibly changes something. Record the constraints in the Thread lore (or as canon rules when they're laws of the whole world); tech that exists only as set dressing is a finding waiting to happen.\n\nanomaly — the mystery-of-the-world: the signal that shouldn't exist, the artifact in orbit, the physics that misbehaves. Its payoff is an explanation on the page — or a deliberate, noted choice to leave it open, with the reader knowing exactly what remains unknown. An anomaly is sci-fi's mystery thread: it owes an answer or an honest silence, never a shrug.",
+          "display_index": 0
+        },
+        {
+          "title": "Review Lenses",
+          "content": "Checks the Review workflow runs for novels that adopt this pack. Report per lens, citing scenes and threads by slug; findings are surfaced, never auto-fixed.\n\nANCHORS: the world's constraints — FTL limits, comm lag, what the AI may not do — live as canon rules (see the core's Data Model: Canon Rules) and are read from the novel's Canon Rules index section. When a lens needs canon rules and none are recorded, report \"no canon rules recorded\" once and run the remaining lenses.\n\nTech Consistency — check every scene that uses an established technology against its canon rules and its technology thread's stated constraints: travel that outruns the stated speed, comms that reach past the stated range, the AI doing what its leash forbids. Cite the rule and the scene.\n\nChekhov's Tech — walk the technology threads: any capability established but never used — especially one that would trivially solve a later crisis the characters sweat through instead. Unfired tech at the finale is a finding; a crisis the established tech obviously answers, unmentioned, is a bigger one (the fix is usually one line disabling it on the page).\n\nExtrapolation Integrity — for each canon-rule technology: do scenes show its second-order effects where they would plausibly appear (labor, war, privacy, daily life)? A world visibly unchanged by its own inventions is a finding — unless the Blueprint notes the deliberate narrow focus, which is a legitimate choice.\n\nTimeline Check — story_time across scenes must survive the tech: relativistic travel, cryosleep, and comm lag reorder who-knows-what-when. Walk sequence order against story_time and the travel/comm constraints; a message that arrives before it could, or a character aging against the clock their journey implies, is a finding.",
+          "display_index": 1
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

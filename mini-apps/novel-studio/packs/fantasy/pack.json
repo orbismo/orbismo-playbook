@@ -1,0 +1,35 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Genre Pack: Fantasy",
+      "slug": "reference/genre_pack_fantasy",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "genre-pack",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/fantasy@1.0"
+        },
+        "short_description": "Fantasy genre pack for the Novel Studio app: prophecy, oath, artifact, and heritage thread types, plus review lenses that hold the story to its own magic. A novel adopts the pack in its Blueprint; its threads may then use these types, and reviews run these lenses. Pairs with canon rules for the world's laws."
+      },
+      "lore": [
+        {
+          "title": "Thread Types",
+          "content": "Additional thread_type values for novels that adopt this pack. Exact spellings; each entry says what the type is and what its payoff owes the reader.\n\nprophecy — a foretelling the reader will hold you to: the seer's words, the omen, the dream that names an ending. Its payoff is an answer on the page — fulfilled, or visibly subverted so the reader sees how the words were true sideways. Record the exact wording in the Thread lore; the payoff will be judged against it, and a prophecy that simply evaporates is the genre's most-remembered dropped thread.\n\noath — a sworn promise, debt, or geas between characters. Its payoff is the keeping or the breaking, shown on the page with its cost. An oath is a scheduled future scene wearing a solemn hat — treat it like one.\n\nartifact — an object given narrative weight: named, storied, coveted, or cursed. Its payoff is mattering — used, lost, refused, or destroyed at a moment that counts. The sword on the wall in act 1 is this pack's Chekhov's gun.\n\nheritage — a hidden lineage, birthright, or inheritance. Its payoff is the revelation on the page — or a deliberate, noted choice to keep it buried, with the reader knowing what stayed hidden.",
+          "display_index": 0
+        },
+        {
+          "title": "Review Lenses",
+          "content": "Checks the Review workflow runs for novels that adopt this pack. Report per lens, citing scenes and threads by slug; findings are surfaced, never auto-fixed.\n\nANCHORS: the world's laws — what magic costs, what wards hold, what harms what — live as canon rules (see the core's Data Model: Canon Rules) and are read from the novel's Canon Rules index section. When a lens needs canon rules and none are recorded, report \"no canon rules recorded\" once and run the remaining lenses.\n\nMagic Cost Check — for every scene whose Scene chunk or WHAT CHANGES involves magic: is the stated cost (per the canon rules) paid on the page? Power without its price is a finding — and the most common way fantasy quietly breaks its own spine.\n\nProphecy Ledger — for each prophecy thread: quote its recorded wording against its resolution scene. Fulfilled, subverted, or dangling — dangling at the finale is a finding, and a resolution that ignores the actual wording is a bigger one.\n\nPower Creep — walk the protagonist's abilities in sequence order: does any scene solve its problem with a power no earlier scene or canon rule established? A late-arriving power is a finding; establishing it two scenes earlier is usually the fix.\n\nTravel Time — check story_time between scenes against journey lengths established by canon rules or earlier scenes: the map must not shrink when the plot is in a hurry. Cite both scenes when the same road takes a week outbound and a day back.",
+          "display_index": 1
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}
