@@ -1,0 +1,30 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Beat Sheet: Fichtean Curve",
+      "slug": "reference/beat_sheet_fichtean_curve",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "beat-sheet",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/fichtean-curve@1.0"
+        },
+        "short_description": "Fichtean Curve beat sheet for the Novel Studio app: crisis-stacked rising action as an adoptable template — open in trouble, climb through repeated crises, one climax. The beats live in this entity's lore; a novel adopts the sheet in its Blueprint, and its scenes' beat property uses these beat names exactly."
+      },
+      "lore": [
+        {
+          "title": "Beats",
+          "content": "The beats of the Fichtean Curve, in story order. Unlike other sheets, one beat here — Rising Crisis — is REPEATABLE BY DESIGN: it is used by as many scenes as the story needs, and multiple scenes on it is the structure working, not a duplicate to flag. The structure lens's \"which beats have no scene yet?\" applies to the other four. Positions are rough targets. Scenes' beat property must use these names exactly as spelled.\n\nTHE SHAPE: skip the long runway. There is no dedicated setup act — exposition is woven into the crises themselves, revealed while things are already going wrong. Rising action is a staircase of crises, each with its own build and blow, each landing the protagonist somewhere worse (or deeper in). A natural fit for thrillers, horror, and any story that opens mid-fall.\n\nInciting Crisis (0–10%) — the story opens in trouble: the first crisis is already breaking in the opening pages, and the reader learns who these people are by watching them handle it. Whatever setup survives is smuggled in through the action.\n\nRising Crisis (10–70%, repeatable) — the staircase: a self-contained crisis with its own tension and turn, ending with the situation escalated — stakes higher, options fewer, the protagonist more committed. A novel on this curve should have several; fewer than two and the curve is a single hill, which the review should note. Each Rising Crisis scene's WHAT CHANGES must say how this crisis left things worse or deeper than the last.\n\nClimax (~70–85%) — the crest: the crises converge into the one that cannot be survived by the old methods. The highest sustained tension in the book, and the point every earlier escalation was buying.\n\nFalling Action (85–95%) — brief, by design: immediate consequences of the climax play out — who is left standing, what the win or loss cost. On this curve the descent is steep; linger and the tension leaks.\n\nResolution (95–100%) — the new equilibrium, sketched fast: where the survivors land and what is different now. Short — the curve's promise is that the book ends soon after the peak.",
+          "display_index": 0
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

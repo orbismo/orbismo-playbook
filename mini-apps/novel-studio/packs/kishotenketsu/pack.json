@@ -1,0 +1,30 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Beat Sheet: Kishotenketsu",
+      "slug": "reference/beat_sheet_kishotenketsu",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "beat-sheet",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/kishotenketsu@1.0"
+        },
+        "short_description": "Kishōtenketsu beat sheet for the Novel Studio app: the four-act East Asian structure that turns on a twist rather than a conflict, as an adoptable template. The acts live in this entity's lore; a novel adopts the sheet in its Blueprint, and its scenes' beat property uses these act names exactly."
+      },
+      "lore": [
+        {
+          "title": "Beats",
+          "content": "The four acts of kishōtenketsu (起承転結), the East Asian structure built on a twist rather than a conflict, in story order. Acts are rough quarters — the third often runs short and the fourth shorter. Scenes' beat property must use these ASCII names exactly as spelled (Ki, Sho, Ten, Ketsu — the macron spellings shō/ten/ketsu appear only in prose).\n\nTHE SHAPE IS NOT CONFLICT-DRIVEN: no antagonist is required and nothing needs to be at war. The engine is recontextualization — the Ten changes what the first two acts meant, and the Ketsu lets the pieces settle into a new whole. When reviewing a novel on this sheet, do not flag \"no rising conflict\" as a structural gap; ask instead whether the Ten genuinely reframes what came before.\n\nKi (act 1, introduction) — establish: the characters, the place, the texture of ordinary life. This act earns the reader's attention through interest and specificity, not threat; what is planted here is what the Ten will turn.\n\nSho (act 2, development) — deepen: expand on the Ki's elements without introducing a major turn. Daily life continues, relationships thicken, details accumulate — seemingly simple, and quietly loading everything the twist will need.\n\nTen (act 3, twist) — turn: an unexpected element — a new perspective, an interruption, a revelation — recasts acts 1 and 2. It need not be a conflict or a betrayal; a stranger's arrival or a change of vantage will serve, so long as the story's earlier material now reads differently.\n\nKetsu (act 4, conclusion) — settle: bring the original elements and the twist together into a new stable meaning. The ending's job is harmony or resonance, not victory — the reader should feel the whole reorganize, not a foe defeated.",
+          "display_index": 0
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

@@ -1,6 +1,6 @@
 # Novel Studio
 
-A story-development studio for writing novels — as many of them as one world can hold. Each novel is a project; its characters (with want/need/lie/ghost arcs), scenes (with cause and effect), plot threads (a promise/payoff ledger, so nothing planted is ever silently dropped), and loose ideas all hang off it. Writing techniques plug in as **packs**: adoptable beat sheets (Save the Cat, Hero's Journey) and genre packs (Mystery, Romance, Fantasy, Sci-Fi) that are pure data — the studio reads them; they never add rules of their own. Worlds with laws — magic systems, tech constraints — record them as **canon rules** the continuity lint enforces.
+A story-development studio for writing novels — as many of them as one world can hold. Each novel is a project; its characters (with want/need/lie/ghost arcs), scenes (with cause and effect), plot threads (a promise/payoff ledger, so nothing planted is ever silently dropped), and loose ideas all hang off it. Writing techniques plug in as **packs**: adoptable beat sheets (Save the Cat, Hero's Journey, Story Circle, Kishōtenketsu, and more) and genre packs (Mystery, Romance, Fantasy, Sci-Fi) that are pure data — the studio reads them; they never add rules of their own. Worlds with laws — magic systems, tech constraints — record them as **canon rules** the continuity lint enforces.
 
 The studio tracks the story, not the manuscript: scenes are summaries and story facts, and your prose stays in whatever you write with. What you get in return is a story bible that answers questions — "what's still unresolved going into act 3?", "which beats have no scene yet?", "did I ever explain the locket?" — instead of making you re-read your own book.
 
@@ -21,6 +21,11 @@ A pack is a small seed file that installs a `reference` entity carrying a techni
 | --- | --- | --- |
 | [Save the Cat](packs/save-the-cat/) | Beat sheet | Blake Snyder's 15 beats, from Opening Image to Final Image. |
 | [Hero's Journey](packs/heros-journey/) | Beat sheet | The 12-stage cycle, from Ordinary World to Return with the Elixir. |
+| [Seven-Point Structure](packs/seven-point/) | Beat sheet | Dan Wells's seven points, plotted backwards from the Resolution: Hook, plot turns, pinch points, Midpoint. |
+| [Story Circle](packs/story-circle/) | Beat sheet | Dan Harmon's 8-step circle: You, Need, Go, Search, Find, Take, Return, Change. |
+| [Kishōtenketsu](packs/kishotenketsu/) | Beat sheet | The four-act structure that turns on a twist, not a conflict: ki, shō, ten, ketsu. |
+| [Romancing the Beat](packs/romancing-the-beat/) | Beat sheet | The four-phase romance arc, after Gwen Hayes: Meet Cute through Grand Gesture to the HEA. |
+| [Fichtean Curve](packs/fichtean-curve/) | Beat sheet | Crisis-stacked rising action: open in trouble, climb through repeated crises, one climax, land fast. |
 | [Mystery](packs/mystery/) | Genre | Clue, red-herring, alibi, and secret threads; fair-play and reveal-integrity review lenses. |
 | [Romance](packs/romance/) | Genre | Spark, wound, and rift threads; dual-POV balance and earned-ending review lenses. |
 | [Fantasy](packs/fantasy/) | Genre | Prophecy, oath, artifact, and heritage threads; magic-cost, power-creep, and travel-time lenses backed by canon rules. |

@@ -1,0 +1,30 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Beat Sheet: Story Circle",
+      "slug": "reference/beat_sheet_story_circle",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "beat-sheet",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/story-circle@1.0"
+        },
+        "short_description": "Story Circle beat sheet for the Novel Studio app: Dan Harmon's 8-step circle as an adoptable template. The steps live in this entity's lore; a novel adopts the sheet in its Blueprint, and its scenes' beat property uses these step names exactly."
+      },
+      "lore": [
+        {
+          "title": "Beats",
+          "content": "The 8 steps of Dan Harmon's Story Circle (the monomyth compressed to a wheel), in story order. Each step is roughly an eighth of the story — the circle bends freely. Steps 1–4 descend from the ordered, familiar world into chaos; steps 5–8 climb back out, changed. Scenes' beat property must use these names exactly as spelled.\n\nYou (step 1) — a character in their zone of comfort: who they are when nothing is asking anything of them. The familiar world the circle will leave and return to.\n\nNeed (step 2) — but they want something. A lack, hunger, or disturbance makes staying put impossible; the want may be shallow now — the story will reveal what's under it.\n\nGo (step 3) — so they enter an unfamiliar situation. The threshold is crossed: a new world, a new role, a new game with rules they don't yet know.\n\nSearch (step 4) — to which they have to adapt. Trial, error, and cost: the character flails, learns the new rules, and pays for each lesson. The deepest point of the descent.\n\nFind (step 5) — until they get what they wanted. The goal is reached, the prize is in hand — and it is rarely shaped the way they imagined it.\n\nTake (step 6) — but they pay a heavy price for it. The prize's true cost lands: a loss, a sacrifice, a revelation that the want and the need were never the same thing.\n\nReturn (step 7) — and go back to where they started. The road home, carrying what was found and what it cost; the familiar world seen with new eyes.\n\nChange (step 8) — now capable of change. The circle closes where it opened, but the character is not who they were in step 1 — the story's proof, on the page, of what the journey did.",
+          "display_index": 0
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

@@ -1,0 +1,30 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Beat Sheet: Romancing the Beat",
+      "slug": "reference/beat_sheet_romancing_the_beat",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "beat-sheet",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/romancing-the-beat@1.0"
+        },
+        "short_description": "Romance beat sheet for the Novel Studio app: the four-phase romance arc in the tradition of Gwen Hayes's Romancing the Beat, condensed to sixteen beats as an adoptable template. The beats live in this entity's lore; a novel adopts the sheet in its Blueprint, and its scenes' beat property uses these beat names exactly."
+      },
+      "lore": [
+        {
+          "title": "Beats",
+          "content": "Sixteen beats of the four-phase romance arc, in the tradition of Gwen Hayes's Romancing the Beat (condensed and adapted), in story order. Phases are rough quarters; positions are targets, not laws. This sheet structures the ROMANCE — the external plot (the bakery, the heist, the regency season) runs alongside it and may follow another sheet's logic. In a dual-POV novel both leads walk these beats, not always in step. Scenes' beat property must use these names exactly as spelled.\n\nPHASE 1 — SETUP (0–25%)\n\nIntroduce Lead 1 — the first lead in their ordinary world, with the wound that taught them the lie they believe about love.\n\nIntroduce Lead 2 — the second lead likewise: their world, their wound, their lie. The two lies should grind against each other by design.\n\nMeet Cute — the leads collide. Sparks — of attraction, irritation, or both — and the reader sees what neither lead will admit.\n\nNo Way — both leads resist: reasons, defenses, the lie doing its job. \"Not them, not now, not ever.\"\n\nAdhesion — the circumstance that forces proximity: the shared case, the fake engagement, the one room left at the inn. The reason neither can simply walk away.\n\nPHASE 2 — FALLING IN LOVE (25–50%)\n\nMaybe This Could Work — resistance softens into reluctant reappraisal; the other lead is not who the lie said they were.\n\nDeepening — the fun of falling: banter, shared competence, small confidences. The promise of the premise, delivered.\n\nMidpoint of Love — a moment of real connection — a kiss, a confession, a night — that neither can dismiss. The relationship crosses a line it cannot uncross.\n\nShields Up — intimacy triggers the wound; one or both leads pull back behind their defenses even as the bond keeps growing.\n\nPHASE 3 — RETREATING FROM LOVE (50–75%)\n\nDoubt Creeps In — the lie reasserts itself: evidence gets misread, old fears get new fuel, retreat gathers momentum.\n\nBreak Up — the dark moment: the relationship ruptures — a betrayal real or perceived, the lie spoken aloud as if it were truth.\n\nDark Night — each lead alone with the loss, grieving the relationship and finally facing the wound underneath the lie.\n\nPHASE 4 — FIGHTING FOR LOVE (75–100%)\n\nEpiphany — one lead (then the other) sees the lie AS a lie and chooses love over safety, knowing what it may cost.\n\nGrand Gesture — the proof: a public risk, a sacrifice, a changed behavior that words alone could not deliver.\n\nWhole-Hearted — the leads meet without shields: truths exchanged, wounds acknowledged, the new relationship chosen on honest terms.\n\nHappily Ever After (99–100%) — the landing: happily-ever-after or happily-for-now, shown on the page — the genre's non-negotiable promise, kept.",
+          "display_index": 0
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

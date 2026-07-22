@@ -1,0 +1,30 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Beat Sheet: Seven-Point Structure",
+      "slug": "reference/beat_sheet_seven_point_structure",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "beat-sheet",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/seven-point@1.0"
+        },
+        "short_description": "Seven-Point Structure beat sheet for the Novel Studio app: Dan Wells's seven points as an adoptable template, designed to be plotted backwards from the Resolution. The points live in this entity's lore; a novel adopts the sheet in its Blueprint, and its scenes' beat property uses these point names exactly."
+      },
+      "lore": [
+        {
+          "title": "Beats",
+          "content": "The seven points of Dan Wells's Seven-Point Structure, in story order. Positions are rough percentages — targets, not laws. Scenes' beat property must use these names exactly as spelled.\n\nTHE METHOD IS BACKWARDS: plot the Resolution first, then write the Hook as its opposite; the five points between are the road from one to the other. When helping outline with this sheet, ask for the ending before anything else.\n\nHook (0–10%) — the protagonist's starting state, deliberately the opposite of where the Resolution leaves them: the coward who will stand, the loner who will belong. Establish it vividly enough that the ending can be measured against it.\n\nPlot Turn 1 (~25%) — the event that connects the protagonist to the story's main conflict and ends the setup. The world changes, the call arrives, the body is found; after this there is no returning to the Hook's status quo.\n\nPinch Point 1 (~37%) — pressure applied: the antagonistic force shows its strength for the first time, usually forcing the protagonist into action and often stripping away a layer of safety (the mentor falls, the home burns).\n\nMidpoint (~50%) — the pivot from reaction to action. The protagonist stops running from the conflict and moves toward it: they learn what is truly at stake and choose to engage. Everything before is response; everything after is intent.\n\nPinch Point 2 (~62%) — the second, harder squeeze: the plan collapses, allies are lost, the antagonist seems to hold every card. The pressure here is what makes the Resolution feel earned rather than given.\n\nPlot Turn 2 (~75–90%) — the protagonist obtains the final piece: the truth, the tool, the self-knowledge that makes the Resolution possible. The classic form is the discovery that the power was theirs all along.\n\nResolution (90–100%) — the climax and its aftermath: the protagonist, now the person the Hook said they were not, resolves the central conflict. This is the point the whole sheet was built backwards from — check it against the Hook.",
+          "display_index": 0
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}
