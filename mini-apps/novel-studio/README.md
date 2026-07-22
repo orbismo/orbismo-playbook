@@ -9,9 +9,9 @@ The studio tracks the story, not the manuscript: scenes are summaries and story 
 | Entity | Role |
 | --- | --- |
 | `rule/app_novel_studio` | The app itself. Eight lore chunks carry the full spec: Data Model: Novels & the Shelf; Characters; Scenes; Threads & Ideas; Packs; Workflow: Develop the Story; Plot Scenes & Threads; Review & Continuity. |
-| `interest/novel_studio` | App hub. Its lore holds "The Shelf" — the one-line-per-novel catalog of the world's books. |
+| `interest/novel_studio` | App hub. Its lore holds "The Shelf" — the one-line-per-novel catalog of the world's books (bootstrapped on the first novel; ships empty). |
 
-In use, the app creates `project` entities for novels, `person` entities for characters, `event` entities for scenes, and `reference` entities for threads and ideas — all tagged `novel-studio`, each carrying a `novel` property naming its book (studio-wide ideas excepted), so several novels partition cleanly in one world.
+In use, the app creates `project` entities for novels, `person` entities for characters, `event` entities for scenes, and `reference` entities for threads and ideas — all tagged `novel-studio`, each carrying a `novel` property naming its book — for characters, the book that introduced them; studio-wide ideas excepted — so several novels partition cleanly in one world.
 
 ## Packs
 
