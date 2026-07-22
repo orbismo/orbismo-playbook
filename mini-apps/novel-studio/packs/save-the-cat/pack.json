@@ -1,0 +1,30 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Beat Sheet: Save the Cat",
+      "slug": "reference/beat_sheet_save_the_cat",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "beat-sheet",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/save-the-cat@1.0"
+        },
+        "short_description": "Save the Cat beat sheet for the Novel Studio app: Blake Snyder's 15-beat structure as an adoptable template. The beats live in this entity's lore; a novel adopts the sheet in its Blueprint, and its scenes' beat property uses these beat names exactly."
+      },
+      "lore": [
+        {
+          "title": "Beats",
+          "content": "The 15 beats of Blake Snyder's Save the Cat, in story order. Positions are percentages of the whole book — targets, not laws. Scenes' beat property must use these names exactly as spelled.\n\nOpening Image (0–1%) — a snapshot of the protagonist's world before anything changes; the \"before\" photo the Final Image will answer.\n\nTheme Stated (~5%) — someone states, usually in passing and usually to a protagonist who isn't listening, what the story will prove.\n\nSet-Up (1–10%) — the protagonist's status quo: their world, wants, and flaws, and every character who matters later. What's broken here is what the story will fix or break further.\n\nCatalyst (~10%) — the event that knocks the status quo over. It happens TO the protagonist; they don't choose it.\n\nDebate (10–20%) — the protagonist resists the call: can I really do this, should I? The section asks a question the Break into Two answers.\n\nBreak into Two (~20%) — the protagonist chooses to act, stepping into the new world or plan. Act 2 begins; from here the choice is theirs.\n\nB Story (~22%) — a new relationship (love interest, mentor, friend) that will carry the theme while the A story carries the plot.\n\nFun and Games (20–50%) — the promise of the premise delivered: the poster scenes, the reason the reader picked the book up. Rising success or comic failure.\n\nMidpoint (~50%) — a false victory or false defeat that raises the stakes and ends the fun; plot and theme cross. Time clocks often start here.\n\nBad Guys Close In (50–75%) — external opposition tightens while internal flaws crack the team or plan from inside.\n\nAll Is Lost (~75%) — the bottom: the plan is dead, and something or someone is often lost for good (the \"whiff of death\").\n\nDark Night of the Soul (75–80%) — the protagonist sits in the wreckage and, at last, hears the theme from the inside.\n\nBreak into Three (~80%) — the A and B stories hand the protagonist the answer; armed with the lesson, they choose one more try. Act 3 begins.\n\nFinale (80–99%) — the lesson is applied: the protagonist executes the new plan, faces the opposition, and proves the change is real.\n\nFinal Image (99–100%) — the \"after\" photo: the Opening Image transformed, showing without argument how much has changed.",
+          "display_index": 0
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

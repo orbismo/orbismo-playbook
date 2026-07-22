@@ -1,0 +1,30 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Beat Sheet: Hero's Journey",
+      "slug": "reference/beat_sheet_heros_journey",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "beat-sheet",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/heros-journey@1.0"
+        },
+        "short_description": "Hero's Journey beat sheet for the Novel Studio app: the 12-stage monomyth cycle (Campbell, via Vogler) as an adoptable template. The stages live in this entity's lore; a novel adopts the sheet in its Blueprint, and its scenes' beat property uses these stage names exactly."
+      },
+      "lore": [
+        {
+          "title": "Beats",
+          "content": "The 12 stages of the Hero's Journey (Joseph Campbell's monomyth, in Christopher Vogler's writer-friendly form), in story order. Acts are rough thirds — the cycle bends freely. Scenes' beat property must use these names exactly as spelled.\n\nOrdinary World (act 1) — the hero at home: their normal, its comforts, and the lack or wound the journey will answer. The reader must see this world to feel it left behind.\n\nCall to Adventure (act 1) — something disrupts the ordinary: a challenge, a summons, a discovery that demands a response.\n\nRefusal of the Call (act 1) — fear, duty, or doubt makes the hero balk. The refusal prices the journey: it shows what answering costs.\n\nMeeting the Mentor (act 1) — a source of wisdom, training, or gifts prepares the hero. The mentor need not be a person — a map, a memory, a code will serve.\n\nCrossing the First Threshold (act 1 → 2) — the hero commits and enters the special world, where the rules are different and the way back closes.\n\nTests, Allies and Enemies (act 2) — the special world tries the hero: trials teach the new rules, and the true cast sorts itself into friends and foes.\n\nApproach to the Inmost Cave (act 2) — preparation for the central ordeal: plans, setbacks, a tightening of stakes as the hero nears the most dangerous place.\n\nThe Ordeal (act 2) — the crisis: the hero faces death — literal or of the self — and their greatest fear. Everything is earned or lost here.\n\nReward (act 2) — having survived, the hero seizes the prize: the sword, the secret, the reconciliation. Celebration, but with the road home still ahead.\n\nThe Road Back (act 2 → 3) — the journey turns homeward and the consequences of the Ordeal give chase; the hero recommits to finishing it.\n\nResurrection (act 3) — the final and most dangerous test, on the threshold of home: the hero must prove the change is permanent, dying to the old self one last time.\n\nReturn with the Elixir (act 3) — home again, transformed, carrying something that heals the ordinary world: knowledge, freedom, love, proof.",
+          "display_index": 0
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

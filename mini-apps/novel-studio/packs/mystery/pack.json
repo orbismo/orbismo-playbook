@@ -1,0 +1,35 @@
+{
+  "entities": [
+    {
+      "entity_type": "reference",
+      "name": "Genre Pack: Mystery",
+      "slug": "reference/genre_pack_mystery",
+      "data": {
+        "tags": [
+          "novel-studio"
+        ],
+        "properties": {
+          "source_type": "genre-pack",
+          "trust": "imported",
+          "source": "orbismo-playbook/novel-studio/mystery@1.0"
+        },
+        "short_description": "Mystery genre pack for the Novel Studio app: clue, red-herring, alibi, and secret thread types, plus fair-play review lenses. A novel adopts the pack in its Blueprint; its threads may then use these types, and reviews run these lenses."
+      },
+      "lore": [
+        {
+          "title": "Thread Types",
+          "content": "Additional thread_type values for novels that adopt this pack. Exact spellings; each entry says what the type is and what its payoff owes the reader.\n\nclue — real evidence that points, however obliquely, toward the true solution. Its payoff is being used: the reveal must rest on it, and FAIR PLAY demands it appeared on the page (planted_in) before the reveal scene — the reader must have had the same chance as the detective.\n\nred-herring — evidence or behavior that points away from the truth. Its payoff is its innocent explanation, delivered on the page: a herring that is simply forgotten reads as a cheat, not a twist.\n\nalibi — a suspect's account of where they were and what they did. Its payoff is a verdict: confirmed on the page, or broken on the page. An alibi left dangling leaves its suspect unresolved.\n\nsecret — something a character conceals that is not the crime (an affair, a debt, a past). Secrets are what make innocent suspects act guilty. The payoff is exposure — or a deliberate, noted choice to let it stay buried.",
+          "display_index": 0
+        },
+        {
+          "title": "Review Lenses",
+          "content": "Checks the Review workflow runs for novels that adopt this pack. Report per lens, citing scenes and threads by slug; findings are surfaced, never auto-fixed.\n\nANCHORS: the reveal scene is the scene the solution's clue threads resolve in (resolved_in) — when that is ambiguous, ask the user to name the reveal. The suspects are the characters carrying alibi or secret threads, plus anyone the user names as one — \"suspect\" is not a role value.\n\nFair-Play Check — for every clue thread the solution relies on: does its planted_in scene come before the reveal scene in sequence order? Compare sequence only within one novel — a planted_in in an earlier book always precedes the reveal. A clue first appearing in the reveal itself is a finding. The reader must be able to lose fairly.\n\nRed Herring Audit — every red-herring thread must have a resolved_in pointing at the scene where its innocent explanation lands. Open herrings at the finale are findings: each one is a reader still suspecting the wrong person after the last page.\n\nSuspect Coverage — for each character the story treats as a suspect: are motive, means, and opportunity established on the page, and is their elimination (or guilt) shown in a scene rather than happening offstage? A suspect who simply stops being mentioned is a finding.\n\nReveal Integrity — read the reveal scene's WHAT CHANGES against the clue threads: does the stated solution use only planted clues, or does it lean on knowledge the detective never visibly acquired? Detective-only knowledge is a finding.",
+          "display_index": 1
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

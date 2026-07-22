@@ -13,6 +13,7 @@ The apps here are portable: they assume only Orbismo's common entity types and a
 | [Book Tracker](book-tracker/) | A personal reading diary: shelves (to-read, reading, read, DNF), progress, per-read ratings, series, authors as first-class entities, recommendations. |
 | [Family Tree](family-tree/) | A personal family history: the tree as real kinship edges, honest dates ("abt 1893"), attributed family stories with an oral-history interview mode, and heirlooms with provenance. |
 | [Movie Tracker](movie-tracker/) | A personal movie diary: watchlist, per-watch ratings and reviews, co-watcher history, favorites, year-in-review stats. |
+| [Novel Studio](novel-studio/) | A story-development studio for writing novels, multiple books per world: characters with want/need/lie/ghost arcs, scenes with cause and effect, a promise/payoff thread ledger, idea capture, and adoptable beat-sheet and genre packs (Save the Cat, Hero's Journey, Mystery, Romance). |
 | [Recipe Box](recipe-box/) | Recipes with consistent ingredients and real provenance (cookbook, website, or the relative who created them), and meals as the social events that carry the tweaks. |
 | [Second Brain](second-brain/) | A personal notebook with verbatim recall: notes stored exactly as written (never paraphrased), a daily note as the capture inbox, backlinks to the people and projects notes mention, and exact-then-semantic recall. |
 | [Travel Tracker](travel-tracker/) | Trips as projects with a full lifecycle, bookings as references, and a compounding atlas of places: visit history, verdicts, and who recommended what. |
@@ -24,6 +25,8 @@ The apps here are portable: they assume only Orbismo's common entity types and a
   README.md    What the app does, its triggers, requirements, and installation
   app.json     The entities to create: the rule entity (with its lore), any
                anchor entities, and the relationships between them
+  packs/       (optional) Add-on packs: each a README.md plus a pack.json that
+               installs template entities the app's rules read as data
 ```
 
 ## Installing an app
