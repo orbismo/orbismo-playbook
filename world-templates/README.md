@@ -14,6 +14,7 @@ Portable apps a template bundles (ones that work in any world, like the movie an
 | Template | What it turns your world into |
 | --- | --- |
 | [Personal Companion](personal-companion/) | A life journal and personal knowledge graph (people, places, events, memories) with a warm companion that remembers everything. Ships with Movie Tracker and Book Tracker mini apps. |
+| [Story Bible](story-bible/) | For anyone writing a novel, series, memoir, or other long story. It keeps your characters, timeline, and decisions organized and consistent while you write. |
 | [Tabletop RPG](tabletop-rpg/) | A persistent single-player tabletop RPG with the assistant as Game Master. A full rules engine (dice resolution, character progression, NPC disposition, quests and consequences, live saves) lives in the world as rule entities. |
 | [Wedding Planner](wedding-planner/) | A shared wedding-planning workspace with a calm, jargon-free companion. Four mini apps cover the big picture, vendors and venues, the guest list, and the budget. |
 | [Event Workspace](event-workspace/) | A one-world-per-event planning workspace for galas, conferences, and parties, shareable with that event's client and staff. Six mini apps cover the brief, vendors, guests, budget, run of show, and deadlines. |
