@@ -1,0 +1,103 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "Character Sheet",
+      "slug": "rule/character_sheet",
+      "data": {
+        "tags": ["app", "pattern"],
+        "properties": {
+          "scope": "person",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "creating or developing a character; questions about a character's arc, motivation, voice, relationships, or what they know",
+          "priority": 10,
+          "owns_tags": ["character"],
+          "rule_type": "workflow"
+        },
+        "short_description": "Core app: creating and developing characters — role, engine (want/need/obstacle/change), voice, backstory, knowledge state. Sheet depth follows story weight. Operating rules in lore."
+      },
+      "lore": [
+        {
+          "title": "Operating rules",
+          "content": "OPERATING RULES — Character Sheet\n\nWHEN: creating a character or deepening one — arc, motivation, voice, backstory, knowledge.\n\nPRINCIPLE: sheet depth follows story weight. A minor character is an entity, a sentence, and their relationships — nothing more. The chunks below accrete as the character earns them; never scaffold empty sections.\n\nCREATE:\n1. Run the world's dedupe protocol (Finding things): query the name and every alias used in conversation, list `person` entities (compact) and scan the names, and search_lore for the concept — characters often already exist as unpromoted mentions in another entity's lore, and building on that mention (a promotion) beats creating a twin.\n2. Create as `person`. Name Title Case by the name the narrative mostly uses; other names/nicknames in the description. Set `person_type` from live enum values. Description: one or two sentences — who they are IN THE STORY.\n3. Tag `character` + status tags (`tentative` etc.).\n\nAPP-REGISTERED PROPERTIES (declared here; this lore is their registration):\n- `story_role` (string): protagonist, antagonist, deuteragonist, supporting, minor — reuse these values exactly; extend only with author sign-off.\n- `is_pov` (boolean): true for point-of-view characters. (Which scenes they narrate lives on the scenes themselves — `pov` per Scene Map.)\n- `birth_year` / `death_year` (number): canonical numerics per the calendar contract on the spine, for age math and chronology. Display forms of birth dates go in the base `birthday` string.\nBase properties (`occupation`, `gender`, `personality_traits`, …) used as-is where they fit.\n\nSTANDARD LORE CHUNKS (titles verbatim, so every character reads the same across sessions; add a chunk only when there's real content for it):\n- \"Engine\" — four labeled lines: WANT (concrete goal), NEED (what they actually require, often unrecognized), OBSTACLE (what blocks them), CHANGE (how they're different at the end — or \"refuses to change,\" which is also an arc). The load-bearing chunk. For any character with `story_role` above minor who lacks it and does not carry the tag `engine-deferred`: prompt for it once; if the author declines or defers, tag the character `engine-deferred` and don't re-raise until the tag is removed or the author brings it up. Writing the Engine removes the tag.\n- \"The Story As They See It\" — the plot from this character's perspective, in their own logic. Antagonists especially: if this chunk cannot be written coherently, the character is a device, not a person — flag that to the author.\n- \"Voice\" — diction, rhythm, verbal tics, what they'd never say; sample lines welcome.\n- \"Backstory\" — history in prose. Major backstory beats that are events in the world get logged via Timeline (with ATTENDED links) — backstory is not exempt from chronology.\n- \"Knows / Doesn't Know\" — knowledge ledger: bullet facts this character knows, doesn't know, or wrongly believes, with when-learned where it matters. Scale its detail to how much the plot turns on information asymmetry. Timeline (step 8) and Scene Map draft ingestion both write back to this ledger — keep it current or cut it; a stale ledger is worse than none.\n\nRELATIONSHIPS: most-specific verb (PARENT_OF, SPOUSE_OF, PARTNER_OF, SIBLING_OF, MENTORS, RIVAL_OF, ALLIED_WITH, WORKS_WITH…); KNOWS as the floor for any two characters who have met, when it matters. LIVES_AT / WORKS_AT / MEMBER_OF / PRACTICES anchor them in the world. `ended` dates for relationships that end in-story; never delete history.\n\nREVISION: update existing chunks (preserves identity); reversing a `working` arc keeps a one-line trace of the discarded direction per Decision Log. In DRAFTING and later stages, a change that contradicts drafted scenes is a retcon — Decision Log transition 4. Killing a character is not deletion: set `death_year`, log the death as an event via Timeline, keep everything else intact.\n\nQUERIES: POV cast → search on `is_pov`; cast by role → `story_role`; a character's chronology → get_timeline with `entity_ids`; motivation or knowledge questions → read \"Engine\" and \"Knows / Doesn't Know\" before speculating, answer from what's recorded, and flag gaps rather than inventing.",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Decision Log",
+      "slug": "rule/decision_log",
+      "data": {
+        "tags": ["app", "pattern"],
+        "properties": {
+          "scope": "world",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "making, proposing, deferring, reversing, or locking a creative decision; author asks what's still open or undecided",
+          "priority": 10,
+          "owns_tags": ["decision"],
+          "rule_type": "workflow"
+        },
+        "short_description": "Core app: every creative fork gets a recorded lifecycle (OPEN → PROPOSED → WORKING → LOCKED) so nothing is silently locked and nothing is lost. Operating rules in lore."
+      },
+      "lore": [
+        {
+          "title": "Operating rules",
+          "content": "OPERATING RULES — Decision Log\n\nPURPOSE: every load-bearing creative fork gets a recorded lifecycle so nothing is silently locked and nothing is lost. Lifecycle: OPEN → PROPOSED → WORKING → LOCKED. Mapping to the world's reserved vocabulary: OPEN is the \"DECISION POINT (open)\" marker; PROPOSED / WORKING / LOCKED are `proposed` / `working` / `locked`. (`tentative` describes material, not forks.)\n\nWHAT EARNS A LOGGED DECISION: (a) the author explicitly names or defers a fork; (b) other material will build on the choice; or (c) reversing it later would invalidate recorded entities or drafted scenes. Micro-choices below this bar stay as `tentative` lore on their own entity — the log tracks load-bearing forks, not every branch of a brainstorm. When in doubt, ask (\"want me to log that as an open decision?\") — but never mid-flow: during generative brainstorming, hold candidates silently and raise them in the end-of-session sweep per the world's capture rhythm.\n\nWHERE: decision points live as LORE CHUNKS ONLY — on the spine (the rule tagged `spine`) for story-wide forks, or on the specific entity they govern when narrowly scoped. Prefer the spine when in doubt. Chunk titles begin \"DECISION: <topic>\" so audits can scan titles as well as text. Decisions are NEVER `event` entities — the event type is reserved for in-world chronology; authoring milestones do not belong on the story's timeline.\n\nSTATES:\n- OPEN — a named fork deliberately unresolved. Text begins \"DECISION POINT (open):\" and lists the live options with tradeoffs.\n- PROPOSED — the assistant recommended an answer; text says \"proposed, awaiting author confirmation.\" A proposal NEVER advances on its own.\n- WORKING — author said yes; adopted logic the world builds on, still reversible.\n- LOCKED — only on an explicit author lock (\"lock it\", \"that's canon\"). Nothing locks by accumulation, enthusiasm, or time.\n\nTRANSITIONS:\n1. On any state change, UPDATE the same lore chunk (update_entity_lore — preserves identity and history); never delete-and-recreate. Note the new state, that the author decided, and the date.\n2. \"Leave it open\" / \"pencil it in\" = park as OPEN or PENCILED; do not re-raise unprompted within the same stage.\n3. Reversing a WORKING choice is legitimate: update the chunk, keep a one-line trace of the discarded direction and why, so the reasoning isn't lost.\n4. Changing a LOCKED choice is a retcon: allowed only on explicit author instruction, and the chunk must list what the change invalidates (entities, events, drafted scenes) before the new direction is recorded. In DRAFTING and REVISION stages this applies with full force.\n\nSTAGE TRANSITIONS: parked is parked within a stage, not across a promotion. When the spine's `stage` moves up the ladder (e.g. into drafting), run the audit unprompted and report the open forks before new work proceeds — starting to draft over unresolved decision points is how contradictions get written. The author can still wave any fork through; the job is to surface, not to block.\n\nAUDIT (\"what's still open?\"): search_lore for \"DECISION POINT\" and \"PENCILED\", plus scan spine lore titles for \"DECISION:\". Report the open forks with their current leanings. Never maintain a static open-items list inside this rule — the graph is the list.",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Scene Map",
+      "slug": "rule/scene_map",
+      "data": {
+        "tags": ["app", "pattern"],
+        "properties": {
+          "scope": "event, project",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "author works on scenes, chapters, acts, reading order, structure, or POV; shares drafted manuscript text; or asks where in the book something happens or what the reader knows at a given point",
+          "owns_tags": ["scene"],
+          "rule_type": "workflow"
+        },
+        "short_description": "Core app: the discourse axis to Timeline's story axis. Owns scenes, chapters, reading order, POV assignment, and the DRAFTING-stage manuscript-ingestion loop. Scenes are `event` entities (event_type: scene) carrying both a story date and a reading-order position."
+      },
+      "lore": [
+        {
+          "title": "Operating rules",
+          "content": "OPERATING RULES — Scene Map\n\nWHEN: structuring the telling — scenes, chapters, acts, reading order, POV — ingesting drafted manuscript text, or answering \"where in the book does this happen?\" / \"what does the reader know by here?\"\n\nPRINCIPLE: Timeline owns story time (when things happen in the world); Scene Map owns discourse time (when the reader meets them). Both axes live on the same entity, so nonlinear structure is visible as the divergence between them: a flashback is a scene with an early date and a late position.\n\nDATA MODEL: a scene is an `event` with `event_type: scene` — a diegetic window onto the world, dated in STORY TIME per the calendar contract like any event (`date_year` always; finer precision only when real). This is the sanctioned carve-out from \"no authoring artifacts as events\": a scene depicts in-world moments, so it belongs on the chronology; pure authoring milestones (decisions, drafting progress) still never do.\n\nAPP-REGISTERED PROPERTIES (this lore is their registration):\n- `discourse_index` (number): global reading-order sort key. Use sparse values (10, 20, 30…) so insertions don't renumber the book.\n- `manuscript_locator` (string): human label — \"ch. 7, sc. 2\", \"Part II opening\".\n- `pov` (string): slug of the POV character; also give that character an ATTENDED edge to the scene.\n- `draft_status` (string, enumerable): unwritten, sketched, drafted, revised, cut. Cut scenes keep their record — set `cut`, never delete.\n\nSTRUCTURE ABOVE SCENES: chapters and acts are locators, not entities — they live in `manuscript_locator` and in a \"Structure\" lore chunk on the book's `project` entity (act shape, chapter list). Promote a chapter to its own entity only if something must link to it, which is rare.\n\nLINKS: scene PART_OF the book's `project` — this is what scopes scenes per book in a series. If a scene depicts an already-logged timeline event, link RELATED_TO it — but often the scene record IS the event record; never fork the same moment into two entities.\n\nLOGGING: search first. Description states what the scene does for the book — function, not summary: what changes, what the reader learns. Explicit TBD markers for undecided elements. Tag `scene` (owned) + status tags.\n\nDRAFT INGESTION (the DRAFTING-stage loop), when the author shares drafted text:\n1. Never store the prose itself — this world holds facts about the manuscript, not the manuscript.\n2. Extract what the draft commits to: new facts, dates, knowledge changes, contradictions with recorded canon.\n3. Check against existing entities and flag conflicts BEFORE recording anything — a drafted contradiction is a decision for the author, not a data-entry fix.\n4. Update the scene's `draft_status`, affected \"Knows / Doesn't Know\" ledgers (Character Sheet), and Timeline for newly dated events.\n5. Facts the drafted scene now depends on are candidates for locking — propose per Decision Log; never auto-lock.\n\nQUERIES: reading order → scenes sorted by `discourse_index`. Story order → get_timeline including event_type scene. Structure questions → surface where the two orders diverge. \"What does the reader know by scene N\" → walk scenes in discourse order, noting reveals against the knowledge ledgers. POV balance → group by `pov`. What's left to write → `draft_status`.\n\nREVISION: reordering = renumber `discourse_index` (sparse values keep this cheap). Cutting = `draft_status: cut` + one-line why. Splitting or merging scenes updates existing entities per the world's no-delete discipline.",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Timeline",
+      "slug": "rule/timeline",
+      "data": {
+        "tags": ["app", "pattern"],
+        "properties": {
+          "scope": "event",
+          "trust": "self-authored",
+          "status": "active",
+          "trigger": "logging or revising an in-world event; questions about chronology, causality, or what happened when",
+          "priority": 10,
+          "owns_tags": ["timeline-hinge"],
+          "rule_type": "workflow"
+        },
+        "short_description": "Core app: logging and revising in-world events on the canonical chronology, per the calendar contract on the spine. Diegetic events only. Operating rules in lore."
+      },
+      "lore": [
+        {
+          "title": "Operating rules",
+          "content": "OPERATING RULES — Timeline\n\nWHEN: logging or revising an in-world event — backstory or plot: conflicts, breakthroughs, deaths, treaties, turning points — answering chronology questions, or establishing/amending the calendar contract.\n\nSCOPE GUARD: `event` entities are DIEGETIC ONLY — things that happen inside the story's world. Authoring milestones (decisions, drafting progress, research) are never events: decisions live as lore per Decision Log; the book's development phases live as `project`. One sanctioned carve-out: `event_type: scene` (owned by Scene Map) — a scene is a diegetic window with a story date, so it lives on the chronology; see Scene Map for its discourse-side properties.\n\nCALENDAR CONTRACT (this app owns it): a lore chunk on the spine defining, once, how in-world time maps to the numeric date fields — what year 0/1 means, which direction is forward, how eras convert, how months map to 1–12. Read it before logging any event; no event is dated outside it.\n- Fresh worlds start at \"Gregorian, tentative.\" Escalate to a real contract the first time an event won't fit (invented calendar, eras, before-epoch dates) — that's when the author will actually know the answer.\n- Real-world setting: one line — Gregorian, as-is.\n- Before-epoch / BC: `date_year` takes negative integers. Default to astronomical numbering (1 BC → 0, 44 BC → -43) so cross-epoch interval math needs no special case. A plain sign-flip (44 BC → -44) is allowed only if the contract states it and warns that intervals spanning the epoch are off by one.\n- Invented calendar: choose ONE era as the canonical axis and convert everything to it (earlier ages as negative or offset numbers — the contract says which). Other eras and all display formats render in the `date` string. If the world's months don't number 12, the contract defines the mapping or declines to use `date_month` at all.\n- Contract changes are retcons: renumbering the axis invalidates every dated event — a logged decision with a migration, never a quiet edit.\n\nLOGGING STEPS:\n1. Search first for an existing event under variant names.\n2. Create as `event`, named what the world would call it, Title Case.\n3. Dates per the contract: `date` holds the in-world display string (may be deliberately fuzzy — \"late in the Third Age\"); `date_year` is ALWAYS set to the canonical numeric (negative for before-epoch). Month/day only when precision is real — never fabricate. Estimates: best-guess numerics + tag `date-estimated` + basis and uncertainty range in lore; refine when the author pins it.\n4. Set `event_type` (reuse live enum values from get_world_context) and `outcome` (one line: what changed).\n5. Description states WHAT THE HINGE CHANGES — the before/after in one or two sentences — with explicit TBD markers for parts deliberately left vague. Vagueness is allowed; UNMARKED vagueness is not.\n6. Links: OCCURRED_AT to the place; ATTENDED / ORGANIZED for characters and groups involved. Chain known causality with LED_TO (cause LED_TO consequence) — the timeline should become a causal chain, not isolated dots.\n7. Tags: `timeline-hinge` (owned) + status tags as appropriate (`tentative`, `tbd`, `date-estimated`).\n8. If the event changes who knows what, update the affected characters' \"Knows / Doesn't Know\" chunks per Character Sheet — a stale knowledge ledger answers confidently and wrongly, which is worse than none.\n9. If the event resolves or opens a decision point, follow Decision Log as well.\n\nRECURRING EVENTS: for genuinely recurring in-world occasions (an annual festival, a monthly council), make ONE template event with `is_recurring: true` and the `recurrence_*` fields, `date_year` = first known occurrence (so it stays visible to chronology). Individually significant occurrences are their own events linked OCCURRENCE_OF the template. Recurrence fields are for templates only — never a substitute for real dates on one-off events.\n\nREVISION: re-dating or rewriting an event updates the existing entity. If a new date contradicts a LED_TO ordering (or vice versa), flag the conflict for the author — never silently fix either side. Re-dating a LOCKED event is a retcon per Decision Log transition 4.\n\nQUERIES: use get_timeline (year-range, place, participant, event_type filters; character-centric queries via entity_ids). Filter out `event_type: scene` when the question is pure world history. Events without `date_year` are invisible to it and sort last — if a \"missing\" event might be undated, fall back to entity search and repair the date.",
+          "display_index": 0
+        }
+      ]
+    }
+  ]
+}
