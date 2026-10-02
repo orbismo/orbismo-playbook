@@ -20,13 +20,14 @@ Portable apps a template bundles (ones that work in any world, like the movie an
 | [Wedding Planner](wedding-planner/) | A shared wedding-planning workspace with a calm, jargon-free companion. Four mini apps cover the big picture, vendors and venues, the guest list, and the budget. |
 | [Commonplace Book](commonplace-book/) | A personal commonplace book for ideas, quotes, observations, questions, and links, captured fast in your own words and tied to their sources. Ships its own Building Blocks (four kinds, four connections) instead of the default schema. |
 | [Event Workspace](event-workspace/) | A one-world-per-event planning workspace for galas, conferences, and parties, shareable with that event's client and staff. Six mini apps cover the brief, vendors, guests, budget, run of show, and deadlines. |
+| [Agent Team Workspace](agent-team-workspace/) | A shared workspace where several AI agents, from any vendor, work on one goal you set: they divide it up, keep each other posted, and check each other's work. Ships its own Building Blocks (six kinds, six connections) and a leaderless coordination protocol as its instructions, and is also offered as a built-in starting template on Standard plans and up. |
 
 ## Installing a template
 
 1. Create a new Orbismo world (or pick an empty one). If the template ships a `building-blocks.json`, set up its kinds and connections first under World Settings → Building Blocks; a connected AI reads the world's structure once per session, so this comes before any conversation.
 2. Set the template's `instructions.md` as the world's instructions. Two ways to do it: paste it into the world's instructions in the Orbismo web UI, or share the file with your connected AI and ask it to update the world instructions.
 3. Give `world.json` to your connected AI and ask it to add everything in it to the world. Each entry's `entity_type`, `slug`, `data`, and `lore` describe exactly what to create, and the `relationships` block lists the links between them. Keep entity names exactly as given: slugs derive from names.
-4. Start a conversation. Most templates include a first-session or onboarding workflow that takes the world from empty to working; just say hello and follow its lead. The Commonplace Book has none, and the first thing you share becomes the first note.
+4. Start a conversation. Most templates include a first-session or onboarding workflow that takes the world from empty to working; just say hello and follow its lead. The Commonplace Book has none, and the first thing you share becomes the first note. The Agent Team Workspace has the first agent you sit with ask you for the master objective, and the rest of the team starts from that.
 
 Each template's own README covers what it assumes and what to customize.
 
@@ -40,5 +41,5 @@ All templates in this catalog follow the same design rules:
 - **Search before create.** Every template makes duplicate prevention a hard rule.
 - **The lore is the schema.** Orbismo does not enforce entity property values; a wrong status or invented category is saved silently. The exact value lists in each rule's lore, and the "never invent a value" hard rule, are the enforcement layer, so templates spell vocabularies out precisely.
 - **Pausable by design.** Setting a rule entity's `status` to `paused` or `archived` switches that behavior off without losing data.
-- **Provenance is stamped.** Shipped rules carry a `source` property (e.g. `orbismo-playbook/event-workspace@1.0`) and an honest `trust` level: `imported` for playbook content, except the Tabletop RPG's rules, which ship `self-authored` because its trust-precedence mechanics depend on it.
+- **Provenance is stamped.** Shipped rules carry a `source` property (e.g. `orbismo-playbook/event-workspace@1.0`) and an honest `trust` level: `imported` for playbook content, except the Tabletop RPG's rules, which ship `self-authored` because its trust-precedence mechanics depend on it. The Agent Team Workspace's rules are Orbismo's own starter content for that template, carried here unchanged, so they stamp `trust` only.
 - **Installs are idempotent.** Seed files carry `skip_existing` / `skip_duplicates` flags matching the create tools' parameters; re-running an install skips what already exists instead of failing.
