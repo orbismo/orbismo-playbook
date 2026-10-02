@@ -27,6 +27,7 @@ New to Orbismo? The [help site](https://help.orbismo.com/) covers the underlying
 | [Wedding Planner](world-templates/wedding-planner/) | A shared, calm wedding-planning workspace covering vision, vendors, guests, and budget. |
 | [Commonplace Book](world-templates/commonplace-book/) | A personal commonplace book for ideas, quotes, observations, and links, captured fast in your own words. |
 | [Event Workspace](world-templates/event-workspace/) | A one-world-per-event workspace for galas, conferences, and parties: vendors, guests, budget, run of show, deadlines. |
+| [Agent Team Workspace](world-templates/agent-team-workspace/) | A shared workspace where several AI agents, from any vendor, work on one goal you set: they divide it up, keep each other posted, and check each other's work. |
 
 ## Mini apps
 
