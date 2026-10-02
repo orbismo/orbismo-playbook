@@ -1,0 +1,198 @@
+{
+    "entity_types": [
+        {
+            "type_name": "source",
+            "label": "Source",
+            "description": "Where something came from: a book, article, podcast, site, talk or conversation. Created only when the owner names one.",
+            "icon": null,
+            "property_schema": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "Link to the source, when it lives online."
+                    },
+                    "author": {
+                        "type": "string",
+                        "description": "Who made it: writer, host, speaker."
+                    },
+                    "medium": {
+                        "type": "string",
+                        "description": "What form it takes: book, article, podcast, site, talk, conversation, etc."
+                    }
+                }
+            },
+            "display_order": 0,
+            "is_active": true
+        },
+        {
+            "type_name": "person",
+            "label": "Person",
+            "description": "Someone the owner mentions. Kept light — not a contact database, and only what the owner says.",
+            "icon": null,
+            "property_schema": {
+                "type": "object",
+                "properties": {
+                    "context": {
+                        "type": "string",
+                        "description": "Who they are to the owner."
+                    },
+                    "where_met": {
+                        "type": "string",
+                        "description": "Where the owner met or knows them from."
+                    }
+                }
+            },
+            "display_order": 0,
+            "is_active": true
+        },
+        {
+            "type_name": "note",
+            "label": "Note",
+            "description": "The core unit of the commonplace book: one idea per note, named with a short handle in the owner's words. Longer text goes in a lore chunk.",
+            "icon": "description",
+            "property_schema": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "format": "uri",
+                        "description": "For link notes: the address itself."
+                    },
+                    "kind": {
+                        "enum": [
+                            "idea",
+                            "quote",
+                            "observation",
+                            "question",
+                            "link"
+                        ],
+                        "type": "string",
+                        "enumerable": true,
+                        "description": "What sort of capture this is."
+                    },
+                    "status": {
+                        "enum": [
+                            "raw",
+                            "developing",
+                            "used",
+                            "archived"
+                        ],
+                        "type": "string",
+                        "enumerable": true,
+                        "description": "Where this note is in its life."
+                    }
+                }
+            },
+            "display_order": 0,
+            "is_active": true
+        },
+        {
+            "type_name": "rule",
+            "label": "Rule",
+            "description": "Standing guidance for the AI working in this world. Substance lives in lore chunks; the rule index in the world instructions says when to read each one. Only rules with status active apply.",
+            "icon": null,
+            "property_schema": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "enum": [
+                            "active",
+                            "draft",
+                            "archived"
+                        ],
+                        "type": "string",
+                        "enumerable": true,
+                        "description": "Whether this rule currently applies."
+                    }
+                }
+            },
+            "display_order": 0,
+            "is_active": true
+        }
+    ],
+    "relationship_types": [
+        {
+            "type_name": "FROM",
+            "inverse_label": "Source Of",
+            "label": "From",
+            "description": "Where a note came from. Links a note to the source it was captured from, such as a quote and its book.",
+            "category": "",
+            "allowed_source_types": [
+                "note"
+            ],
+            "allowed_target_types": [
+                "source"
+            ],
+            "is_symmetric": false,
+            "property_schema": {
+                "type": "object",
+                "properties": {}
+            },
+            "display_order": 0,
+            "is_active": true
+        },
+        {
+            "type_name": "MENTIONS",
+            "inverse_label": "mentioned by",
+            "label": "mentions",
+            "description": "A note or source that names a person. Only for people the owner brings up.",
+            "category": null,
+            "allowed_source_types": [
+                "source",
+                "note"
+            ],
+            "allowed_target_types": [
+                "person"
+            ],
+            "is_symmetric": false,
+            "property_schema": {
+                "type": "object",
+                "properties": {}
+            },
+            "display_order": 0,
+            "is_active": true
+        },
+        {
+            "type_name": "BUILDS_ON",
+            "inverse_label": "built on by",
+            "label": "builds on",
+            "description": "One idea grew out of another. The newer note builds on the older one.",
+            "category": null,
+            "allowed_source_types": [
+                "note"
+            ],
+            "allowed_target_types": [
+                "note"
+            ],
+            "is_symmetric": false,
+            "property_schema": {
+                "type": "object",
+                "properties": {}
+            },
+            "display_order": 0,
+            "is_active": true
+        },
+        {
+            "type_name": "RELATES_TO",
+            "inverse_label": "relates to",
+            "label": "relates to",
+            "description": "A loose association between two notes. Suggested by the AI only; the owner confirms before it is created.",
+            "category": null,
+            "allowed_source_types": [
+                "note"
+            ],
+            "allowed_target_types": [
+                "note"
+            ],
+            "is_symmetric": true,
+            "property_schema": {
+                "type": "object",
+                "properties": {}
+            },
+            "display_order": 0,
+            "is_active": true
+        }
+    ]
+}

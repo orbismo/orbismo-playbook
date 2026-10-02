@@ -1,0 +1,102 @@
+{
+    "entities": [
+        {
+            "entity_type": "rule",
+            "name": "capture",
+            "slug": "rule/capture",
+            "data": {
+                "tags": [],
+                "properties": {
+                    "status": "active"
+                },
+                "short_description": "How to capture anything new into the commonplace book."
+            },
+            "lore": [
+                {
+                    "title": "How to capture",
+                    "content": "When the owner drops several ideas at once, make one note each. Arriving in the same message is not a connection: link them only on the terms in the Relationships section of the world instructions.\n\nGuessing kind: a bare URL is a link — put the address in the note's url field; quoted or attributed words are a quote; a question mark usually means question; something the owner noticed in the world is an observation; otherwise idea.\n\nIf the duplicate search turns up a near-match, the merge offer is your one question. Keep your other guesses as they are rather than asking about them too.",
+                    "display_index": 0
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "people",
+            "slug": "rule/people",
+            "data": {
+                "tags": [],
+                "properties": {
+                    "status": "active"
+                },
+                "short_description": "Adding, editing or linking a person."
+            },
+            "lore": [
+                {
+                    "title": "Handling people",
+                    "content": "Create a person only when the owner refers to a specific individual in a way worth remembering; a name mentioned in passing can stay as plain text inside the note. Fill context and where_met only from what the owner says — no inference, no enrichment. If it is unclear whether two mentions are the same person, ask rather than merge.\n\nLink with MENTIONS from the note or source that names them. No addresses, employers or birthdays unless the owner explicitly asks to keep one, and even then it goes in a lore chunk in their words.",
+                    "display_index": 0
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "quoting_sources",
+            "slug": "rule/quoting_sources",
+            "data": {
+                "tags": [],
+                "properties": {
+                    "status": "active"
+                },
+                "short_description": "Quoting from a book, article, talk or conversation."
+            },
+            "lore": [
+                {
+                    "title": "Quotes and their sources",
+                    "content": "Capture a quote verbatim, punctuation and all, as kind quote — never tidy the wording. If the owner marks it approximate (\"something like...\"), keep their phrasing and say it is approximate in an Agent note.\n\nKeep one source entity per work, not per capture: search sources by name before creating. Fill author, medium and url from what the owner gives — leave blanks blank rather than guessing or looking them up. Link the note FROM its source; if the quote is by or about a person the owner tracks, add MENTIONS too.\n\nA quote heard in conversation gets one source per speaker, named \"Conversations with <name>\", with medium conversation and the speaker under author. A named occasion such as a talk, panel or interview is its own source instead.",
+                    "display_index": 0
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "retrieval",
+            "slug": "rule/retrieval",
+            "data": {
+                "tags": [],
+                "properties": {
+                    "status": "active"
+                },
+                "short_description": "Answering \"what have I got on X\" and surfacing connections."
+            },
+            "lore": [
+                {
+                    "title": "Finding and connecting",
+                    "content": "Search widely before answering: names, tags, lore text and sources. Answer in the owner's own wording, citing note handles, and keep any paraphrase of yours clearly marked as such. If archived notes match, mention they exist rather than silently including or omitting them. When little or nothing matches, say so plainly instead of padding with weak matches.\n\nOffer connections you notice while searching as suggestions at the end of the answer. Whether to create one follows the Relationships section of the world instructions.",
+                    "display_index": 0
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "tidying",
+            "slug": "rule/tidying",
+            "data": {
+                "tags": [],
+                "properties": {
+                    "status": "active"
+                },
+                "short_description": "Merging, splitting, retagging, archiving or deleting."
+            },
+            "lore": [
+                {
+                    "title": "Tidying safely",
+                    "content": "Tidy only when the owner asks, and confirm the plan first when it would touch more than a couple of notes. Merging notes: keep the older note, move the other's text into its lore unchanged, carry over tags and links, then set the duplicate to archived and record what happened in an Agent note. Splitting: one idea per resulting note, each still in the owner's words.\n\nMerging sources or people: keep the older entity, fill its blank fields from the other (ask when two values conflict), and move the other's links and lore onto it. Sources and people have no archived status, so the emptied duplicate has to be deleted: say so in the plan, and delete it only once the owner confirms.\n\nDeleting anything else happens only on an explicit instruction to delete rather than archive. If the entity has links or lore, list them and confirm before deleting.\n\nRetag using existing tags, and report every change made. Archived notes remain findable when asked for.",
+                    "display_index": 0
+                }
+            ]
+        }
+    ],
+    "relationships": [],
+    "skip_existing": true,
+    "skip_duplicates": true
+}

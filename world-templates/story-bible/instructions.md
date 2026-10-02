@@ -5,8 +5,8 @@ This world is the story bible for a novel, series, memoir, or other long story: 
 1. Call `get_world_context` before anything else — never assume types or tags.
 2. Look for the spine: search `rule` entities for one tagged `spine` (conventionally "Story Premise (working)"). Then:
    - **Spine exists** → read its "State of the World" chunk for fast orientation; go deeper into its other lore (premise, calendar contract, schema extensions, open threads) only as the work demands. Greet with a one-line sense of where things stand and ask what the author wants to work on. Don't re-onboard.
-   - **No spine, no entities** → run Onboarding.
-   - **No spine, but entities exist** → the bootstrap was interrupted or the spine was lost. Do NOT re-onboard over existing material: say so plainly and offer to repair — create the missing spine (and any missing core apps), reconstruct what can be reconstructed, and ask the author to fill only the true gaps.
+   - **No spine, and nothing in the world except `rule` entities tagged `app`** → a fresh install (the template seed ships the four core apps). Run Onboarding.
+   - **No spine, but story material exists** (characters, places, events, systems, anything beyond the seeded app rules) → the bootstrap was interrupted or the spine was lost. Do NOT re-onboard over existing material: say so plainly and offer to repair — create the missing spine (and any missing core apps), reconstruct what can be reconstructed, and ask the author to fill only the true gaps.
 
 ## Onboarding (fresh world only)
 
@@ -24,7 +24,7 @@ The calendar is NOT an onboarding question. Record "Gregorian, tentative" as the
 Then instantiate the skeleton **in this order**, so an interrupted bootstrap fails toward the repairable state:
 
 - FIRST the spine: `rule` "Story Premise (working)", `rule_type: canon`, `status: active`, tagged `spine`. Its `stage` property records the stage; its lore holds the premise, calendar contract, framing concepts, decision points, penciled threads, and — once work begins — a "State of the World" chunk: current stage, active threads, open-fork count, last session's focus, a screenful at most. Update that chunk at session end when meaningful work happened; it is a cache, never a source of truth — underlying records win on any conflict. **The spine is canon, not an app — never routed, never deleted.** Premise or contract changes are edits and retcons on the existing entity.
-- THEN the core apps (Decision Log, Timeline, Character Sheet, Scene Map) as `rule` entities per the app pattern below.
+- THEN any core app that is missing (Decision Log, Timeline, Character Sheet, Scene Map) as `rule` entities per the app pattern below. The template seed installs all four, so on a normal install there is nothing to create here; check by tag rather than assuming.
 - Offer — don't push — to replace these base instructions with a version tailored to this story. Standard consent protocol: draft, show in full, rewrite only on an explicit yes. Declining costs nothing.
 
 ## Stages
@@ -144,7 +144,7 @@ No hardcoded app index — discovery is one filtered search:
 
 An app may declare custom properties and enum values for entities it owns — those live in its lore and count as registered; other workflows don't repurpose them. New apps: tag `app`, and put the nouns a user's request would contain into the description ("scenes, chapters, POV…") — the description is what routing sees in the tag listing; `query` search will not find it (see Finding things).
 
-Core apps (created at onboarding): **Decision Log** (creative forks and their lifecycle; "what's still open?"), **Timeline** (in-story events, causality, the calendar contract — the story-time axis), **Character Sheet** (role, arc, voice, knowledge state), **Scene Map** (scenes, reading order, POV, draft ingestion — the discourse-time axis). Further apps can be added anytime; routing is dynamic.
+Core apps (installed by the template seed, created at onboarding only if missing): **Decision Log** (creative forks and their lifecycle; "what's still open?"), **Timeline** (in-story events, causality, the calendar contract — the story-time axis), **Character Sheet** (role, arc, voice, knowledge state), **Scene Map** (scenes, reading order, POV, draft ingestion — the discourse-time axis). Further apps can be added anytime; routing is dynamic.
 
 ## Conversation behavior
 

@@ -1,0 +1,562 @@
+{
+  "entity_types": [
+    {
+      "type_name": "objective",
+      "label": "Objective",
+      "description": "The one goal everything here serves, and the smaller goals it breaks into. The main goal also holds the settings for how the team works.",
+      "icon": "flag",
+      "property_schema": {
+        "type": "object",
+        "description": "One master per world, set by a human through an attended agent. Sub-objectives are proposed by agents and vetted against the master's scope. No deeper nesting: master, sub, task.",
+        "required": [
+          "level",
+          "status",
+          "priority"
+        ],
+        "properties": {
+          "level": {
+            "type": "string",
+            "enum": [
+              "master",
+              "sub"
+            ],
+            "description": "master: the one objective the team serves. sub: a vetted slice of it."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "proposed",
+              "approved",
+              "active",
+              "blocked",
+              "completed",
+              "rejected",
+              "abandoned",
+              "superseded"
+            ],
+            "description": "proposed (awaiting vetting), approved (vetted, no work yet), active (tasks in flight), blocked (needs a human), completed, rejected (failed vetting), abandoned (human-directed stop), superseded (replaced; see SUPERSEDES)"
+          },
+          "priority": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "description": "1 is highest, 5 is lowest"
+          },
+          "success_criteria": {
+            "type": "string",
+            "description": "How anyone can tell this objective is done. Vetting and reviews cite these lines."
+          },
+          "in_scope": {
+            "type": "string",
+            "description": "Master only. What the team may touch: systems, repos, data, actions."
+          },
+          "out_of_scope": {
+            "type": "string",
+            "description": "Master only. What the team must never touch or do, even if it would help."
+          },
+          "proposed_by": {
+            "type": "string",
+            "description": "Agent name that proposed this objective"
+          },
+          "on_behalf_of": {
+            "type": "string",
+            "description": "Operator name when this objective was created or changed on a human's instruction"
+          },
+          "blocked_reason": {
+            "type": "string",
+            "description": "Why this objective is blocked and what decision is needed"
+          },
+          "reviewing_by": {
+            "type": "string",
+            "description": "Agent name currently vetting this proposed objective. Set before vetting with expected_version, renew it like a claim lease, send null when the verdict is written."
+          },
+          "due": {
+            "type": "string",
+            "format": "date",
+            "description": "Target date, ISO 8601"
+          },
+          "team_state": {
+            "type": "string",
+            "enum": [
+              "running",
+              "paused",
+              "stopped"
+            ],
+            "description": "Master only. Kill switch. Any agent may set paused or stopped. Only an attended agent on operator instruction may set running."
+          },
+          "state_changed_by": {
+            "type": "string",
+            "description": "Master only. Agent name that last changed team_state"
+          },
+          "state_changed_on_behalf_of": {
+            "type": "string",
+            "description": "Master only. Operator name when team_state was set to running"
+          },
+          "human_owner": {
+            "type": "string",
+            "description": "Master only. Name of the human accountable for this team"
+          },
+          "vetting_mode": {
+            "type": "string",
+            "enum": [
+              "peer",
+              "human"
+            ],
+            "description": "Master only. peer: a different agent vets sub-objectives. human: only an attended agent on operator instruction may approve."
+          },
+          "review_required": {
+            "type": "boolean",
+            "description": "Master only. When true, a finished task goes to review and a different agent marks it done."
+          },
+          "claim_timeout_minutes": {
+            "type": "integer",
+            "description": "Master only. A claimed task whose lease (updated_at) is older than this may be taken over."
+          },
+          "heartbeat_minutes": {
+            "type": "integer",
+            "description": "Master only. Lease length. Set it longer than the longest single step an agent takes; holders renew before each long step, not on a clock."
+          },
+          "max_active_claims_per_agent": {
+            "type": "integer",
+            "description": "Master only. Tasks one agent may hold in claimed or in_progress at once."
+          },
+          "max_messages_per_loop": {
+            "type": "integer",
+            "description": "Master only. Channel messages an agent may post per work loop."
+          },
+          "channel_rollover_chunks": {
+            "type": "integer",
+            "description": "Master only. Roll a channel over to a new one once it has this many messages."
+          }
+        }
+      },
+      "display_order": 0,
+      "is_active": true
+    },
+    {
+      "type_name": "task",
+      "label": "Task",
+      "description": "A unit of work one agent can finish in one sitting. Always PART_OF an approved objective.",
+      "icon": "task_alt",
+      "property_schema": {
+        "type": "object",
+        "description": "Claim by writing claimed_by with expected_version, renew the lease by re-writing it the same way before each long step, release by sending null. A VERSION_CONFLICT means another agent got there first. Progress notes go in lore. Outputs are artifact entities linked with OUTPUT_OF.",
+        "required": [
+          "status",
+          "priority",
+          "lane"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "claimed",
+              "in_progress",
+              "blocked",
+              "review",
+              "done",
+              "failed",
+              "cancelled",
+              "superseded"
+            ],
+            "description": "open (claimable), claimed (held, not started), in_progress, blocked (needs help or a human), review (finished, awaiting a different agent), done, failed, cancelled (human-directed), superseded (replaced; see SUPERSEDES)"
+          },
+          "priority": {
+            "type": "integer",
+            "enum": [
+              1,
+              2,
+              3,
+              4,
+              5
+            ],
+            "description": "1 is highest, 5 is lowest"
+          },
+          "lane": {
+            "type": "string",
+            "description": "Slug of the sub-objective this task belongs to (mirrors PART_OF for filtering), e.g. objective/ingest_pipeline"
+          },
+          "acceptance_criteria": {
+            "type": "string",
+            "description": "What a reviewer checks before marking done"
+          },
+          "claimed_by": {
+            "type": "string",
+            "description": "Agent name holding the claim. Re-write it to renew the lease. Send null to release. Always write it with expected_version so a lost race fails instead of overwriting the holder."
+          },
+          "progress": {
+            "type": "string",
+            "description": "One line: the step the holder is about to start and roughly how long it takes, written with every lease renewal."
+          },
+          "reviewing_by": {
+            "type": "string",
+            "description": "Agent name currently reviewing this task. Set before reviewing with expected_version, renew it like a claim lease, send null when the verdict is written."
+          },
+          "required_capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Capabilities an agent must list before claiming, e.g. web_search, data_analysis, long_document_drafting, repo_write"
+          },
+          "result_summary": {
+            "type": "string",
+            "description": "What was done and where the outputs are. Written by the executing agent before review."
+          },
+          "blocked_reason": {
+            "type": "string",
+            "description": "Why the task is blocked and what would unblock it"
+          },
+          "proposed_by": {
+            "type": "string",
+            "description": "Agent name that created this task"
+          }
+        }
+      },
+      "display_order": 1,
+      "is_active": true
+    },
+    {
+      "type_name": "agent",
+      "label": "Agent",
+      "description": "One entity per connecting agent, self-registered under a unique name on first session.",
+      "icon": "smart_toy",
+      "property_schema": {
+        "type": "object",
+        "description": "Register with skip_existing false; a duplicate-name error means pick another name. The entity's server updated_at is the agent's last-seen time; touch it every loop. An agent whose updated_at is older than three claim timeouts may be set idle by any other agent, with a lore note.",
+        "required": [
+          "status",
+          "attended"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "idle",
+              "retired"
+            ],
+            "description": "active (working this session), idle (registered, not working), retired (will not return)"
+          },
+          "attended": {
+            "type": "boolean",
+            "description": "true when a human operator is present in this session and can give instructions. Only attended agents perform human-directed actions."
+          },
+          "operator": {
+            "type": "string",
+            "description": "Operator's name when attended, otherwise the string unattended"
+          },
+          "provider": {
+            "type": "string",
+            "description": "Model provider, e.g. anthropic, openai, google, local"
+          },
+          "model": {
+            "type": "string",
+            "description": "Model name or id"
+          },
+          "capabilities": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "What this agent can do, matched against task required_capabilities"
+          }
+        }
+      },
+      "display_order": 2,
+      "is_active": true
+    },
+    {
+      "type_name": "channel",
+      "label": "Channel",
+      "description": "A message stream. Messages are lore chunks; the title carries the message.",
+      "icon": "forum",
+      "property_schema": {
+        "type": "object",
+        "description": "Five fixed channels plus one per approved sub-objective (kind objective). Roll over past the master's channel_rollover_chunks; never delete.",
+        "required": [
+          "kind",
+          "status"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "announcements",
+              "general",
+              "help",
+              "escalation",
+              "direct",
+              "objective"
+            ],
+            "description": "announcements (team-wide, rare), general, help (agent asks agents), escalation (needs a human), direct (addressed messages, [to:name] in title), objective (one lane)"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "archived"
+            ],
+            "description": "Post only to open channels. archived channels are read-only history after a rollover."
+          },
+          "purpose": {
+            "type": "string",
+            "description": "What belongs here, one or two sentences"
+          }
+        }
+      },
+      "display_order": 3,
+      "is_active": true
+    },
+    {
+      "type_name": "artifact",
+      "label": "Artifact",
+      "description": "Something a task produced that lives outside Orbismo, or in this entity's lore.",
+      "icon": "inventory_2",
+      "property_schema": {
+        "type": "object",
+        "description": "Link to the task with OUTPUT_OF. Never overwrite another agent's artifact; create a new one with SUPERSEDES.",
+        "required": [
+          "kind",
+          "location"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "code",
+              "document",
+              "dataset",
+              "url",
+              "other"
+            ],
+            "description": "What kind of output this is"
+          },
+          "location": {
+            "type": "string",
+            "description": "Where it is: URL, path, repo plus ref, or the string lore when the content is in this entity's lore"
+          },
+          "summary": {
+            "type": "string",
+            "description": "One or two sentences on what it contains"
+          },
+          "produced_by": {
+            "type": "string",
+            "description": "Agent name that produced it"
+          }
+        }
+      },
+      "display_order": 4,
+      "is_active": true
+    },
+    {
+      "type_name": "rule",
+      "label": "Rule",
+      "description": "A standing rule humans add through an attended agent. Agents read active rules; long text lives in lore.",
+      "icon": "gavel",
+      "property_schema": {
+        "type": "object",
+        "description": "Behaviour config in properties; prose in lore. Only attended agents on operator instruction create or change rules.",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "rule_type": {
+            "type": "string",
+            "description": "policy, workflow, guidance, or other"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "archived",
+              "draft"
+            ],
+            "description": "Agents follow active rules only"
+          },
+          "trigger": {
+            "type": "string",
+            "description": "When an agent should apply this rule"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Entity types this rule governs, or world for global"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Higher wins when rules conflict"
+          },
+          "trust": {
+            "type": "string",
+            "description": "Provenance: self-authored, imported, ai-generated, shared. Lower trust never overrides higher."
+          }
+        }
+      },
+      "display_order": 5,
+      "is_active": true
+    }
+  ],
+  "relationship_types": [
+    {
+      "type_name": "PART_OF",
+      "inverse_label": "has part",
+      "label": "Part Of",
+      "description": "A task or sub-objective belongs to exactly one objective. Depth is master, sub, task; a sub-objective's parent is always the master.",
+      "category": "structure",
+      "allowed_source_types": [
+        "task",
+        "objective"
+      ],
+      "allowed_target_types": [
+        "objective"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 0,
+      "is_active": true
+    },
+    {
+      "type_name": "DEPENDS_ON",
+      "inverse_label": "blocks",
+      "label": "Depends On",
+      "description": "The source task is claimable only when every target task is done.",
+      "category": "structure",
+      "allowed_source_types": [
+        "task"
+      ],
+      "allowed_target_types": [
+        "task"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 1,
+      "is_active": true
+    },
+    {
+      "type_name": "REVIEWED_BY",
+      "inverse_label": "reviewed",
+      "label": "Reviewed By",
+      "description": "One edge per review. The verdict and the reviewer's notes live here, nowhere else.",
+      "category": "review",
+      "allowed_source_types": [
+        "objective",
+        "task"
+      ],
+      "allowed_target_types": [
+        "agent"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "required": [
+          "verdict",
+          "notes"
+        ],
+        "properties": {
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "approved",
+              "rejected",
+              "escalated",
+              "accepted",
+              "failed"
+            ],
+            "description": "Objectives: approved, rejected, escalated. Tasks: accepted, failed."
+          },
+          "notes": {
+            "type": "string",
+            "description": "For objectives: the master scope or success line checked, then all five vetting answers. For tasks: which acceptance criteria passed or failed."
+          }
+        }
+      },
+      "display_order": 2,
+      "is_active": true
+    },
+    {
+      "type_name": "OUTPUT_OF",
+      "inverse_label": "produced",
+      "label": "Output Of",
+      "description": "An artifact was produced by a task.",
+      "category": "output",
+      "allowed_source_types": [
+        "artifact"
+      ],
+      "allowed_target_types": [
+        "task"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 3,
+      "is_active": true
+    },
+    {
+      "type_name": "SUPERSEDES",
+      "inverse_label": "superseded by",
+      "label": "Supersedes",
+      "description": "The source replaces the target without deleting it. Used for corrections, retries of failed tasks, and channel rollover. The reason is required.",
+      "category": "structure",
+      "allowed_source_types": [
+        "task",
+        "objective",
+        "artifact",
+        "channel"
+      ],
+      "allowed_target_types": [
+        "task",
+        "objective",
+        "artifact",
+        "channel"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "required": [
+          "reason"
+        ],
+        "properties": {
+          "reason": {
+            "type": "string",
+            "description": "Why the target was replaced. Approach changes only; never restate the objective."
+          }
+        }
+      },
+      "display_order": 4,
+      "is_active": true
+    },
+    {
+      "type_name": "APPLIES_TO",
+      "inverse_label": "governed by",
+      "label": "Applies To",
+      "description": "A rule governs an entity.",
+      "category": "governance",
+      "allowed_source_types": [
+        "rule"
+      ],
+      "allowed_target_types": null,
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 5,
+      "is_active": true
+    }
+  ]
+}
