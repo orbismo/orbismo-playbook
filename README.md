@@ -2,7 +2,7 @@
 
 Starter world templates and mini apps for [Orbismo](https://orbismo.com/): ready-made building blocks you can copy into your own world and adapt.
 
-Orbismo is a world-building knowledge platform. This repository provides two kinds of starters:
+Orbismo keeps track of the people, places, events, and details of your world, so the AI you already use can pick up right where you left off. This repository provides two kinds of starters:
 
 - **[World templates](world-templates/)**: complete starting points for a new world. Each pairs world instructions (free-form prose that shapes how an AI assistant behaves in your world) with a seed of entities that carry the template's behaviors.
 - **[Mini apps](mini-apps/)**: portable behaviors (trackers, logs, routines) you install into an existing world. Each is a `rule` entity whose operating rules live as lore chunks in the world itself, routed from your world instructions.
@@ -36,9 +36,11 @@ New to Orbismo? The [help site](https://help.orbismo.com/) covers the underlying
 | [Book Tracker](mini-apps/book-tracker/) | A personal reading diary: shelves, progress, per-read ratings, authors, recommendations. |
 | [Family Tree](mini-apps/family-tree/) | A personal family history: kinship edges, honest dates, attributed stories, heirlooms with provenance. |
 | [Movie Tracker](mini-apps/movie-tracker/) | A personal movie diary: watchlist, per-watch ratings, co-watchers, favorites, stats. |
+| [Pet Care](mini-apps/pet-care/) | A log of each pet's care: vet visits, vaccinations, medications, weigh-ins, and sitters. Records, never advises. |
 | [Recipe Box](mini-apps/recipe-box/) | Recipes with consistent ingredients, real provenance, and meals as social moments that carry the tweaks. |
 | [Second Brain](mini-apps/second-brain/) | A personal notebook with verbatim recall: notes saved exactly as written, daily notes, backlinks. |
 | [Travel Tracker](mini-apps/travel-tracker/) | Trips with a lifecycle, bookings, and a compounding atlas of places, verdicts, and recommendations. |
+| [Vinyl Tracker](mini-apps/vinyl-tracker/) | A record collector's log: every copy with its pressing and grade, plus a wantlist, spins, and loans. |
 
 ## Contributing
 
