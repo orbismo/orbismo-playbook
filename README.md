@@ -2,7 +2,7 @@
 
 Starter world templates and mini apps for [Orbismo](https://orbismo.com/): ready-made building blocks you can copy into your own world and adapt.
 
-Orbismo is a world-building knowledge platform. This repository provides two kinds of starters:
+Orbismo keeps track of the people, places, events, and details of your world, so the AI you already use can pick up right where you left off. This repository provides two kinds of starters:
 
 - **[World templates](world-templates/)**: complete starting points for a new world. Each pairs world instructions (free-form prose that shapes how an AI assistant behaves in your world) with a seed of entities that carry the template's behaviors.
 - **[Mini apps](mini-apps/)**: portable behaviors (trackers, logs, routines) you install into an existing world. Each is a `rule` entity whose operating rules live as lore chunks in the world itself, routed from your world instructions.
