@@ -39,6 +39,7 @@ New to Orbismo? The [help site](https://help.orbismo.com/) covers the underlying
 | [Recipe Box](mini-apps/recipe-box/) | Recipes with consistent ingredients, real provenance, and meals as social moments that carry the tweaks. |
 | [Second Brain](mini-apps/second-brain/) | A personal notebook with verbatim recall: notes saved exactly as written, daily notes, backlinks. |
 | [Travel Tracker](mini-apps/travel-tracker/) | Trips with a lifecycle, bookings, and a compounding atlas of places, verdicts, and recommendations. |
+| [Vinyl Tracker](mini-apps/vinyl-tracker/) | A record collector's log: every copy with its pressing and grade, plus a wantlist, spins, and loans. |
 
 ## Contributing
 

@@ -16,6 +16,7 @@ The apps here are portable: they assume only Orbismo's common entity types and a
 | [Recipe Box](recipe-box/) | Recipes with consistent ingredients and real provenance (cookbook, website, or the relative who created them), and meals as the social events that carry the tweaks. |
 | [Second Brain](second-brain/) | A personal notebook with verbatim recall: notes stored exactly as written (never paraphrased), a daily note as the capture inbox, backlinks to the people and projects notes mention, and exact-then-semantic recall. |
 | [Travel Tracker](travel-tracker/) | Trips as projects with a full lifecycle, bookings as references, and a compounding atlas of places: visit history, verdicts, and who recommended what. |
+| [Vinyl Tracker](vinyl-tracker/) | A record collector's log: each copy with its pressing, grades, and inserts; a wantlist with grails and price limits; pre-orders; spins with ratings; and loans, sales, and trades that keep their history. |
 
 ## Anatomy of an app package
 
