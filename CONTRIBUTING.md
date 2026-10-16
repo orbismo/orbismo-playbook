@@ -14,6 +14,7 @@ Thanks for helping make the Orbismo Playbook better. Contributions of all sizes 
 - **Follow the layout.** The [world-templates](world-templates/README.md) and [mini-apps](mini-apps/README.md) READMEs document the structure and design conventions every starter follows. Match them.
 - **The library is canonical.** When a mini app exists in [mini-apps/](mini-apps/), that copy is the source of truth. If a template bundles it, change the library package first and re-sync the bundled copy in the same PR.
 - **Keep starters generic.** No personal data, and nothing tied to one specific world. Anything the user must customize is called out in the starter's README.
+- **Pet health, not human health.** Apps may log a pet's health, but no starter may be designed to track a person's health: their symptoms, conditions, medications, treatment, or medical appointments. A starter built for something else can hold an incidental mention (a journal entry about a doctor's visit) or the minimum its purpose needs (a guest's dietary needs for the caterer), but never prompts for or structures health details. Health data about people is a special category of personal data under laws such as the EU GDPR (Article 9) and needs safeguards these starters aren't designed to provide.
 - **Write for a first-time reader.** Every starter's README should let someone new to Orbismo install it without outside help.
 
 ## Submitting changes
