@@ -1,0 +1,7 @@
+# League shape: 30-team pro league, two conferences
+
+Seeds the shape of a national professional basketball league: one competition (`competition/pro_league_30_teams_two_conferences`, sport `basketball`, level pro, format league_playoffs, scoring win_loss) and 30 placeholder franchises `Team 1` to `Team 30`, tagged by conference (`conference-a`, `conference-b`) and division (`division-north`, `division-central`, `division-south`), five per division. It links the basketball pack rule and the Basketball Game Log workflow to the competition with APPLIES_TO.
+
+It seeds no season, no people and no venues, so it carries no COMPETES_IN edges and no `conference` or `group` values. Install the base Sports World and `packs/basketball/world.json` first, then this file, then let onboarding rename the competition and each team (full name, short_name, abbreviation, city) and create the current season. Onboarding writes each team's COMPETES_IN `conference` ("Conference A") and `group` (the division alone, "North") from the team's `conference-*` and `division-*` tags, renamed to whatever the league calls its conferences and divisions. The tags can stay as they are.
+
+Generic as of 2026-11: 30 teams, 2 x 3 x 5, 82 games, play-in for seeds 7-10, four best-of-7 rounds. If the league you follow has a different shape (a single table, 12 or 18 teams, a double round-robin), create the competition in onboarding instead.

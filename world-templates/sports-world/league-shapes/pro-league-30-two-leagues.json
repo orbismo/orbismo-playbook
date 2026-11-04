@@ -1,0 +1,672 @@
+{
+  "entities": [
+    {
+      "entity_type": "competition",
+      "name": "Pro League (30 teams, two leagues)",
+      "slug": "competition/pro_league_30_teams_two_leagues",
+      "data": {
+        "tags": [
+          "baseball",
+          "competition",
+          "league-shape"
+        ],
+        "properties": {
+          "sport": "baseball",
+          "level": "pro",
+          "format": "league_playoffs",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "scoring_system": "win_loss"
+        },
+        "short_description": "Generic 30-team professional baseball league: two leagues of three five-team divisions, a 162-game regular season, six postseason places per league (three division winners and three wild cards), best-of-3/5/7/7 bracket. Rename the competition and the placeholder teams during onboarding."
+      },
+      "lore": [
+        {
+          "title": "Structure",
+          "content": "Two leagues (League A, League B), each with East, Central and West divisions of five teams. Each season the league is the conference on the team's COMPETES_IN edge (\"League A\") and the division is its group (\"East\"); the standing league and division are tags on the team (league-a, league-a-east). Postseason: wildcard (best of three), divisional (best of five), league_championship (best of seven), final (best of seven). Vocabulary: rule/sport_baseball. Teams are placeholders named Team 1 to Team 30; rename them (names drive slugs, so rename before adding anything that points at them) and set city, short_name and abbreviation. Install at most one league shape with Team N placeholders per world, or rename before installing a second.",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 1",
+      "slug": "team/team_1",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 1",
+          "abbreviation": "T1"
+        },
+        "short_description": "Placeholder franchise, League A East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 2",
+      "slug": "team/team_2",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 2",
+          "abbreviation": "T2"
+        },
+        "short_description": "Placeholder franchise, League A East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 3",
+      "slug": "team/team_3",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 3",
+          "abbreviation": "T3"
+        },
+        "short_description": "Placeholder franchise, League A East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 4",
+      "slug": "team/team_4",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 4",
+          "abbreviation": "T4"
+        },
+        "short_description": "Placeholder franchise, League A East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 5",
+      "slug": "team/team_5",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 5",
+          "abbreviation": "T5"
+        },
+        "short_description": "Placeholder franchise, League A East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 6",
+      "slug": "team/team_6",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 6",
+          "abbreviation": "T6"
+        },
+        "short_description": "Placeholder franchise, League A Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 7",
+      "slug": "team/team_7",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 7",
+          "abbreviation": "T7"
+        },
+        "short_description": "Placeholder franchise, League A Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 8",
+      "slug": "team/team_8",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 8",
+          "abbreviation": "T8"
+        },
+        "short_description": "Placeholder franchise, League A Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 9",
+      "slug": "team/team_9",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 9",
+          "abbreviation": "T9"
+        },
+        "short_description": "Placeholder franchise, League A Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 10",
+      "slug": "team/team_10",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 10",
+          "abbreviation": "T10"
+        },
+        "short_description": "Placeholder franchise, League A Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 11",
+      "slug": "team/team_11",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 11",
+          "abbreviation": "T11"
+        },
+        "short_description": "Placeholder franchise, League A West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 12",
+      "slug": "team/team_12",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 12",
+          "abbreviation": "T12"
+        },
+        "short_description": "Placeholder franchise, League A West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 13",
+      "slug": "team/team_13",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 13",
+          "abbreviation": "T13"
+        },
+        "short_description": "Placeholder franchise, League A West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 14",
+      "slug": "team/team_14",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 14",
+          "abbreviation": "T14"
+        },
+        "short_description": "Placeholder franchise, League A West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 15",
+      "slug": "team/team_15",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-a",
+          "league-a-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 15",
+          "abbreviation": "T15"
+        },
+        "short_description": "Placeholder franchise, League A West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 16",
+      "slug": "team/team_16",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 16",
+          "abbreviation": "T16"
+        },
+        "short_description": "Placeholder franchise, League B East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 17",
+      "slug": "team/team_17",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 17",
+          "abbreviation": "T17"
+        },
+        "short_description": "Placeholder franchise, League B East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 18",
+      "slug": "team/team_18",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 18",
+          "abbreviation": "T18"
+        },
+        "short_description": "Placeholder franchise, League B East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 19",
+      "slug": "team/team_19",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 19",
+          "abbreviation": "T19"
+        },
+        "short_description": "Placeholder franchise, League B East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 20",
+      "slug": "team/team_20",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 20",
+          "abbreviation": "T20"
+        },
+        "short_description": "Placeholder franchise, League B East. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 21",
+      "slug": "team/team_21",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 21",
+          "abbreviation": "T21"
+        },
+        "short_description": "Placeholder franchise, League B Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 22",
+      "slug": "team/team_22",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 22",
+          "abbreviation": "T22"
+        },
+        "short_description": "Placeholder franchise, League B Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 23",
+      "slug": "team/team_23",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 23",
+          "abbreviation": "T23"
+        },
+        "short_description": "Placeholder franchise, League B Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 24",
+      "slug": "team/team_24",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 24",
+          "abbreviation": "T24"
+        },
+        "short_description": "Placeholder franchise, League B Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 25",
+      "slug": "team/team_25",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 25",
+          "abbreviation": "T25"
+        },
+        "short_description": "Placeholder franchise, League B Central. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 26",
+      "slug": "team/team_26",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 26",
+          "abbreviation": "T26"
+        },
+        "short_description": "Placeholder franchise, League B West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 27",
+      "slug": "team/team_27",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 27",
+          "abbreviation": "T27"
+        },
+        "short_description": "Placeholder franchise, League B West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 28",
+      "slug": "team/team_28",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 28",
+          "abbreviation": "T28"
+        },
+        "short_description": "Placeholder franchise, League B West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 29",
+      "slug": "team/team_29",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 29",
+          "abbreviation": "T29"
+        },
+        "short_description": "Placeholder franchise, League B West. Rename during onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 30",
+      "slug": "team/team_30",
+      "data": {
+        "tags": [
+          "baseball",
+          "team",
+          "league-shape",
+          "league-b",
+          "league-b-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 30",
+          "abbreviation": "T30"
+        },
+        "short_description": "Placeholder franchise, League B West. Rename during onboarding."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "rule/sport_baseball",
+      "target_id": "competition/pro_league_30_teams_two_leagues",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

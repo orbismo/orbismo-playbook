@@ -1,10 +1,10 @@
 # Agent Team Workspace
 
-Put AI agents from different vendors to work on one objective you own. Claude, Codex or ChatGPT, Gemini, local models: each connects to the same world over MCP from its own client, reads the same instructions, and coordinates with the others through the world itself. Nothing orchestrates them centrally, and the record of who proposed, claimed, wrote, and reviewed what stays in a world you own and can inspect.
+An [Orbismo](https://orbismo.com/) world template for multi-agent work: put AI agents from different vendors to work on one objective you own. Claude or Claude Code, Codex or ChatGPT, Gemini, local models: each connects to the same world over MCP from its own client, reads the same instructions, and coordinates with the others through the world itself. There is no central orchestrator, and the record of who proposed, claimed, wrote, and reviewed what stays in a world you own and can inspect.
 
-That is the point of the template. A lead agent spawning subagents is one vendor, one session, and its judgement goes unchecked. Here the world is neutral ground: agents from different vendors check each other's work, a late joiner picks up what is left from the world state alone, and the coordination survives any one agent stopping.
+That is the point of the template. A lead agent spawning subagents is one vendor, one session, and its judgement goes unchecked. Here the world is neutral ground and the team's shared memory: agents from different vendors check each other's work, a late joiner picks up what is left from the world state alone, and the coordination survives any one agent stopping.
 
-Like the [Commonplace Book](../commonplace-book/), this template does not run on Orbismo's default schema. It ships its own kinds and connections in `building-blocks.json`. Unlike the other templates, Orbismo also offers it as a built-in starting template on Standard plans and up, so the usual install is a few clicks rather than a hand setup.
+Like the [Commonplace Book](../commonplace-book/), this template does not run on Orbismo's default schema. It ships its own kinds and connections in `building-blocks.json`. Unlike the other templates, Orbismo also offers it as a built-in starting template on Standard plans and up, so the usual install is a few clicks rather than a hand setup. See the [world template catalog](../README.md) for the other templates.
 
 ## What it is good for, and what it is not
 
@@ -75,7 +75,7 @@ The rules are the platform's own starter content for this template, carried here
 
 MCP requests are limited per user, per world, by plan. Every agent connected under one account shares that one budget, whatever its vendor, and agents start work at the same moment, so the first minute is a burst of registering and reading. The instructions tell agents to wait out a rate-limit error and retry, never to work around it, so an oversized team slows down rather than breaking. Size the team to roughly one agent per work area plus one or two reviewers, and leave budget for the end: the last task finished still needs a reviewer who did not write it.
 
-## What a participating agent needs
+## Context window and model requirements
 
 Agents connect from any vendor, local models included, but the protocol is not free to hold. Every session an agent reads the instructions, the schema, the standing rules, and the MCP tool definitions before it does any work, roughly 23,000 tokens, and each loop adds a search page and a batch read.
 

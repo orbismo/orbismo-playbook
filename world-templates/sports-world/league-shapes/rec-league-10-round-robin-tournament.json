@@ -1,0 +1,214 @@
+{
+  "entities": [
+    {
+      "entity_type": "competition",
+      "name": "Rec League (10 teams, round robin and tournament)",
+      "slug": "competition/rec_league_10_teams_round_robin_and_tournament",
+      "data": {
+        "tags": [
+          "competition",
+          "league-shape"
+        ],
+        "properties": {
+          "sport": "unknown",
+          "level": "recreational",
+          "format": "league_playoffs",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "scoring_system": "win_loss"
+        },
+        "short_description": "Placeholder for a local recreational league of any sport: ten teams play a round robin, then a single-elimination tournament. Onboarding sets the sport, renames everything, and links the sport pack."
+      },
+      "lore": [
+        {
+          "title": "Structure",
+          "content": "Ten placeholder teams, no divisions. The regular season is a round robin (each team plays each other once or twice; rounds_total on the season says which), then the top teams enter a single-elimination tournament whose matches carry stage playoff, semifinal and final. Onboarding must: set sport to the real code (softball, soccer, basketball, volleyball...) on the competition and tag it; create the APPLIES_TO edge from that sport's rule/sport_<code> to this competition; rename the competition and each Team N (full name, short_name, abbreviation); tag the owner's own team mine; and create the current season with a COMPETES_IN edge per team. Remove unused placeholder teams by setting them inactive, never by deleting.",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 1",
+      "slug": "team/team_1",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 1",
+          "abbreviation": "T1"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 2",
+      "slug": "team/team_2",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 2",
+          "abbreviation": "T2"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 3",
+      "slug": "team/team_3",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 3",
+          "abbreviation": "T3"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 4",
+      "slug": "team/team_4",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 4",
+          "abbreviation": "T4"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 5",
+      "slug": "team/team_5",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 5",
+          "abbreviation": "T5"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 6",
+      "slug": "team/team_6",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 6",
+          "abbreviation": "T6"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 7",
+      "slug": "team/team_7",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 7",
+          "abbreviation": "T7"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 8",
+      "slug": "team/team_8",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 8",
+          "abbreviation": "T8"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 9",
+      "slug": "team/team_9",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 9",
+          "abbreviation": "T9"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 10",
+      "slug": "team/team_10",
+      "data": {
+        "tags": [
+          "team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "recreational",
+          "status": "active",
+          "short_name": "Team 10",
+          "abbreviation": "T10"
+        },
+        "short_description": "Placeholder rec team. Rename at onboarding."
+      }
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}
