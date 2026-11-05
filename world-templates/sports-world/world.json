@@ -329,7 +329,7 @@
       "lore": [
         {
           "title": "Where to look",
-          "content": "Results and schedules: get_timeline with entity_ids (the team or person), event_types match, and the season's date range; or search_entities entity_type event with the season tag and a date filter. Rosters as of a date: query_relationships on the team, type PLAYS_FOR, then keep edges whose started is on or before the date and whose ended is empty or after it. Numbers: stat_lines by the subject's tag and scope. Stories: search_lore across the events.\nAlways say which season you answered for. When the owner's question spans seasons, say so and group by season.",
+          "content": "Results and schedules: get_timeline with entity_ids (the team or person), event_types match, and the season's date range; or search_entities entity_type event with the season tag and a date filter. Rosters as of a date: query_relationships on the team, type PLAYS_FOR, then keep edges whose started is on or before the date and whose ended is empty or after it. Numbers: stat_lines by the subject's tag and scope. Stories: search_lore across the events.\nA match completed on a later day than it started (suspended then resumed, a multi-day match) sits on the timeline under its start date; for \"what happened in <period>\" also check end_date, or the result lands outside the window it counted in. Always say which season you answered for. When the owner's question spans seasons, say so and group by season.",
           "display_index": 0
         },
         {
