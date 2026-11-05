@@ -1,0 +1,1350 @@
+{
+  "entity_types": [
+    {
+      "type_name": "competition",
+      "label": "Competition",
+      "description": "A league, cup, tournament, series or fantasy league: the standing thing that runs year after year. Each edition of it is a season.",
+      "icon": "emoji_events",
+      "property_schema": {
+        "type": "object",
+        "description": "One per competition, not per year. The sport pack says which values of sport and format apply. A fantasy league is a competition with level fantasy.",
+        "required": [
+          "sport",
+          "level",
+          "format"
+        ],
+        "properties": {
+          "sport": {
+            "type": "string",
+            "enumerable": true,
+            "description": "Sport code from the sport pack, a machine name: american_football, basketball, baseball, ice_hockey, soccer (football/soccer), rugby, cricket, softball, volleyball, tennis, other. In conversation use the international name: American football, football (soccer), ice hockey."
+          },
+          "level": {
+            "type": "string",
+            "enum": [
+              "pro",
+              "semi_pro",
+              "college",
+              "youth",
+              "recreational",
+              "international",
+              "fantasy"
+            ],
+            "enumerable": true,
+            "description": "Who plays in it. recreational covers adult rec and company leagues; fantasy is a fantasy league whose teams are rosters of real players."
+          },
+          "format": {
+            "type": "string",
+            "enum": [
+              "league",
+              "league_playoffs",
+              "knockout",
+              "group_knockout",
+              "series",
+              "round_robin",
+              "ladder",
+              "exhibition"
+            ],
+            "enumerable": true,
+            "description": "league: table only. league_playoffs: regular season then a bracket. knockout: single or double elimination. group_knockout: groups then a bracket. series: best-of-N between two sides. round_robin: everyone plays everyone, no table beyond that. ladder: challenge-based ranking. exhibition: friendlies and showcases that enter no table."
+          },
+          "match_format": {
+            "type": "string",
+            "description": "The form of the game when the sport has several, in the sport pack's vocabulary: test, odi, t20 (cricket); 11v11, 7v7, futsal (football); union_15s, union_7s, league_13s (rugby); best_of_3, best_of_5, pro_set_8 (tennis); seven_inning (softball). The default for every match in the competition; an event's match_format overrides it."
+          },
+          "governing_body": {
+            "type": "string",
+            "description": "Who runs it: the national federation, the league office, the parks department, a friend group"
+          },
+          "region": {
+            "type": "string",
+            "description": "Where it is based: a country, state, city or neighbourhood"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "description": "Official site, league page or fantasy platform URL"
+          },
+          "scoring_system": {
+            "type": "string",
+            "description": "Short label for how results turn into table points or wins, in the sport pack's vocabulary: 3-1-0, 2-1-0, 3-2-1-0, win_loss, sets_as_points, union_bonus_4try, league_2-1-0, ranking_points, ppr, half_ppr, standard, custom. Full detail in lore."
+          }
+        }
+      },
+      "display_order": 0,
+      "is_active": true
+    },
+    {
+      "type_name": "season",
+      "label": "Season",
+      "description": "One edition of a competition: the 2026 season of a pro league, Spring 2026 Co-ed Softball, the 2026-27 top flight, Week 1-17 of a fantasy league. Matches hang off seasons; standings are per season.",
+      "icon": "calendar_month",
+      "property_schema": {
+        "type": "object",
+        "description": "Always PART_OF exactly one competition. Teams join it with COMPETES_IN. Standings are team stat_lines with scope season; the AI reads them, it never caches a table here.",
+        "required": [
+          "label",
+          "status"
+        ],
+        "properties": {
+          "label": {
+            "type": "string",
+            "description": "The edition name as people say it: 2026, 2026-27, Spring 2026, Season 3"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "upcoming",
+              "active",
+              "completed",
+              "cancelled"
+            ],
+            "enumerable": true,
+            "description": "upcoming until the first match, active while matches are being played, completed once the final result is in, cancelled if abandoned"
+          },
+          "start_date": {
+            "type": "string",
+            "format": "date",
+            "description": "First scheduled match, ISO 8601"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "Last scheduled match or final, ISO 8601"
+          },
+          "stage": {
+            "type": "string",
+            "description": "Where the season is right now, in the sport pack's stage vocabulary: preseason, regular_season, playoffs, group_stage, knockout, offseason"
+          },
+          "current_round": {
+            "type": "string",
+            "description": "The round, week or matchday in progress: Week 9, Matchday 14, Round of 16"
+          },
+          "rounds_total": {
+            "type": "integer",
+            "description": "How many rounds, weeks or matchdays the regular season has"
+          },
+          "roster_deadline": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO 8601 last day roster changes are allowed in this season: registration cut-off, transfer window close, trade deadline, roster freeze."
+          },
+          "ruleset_notes": {
+            "type": "string",
+            "description": "One line on anything unusual about this edition: shortened season, new playoff format, rule changes. Detail goes in lore."
+          }
+        }
+      },
+      "display_order": 1,
+      "is_active": true
+    },
+    {
+      "type_name": "team",
+      "label": "Team",
+      "description": "A side that competes: a club, franchise, national team, rec-league team, school team, or a fantasy roster. Rosters and staff attach to it; it enters seasons with COMPETES_IN.",
+      "icon": "groups",
+      "property_schema": {
+        "type": "object",
+        "description": "One entity per team for its whole life, across seasons. Season-specific things (division, seed, record) live on the COMPETES_IN edge and on season stat_lines, not here. A reserve, B or academy side is its own team, PART_OF the senior one.",
+        "required": [
+          "team_type",
+          "status"
+        ],
+        "properties": {
+          "team_type": {
+            "type": "string",
+            "enum": [
+              "club",
+              "franchise",
+              "national",
+              "school",
+              "recreational",
+              "fantasy",
+              "select",
+              "pair"
+            ],
+            "enumerable": true,
+            "description": "club: a member-owned or independent club. franchise: a team in a closed pro league. national: a country's side. school: college or school. recreational: a rec, company or pub-league team. fantasy: a roster in a fantasy league. select: an all-star, travel or representative side. pair: two people who compete together as one side (a doubles pair, a beach volleyball pair); named after its players, and a new pairing is a new team."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "inactive",
+              "defunct",
+              "merged"
+            ],
+            "enumerable": true,
+            "description": "active: competing or expected to. inactive: not entered this year but may return. defunct: gone. merged: folded into another team (link with PART_OF)."
+          },
+          "short_name": {
+            "type": "string",
+            "description": "What people call it in conversation: the Rovers, the Mud Hens"
+          },
+          "abbreviation": {
+            "type": "string",
+            "description": "Two to four letters as seen on a scoreboard: RIV, MUD"
+          },
+          "nickname": {
+            "type": "string",
+            "description": "Mascot or nickname when it differs from the name: the Hens, the Blues"
+          },
+          "colors": {
+            "type": "string",
+            "description": "Primary and secondary colors, e.g. red and gold"
+          },
+          "founded": {
+            "type": "string",
+            "description": "Year founded, or when the rec team first got together"
+          },
+          "city": {
+            "type": "string",
+            "description": "Home city or town"
+          },
+          "country": {
+            "type": "string",
+            "description": "Home country"
+          },
+          "owner": {
+            "type": "string",
+            "description": "Fantasy or franchise owner's display name when the owner is not tracked as a person entity"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "description": "Team page, club site or fantasy team URL"
+          }
+        }
+      },
+      "display_order": 2,
+      "is_active": true
+    },
+    {
+      "type_name": "person",
+      "label": "Person",
+      "description": "Anyone in the sport: a player, coach, manager, official, owner, commissioner, scout, analyst or fantasy manager. What they do for a team is on the PLAYS_FOR and STAFF_OF edges, so one person can be a player on one team and a coach of another.",
+      "icon": "person",
+      "property_schema": {
+        "type": "object",
+        "description": "Keep this to sporting facts the owner gives you. Never record health details: no injuries, diagnoses, treatment or medical history. Availability (whether someone can play) is a status on their PLAYS_FOR edge, with no reason attached. For a minor, record first name and last initial only unless the owner asks for the full name, and nothing else personal.",
+        "required": [
+          "primary_role"
+        ],
+        "properties": {
+          "primary_role": {
+            "type": "string",
+            "enum": [
+              "player",
+              "coach",
+              "manager",
+              "official",
+              "executive",
+              "staff",
+              "fantasy_manager",
+              "fan"
+            ],
+            "enumerable": true,
+            "description": "What they mostly are. coach includes head and assistant coaches; manager is the soccer-style boss or a rec-team organiser; executive covers owners, GMs, directors, commissioners; staff covers trainers, analysts, scouts, equipment; fantasy_manager runs a fantasy roster; fan is anyone tracked only as a supporter."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "retired",
+              "free_agent",
+              "deceased",
+              "unknown"
+            ],
+            "enumerable": true,
+            "description": "Career status. free_agent means not attached to any team right now."
+          },
+          "birth_date": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO 8601. Record only for adults and only when the owner gives it."
+          },
+          "nationality": {
+            "type": "string",
+            "description": "Country or countries they represent or are from"
+          },
+          "handedness": {
+            "type": "string",
+            "description": "Sport-pack vocabulary: right, left, both, bats_right_throws_left, and so on"
+          },
+          "height_cm": {
+            "type": "number",
+            "description": "Height in centimetres, for pro athletes only"
+          },
+          "weight_kg": {
+            "type": "number",
+            "description": "Weight in kilograms, for pro athletes only"
+          },
+          "is_minor": {
+            "type": "boolean",
+            "description": "true when the person is under 18. Triggers the minimal-data rules in rule/people_and_privacy."
+          },
+          "external_id": {
+            "type": "string",
+            "description": "An id on a stats site or fantasy platform, so the person can be matched to imports"
+          }
+        }
+      },
+      "display_order": 3,
+      "is_active": true
+    },
+    {
+      "type_name": "event",
+      "label": "Event",
+      "description": "Anything that happens on a date: a match (the main case), plus drafts, trades, transfers, signings, practices, tryouts, awards nights and meetings. event_type says which. Matches carry scores and results; everything else carries its detail in lore.",
+      "icon": "sports",
+      "property_schema": {
+        "type": "object",
+        "description": "Named <Away> at <Home> — <YYYY-MM-DD> for matches (or <A> vs <B> at a neutral site). Every event carries date_year, date_month, date_day so the timeline tools can order it. A match is PART_OF its season, HELD_AT its venue, and has one COMPETED_IN edge per team. Scores live here and nowhere else.",
+        "required": [
+          "event_type",
+          "status",
+          "date_year",
+          "date_month",
+          "date_day"
+        ],
+        "properties": {
+          "event_type": {
+            "type": "string",
+            "enum": [
+              "match",
+              "practice",
+              "draft",
+              "trade",
+              "transfer",
+              "signing",
+              "release",
+              "roster_move",
+              "staff_change",
+              "bye",
+              "tryout",
+              "award",
+              "meeting",
+              "other"
+            ],
+            "enumerable": true,
+            "description": "match covers games, fixtures, ties, rubbers and fantasy matchups. transfer is a move between clubs for a fee or free; trade is a swap between teams in a closed league or a fantasy league; signing and release are one-team roster moves that change clubs; roster_move is a one-team move that changes a player's list or status without changing clubs (option, recall, activation, waiver claim, call-up, loan return). staff_change records a coach or manager arriving or leaving. bye is a scheduled round with no match for a team (INVOLVED_IN from the team, role subject); it never counts in standings unless the pack awards bye points."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "scheduled",
+              "in_progress",
+              "completed",
+              "postponed",
+              "suspended",
+              "cancelled",
+              "abandoned",
+              "forfeited",
+              "rejected"
+            ],
+            "enumerable": true,
+            "description": "postponed never started; keep the event and give it a new date when known. suspended started, was halted and resumes from the point of stoppage on a later date: keep the one event, date_* stay as day one, end_date is the day it finished. abandoned started but will not resume; result no_result unless the pack awards one, and a replay ordered from scratch is a new event with round Replay. forfeited: result awarded without play; the awarded score goes in the score fields and the reason in lore unless it is medical. rejected: a non-match event that was proposed and turned down (a vetoed trade, a lost waiver claim)."
+          },
+          "date_year": {
+            "type": "integer",
+            "description": "Year"
+          },
+          "date_month": {
+            "type": "integer",
+            "description": "Month 1-12"
+          },
+          "date_day": {
+            "type": "integer",
+            "description": "Day of month"
+          },
+          "date_hour": {
+            "type": "integer",
+            "description": "Local start hour 0-23, when known"
+          },
+          "date_minute": {
+            "type": "integer",
+            "description": "Local start minute, when known"
+          },
+          "end_date": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO 8601 last day for multi-day events: a Test match, a draft weekend, a tournament"
+          },
+          "timezone": {
+            "type": "string",
+            "description": "IANA zone of the start time, e.g. America/New_York, when the world spans zones"
+          },
+          "stage": {
+            "type": "string",
+            "description": "Sport-pack vocabulary: preseason, regular_season, wildcard, divisional, conference, final, group_stage, round_of_16, quarterfinal, semifinal, playoff, consolation, friendly, exhibition"
+          },
+          "round": {
+            "type": "string",
+            "description": "Week, matchday, round or leg label inside the stage: Week 9, Matchday 14, Game 3, Leg 2"
+          },
+          "match_format": {
+            "type": "string",
+            "description": "Overrides the competition's match_format for this event, in the pack's vocabulary (a seven-inning doubleheader game, a best-of-3 final in a best-of-5 tournament)."
+          },
+          "regulation_length": {
+            "type": "string",
+            "description": "How long the match was scheduled to be when it differs from the sport's default, in the pack's units: 7 (innings), 20 (overs), 2x40 (minutes)."
+          },
+          "home_score": {
+            "type": "number",
+            "description": "Final score of the home (or first-named) side, as a single number the sport pack defines: points, goals, runs, sets won (volleyball, tennis), rubbers won (a team tie). The headline number; periods holds the detail and score_display the human line."
+          },
+          "away_score": {
+            "type": "number",
+            "description": "Final score of the away (or second-named) side"
+          },
+          "periods": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "Ordered list of the scoring periods the match is made of, with keys the sport pack defines; every element carries number. Sets (volleyball, tennis): number, home, away, kind. Line scores (baseball, softball): number, home, away. Innings (cricket): number, batting_team, runs, wickets, balls, balls_allotted, all_out, declared, follow_on, target, kind. Quarters and periods when the owner wants them. home_score and away_score are the headline numbers this list is summarised into."
+          },
+          "score_display": {
+            "type": "string",
+            "description": "The score as a human would write it when numbers alone lose meaning: 287/6 (50 ov) v 251 (48.3 ov), 2-2 (4-3 pens), 27-24 OT"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "home_win",
+              "away_win",
+              "draw",
+              "tie",
+              "no_result",
+              "pending"
+            ],
+            "enumerable": true,
+            "description": "pending until completed. draw is a shared result in sports that have them; tie is a dead-level score in sports where that is rare and recorded separately (cricket, American football). Equal scores with decided_by regulation or extra_time are a draw; equal scores with decided_by penalties, shootout or super_over are a win for the side the pack names. no_result for abandoned or rained-off matches that count as neither."
+          },
+          "margin_type": {
+            "type": "string",
+            "description": "Sport-pack vocabulary for how the margin of victory is expressed: points, goals, runs, wickets, innings_and_runs, sets, games, strokes. Blank for draws, ties and no results."
+          },
+          "margin": {
+            "type": "number",
+            "description": "The size of the margin in margin_type units: 3 (goals), 36 (runs), 5 (wickets), 46 (the runs part of an innings-and-46 win)."
+          },
+          "decided_by": {
+            "type": "string",
+            "description": "How a non-regulation result was settled, sport-pack vocabulary: regulation, overtime, extra_time, penalties, shootout, super_over, golden_point, golden_set, dls, run_rule, time_limit, called_game, walkover, retired, default, awarded. Never a reason: retired and walkover carry no explanation anywhere."
+          },
+          "neutral_site": {
+            "type": "boolean",
+            "description": "true when neither team is at home; home then means first-named"
+          },
+          "toss_won_by": {
+            "type": "string",
+            "description": "Slug of the side that won the toss or coin flip, when the sport has one."
+          },
+          "toss_decision": {
+            "type": "string",
+            "description": "Sport-pack vocabulary: bat, bowl (cricket); receive, defer, kick (American football); serve, receive, side (racket sports)."
+          },
+          "attendance": {
+            "type": "integer",
+            "description": "Announced attendance when the owner cares to record it"
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Box score, match report or fantasy matchup page this record was taken from"
+          }
+        }
+      },
+      "display_order": 4,
+      "is_active": true
+    },
+    {
+      "type_name": "venue",
+      "label": "Venue",
+      "description": "Where matches happen: a stadium, ground, field, park, gym or court. Teams point at their home venue; matches point at where they were held.",
+      "icon": "stadium",
+      "property_schema": {
+        "type": "object",
+        "description": "One per physical place. A complex with several fields can be one venue with the field named on the HELD_AT edge, or one venue per field when the owner tracks them separately.",
+        "required": [],
+        "properties": {
+          "venue_type": {
+            "type": "string",
+            "enum": [
+              "stadium",
+              "ground",
+              "field",
+              "park",
+              "gym",
+              "court",
+              "arena",
+              "track",
+              "pool",
+              "other"
+            ],
+            "enumerable": true,
+            "description": "What kind of place it is"
+          },
+          "address": {
+            "type": "string",
+            "description": "Street address"
+          },
+          "city": {
+            "type": "string",
+            "description": "City or town"
+          },
+          "country": {
+            "type": "string",
+            "description": "Country"
+          },
+          "capacity": {
+            "type": "integer",
+            "description": "Seated capacity, for stadiums"
+          },
+          "surface": {
+            "type": "string",
+            "description": "grass, turf, dirt, clay, hardwood, as the sport pack names them"
+          },
+          "indoor": {
+            "type": "boolean",
+            "description": "true for indoor venues"
+          },
+          "latitude": {
+            "type": "number",
+            "description": "GPS latitude"
+          },
+          "longitude": {
+            "type": "number",
+            "description": "GPS longitude"
+          },
+          "website": {
+            "type": "string",
+            "format": "uri",
+            "description": "Venue or booking page"
+          }
+        }
+      },
+      "display_order": 5,
+      "is_active": true
+    },
+    {
+      "type_name": "stat_line",
+      "label": "Stat Line",
+      "description": "A block of numbers about one subject in one context: a player's box score in a match, a team's record for a season, a player's fantasy points for a week, a career total. The stats object holds the numbers under keys the sport pack defines.",
+      "icon": "insights",
+      "property_schema": {
+        "type": "object",
+        "description": "Exactly one STAT_OF edge (to a person or team) and at most one RECORDED_IN edge (to the match or season it covers; career lines have none). Named <Subject> — <Context>, e.g. Jordan Lee — Week 9 2026 or Riverside Rovers — County League 2026-27. One stat_line per subject per context; update it, never create a second. Keys inside stats are lowercase snake_case from the sport pack's vocabulary and never invented.",
+        "required": [
+          "scope",
+          "subject_kind",
+          "stats"
+        ],
+        "properties": {
+          "scope": {
+            "type": "string",
+            "enum": [
+              "match",
+              "segment",
+              "round",
+              "season",
+              "career",
+              "split"
+            ],
+            "enumerable": true,
+            "description": "match: one game. segment: one innings, set, half or period inside a match, named in segment (the match line is still the one season lines sum). round: one week or matchday across games (fantasy weeks). season: aggregate over a season. career: all-time. split: a custom slice described in split_label (vs left-handers, home games, last 5)."
+          },
+          "subject_kind": {
+            "type": "string",
+            "enum": [
+              "player",
+              "team"
+            ],
+            "enumerable": true,
+            "description": "Whether the STAT_OF target is a person or a team"
+          },
+          "stats": {
+            "type": "object",
+            "description": "The numbers. Keys are the sport pack's stat vocabulary (e.g. passing_yards, goals, wickets, fantasy_points), lowercase snake_case, starting with a letter. Values are numbers; use null for not recorded. Durations are seconds under a key ending _seconds. Rate stats (averages, economy) are stored only when the pack lists them, otherwise the AI derives them when asked."
+          },
+          "split_label": {
+            "type": "string",
+            "description": "For scope split only: what the slice is"
+          },
+          "segment": {
+            "type": "string",
+            "description": "For scope segment only: which innings, set, half or period: 1, 2, Set 3."
+          },
+          "for_team": {
+            "type": "string",
+            "description": "For player lines: slug of the team they were playing for in this context, when it is not obvious from the roster"
+          },
+          "games_played": {
+            "type": "integer",
+            "description": "For season, career and split scopes: how many matches the numbers cover"
+          },
+          "completeness": {
+            "type": "string",
+            "enum": [
+              "full",
+              "partial",
+              "unknown"
+            ],
+            "enumerable": true,
+            "description": "full: every key the pack lists for this scope was recorded. partial: some keys are null because nobody kept them. unknown: typed-in totals of unknown coverage. Sums skip nulls, never treat them as zero, and a season line built from any partial line is partial."
+          },
+          "as_of": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO 8601 date the numbers were last brought up to date; required for season and career lines"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "owner",
+              "official",
+              "import",
+              "derived"
+            ],
+            "enumerable": true,
+            "description": "owner: typed in by the owner. official: from a league box score. import: from a stats site or fantasy platform. derived: computed by the AI from match lines, and so recomputable."
+          },
+          "source_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "Where the numbers came from, when online"
+          }
+        }
+      },
+      "display_order": 6,
+      "is_active": true
+    },
+    {
+      "type_name": "rule",
+      "label": "Rule",
+      "description": "Standing guidance for the AI working in this world. Substance lives in lore chunks; the rule index in the world instructions says when to read each one. Sport packs ship their vocabulary as rules. Only rules with status active apply.",
+      "icon": "gavel",
+      "property_schema": {
+        "type": "object",
+        "description": "Behaviour config in properties; prose in lore. Pause a rule by setting status paused; the data it created stays.",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "archived",
+              "draft"
+            ],
+            "enumerable": true,
+            "description": "Only active rules apply"
+          },
+          "rule_type": {
+            "type": "string",
+            "enum": [
+              "app",
+              "workflow",
+              "vocabulary",
+              "guidance",
+              "policy",
+              "format",
+              "other"
+            ],
+            "enumerable": true,
+            "description": "app: a mini app that owns tags and data. workflow: a procedure. vocabulary: a sport pack's positions, stat keys, stages and values. guidance: how to behave. policy: a hard constraint. format: how to present."
+          },
+          "trigger": {
+            "type": "string",
+            "description": "Cue for when the AI should read this rule"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Kinds this rule reads or writes, or world for global"
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Higher wins when two active rules conflict"
+          },
+          "trust": {
+            "type": "string",
+            "enum": [
+              "self-authored",
+              "imported",
+              "ai-generated",
+              "shared"
+            ],
+            "enumerable": true,
+            "description": "Provenance, highest first. Lower trust never overrides higher."
+          },
+          "owns_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags this rule manages; entities carrying them are this rule's data"
+          },
+          "sport": {
+            "type": "string",
+            "description": "For vocabulary rules: the sport code this rule defines. Blank for sport-agnostic rules."
+          },
+          "source": {
+            "type": "string",
+            "description": "Where the rule came from, e.g. orbismo-playbook/sports-world@1.0"
+          }
+        }
+      },
+      "display_order": 7,
+      "is_active": true
+    }
+  ],
+  "relationship_types": [
+    {
+      "type_name": "PART_OF",
+      "inverse_label": "has part",
+      "label": "Part Of",
+      "description": "Structure. A season is part of its competition, or of a wider season (a tournament edition inside a tour year). A match or other event is part of a season and may also be part of a parent event (a tournament, a tie, a series) when it counts for both. A reserve, academy or merged team is part of its senior team.",
+      "category": "structure",
+      "allowed_source_types": [
+        "season",
+        "event",
+        "team"
+      ],
+      "allowed_target_types": [
+        "competition",
+        "season",
+        "event",
+        "team"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 0,
+      "is_active": true
+    },
+    {
+      "type_name": "COMPETES_IN",
+      "inverse_label": "has entrant",
+      "label": "Competes In",
+      "description": "A team, or in individual sports a person, entered a season. Season-specific facts about the entrant live here: conference and group or division, seed, entry route, final placing, and what happened to them (promoted, relegated, withdrew).",
+      "category": "structure",
+      "allowed_source_types": [
+        "team",
+        "person"
+      ],
+      "allowed_target_types": [
+        "season"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "type": "string",
+            "description": "Division, conference, group or pool label for this season: West Division, Group B, Division 2, Tuesday Co-ed"
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Playoff or tournament seed once assigned"
+          },
+          "final_rank": {
+            "type": "integer",
+            "description": "Where the team finished, 1 for the champion, once the season is completed"
+          },
+          "outcome": {
+            "type": "string",
+            "enum": [
+              "champion",
+              "runner_up",
+              "playoffs",
+              "eliminated",
+              "promoted",
+              "relegated",
+              "withdrew",
+              "disqualified",
+              "none"
+            ],
+            "description": "What the season meant for the team; none for a mid-table finish with nothing attached"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "entered",
+              "active",
+              "eliminated",
+              "withdrawn",
+              "completed"
+            ],
+            "description": "entered before play, active during, eliminated when out of a knockout, withdrawn if they left, completed when the season ends"
+          },
+          "conference": {
+            "type": "string",
+            "description": "Conference, league half or tier the group sits in, when the competition has two levels: Conference A, East. group then holds the division alone."
+          },
+          "entry": {
+            "type": "string",
+            "description": "How the entrant got in, sport-pack vocabulary: direct, qualifier, wild_card, lucky_loser, protected_ranking, alternate, invited, promoted."
+          }
+        }
+      },
+      "display_order": 1,
+      "is_active": true
+    },
+    {
+      "type_name": "PLAYS_FOR",
+      "inverse_label": "has player",
+      "label": "Plays For",
+      "description": "A player is on a team's roster. One edge per spell at the team; set ended when they leave and start a new edge if they return. Position, number, depth, list, availability and the arrangement (contract, loan, representative, fantasy slot) live here. A team is a legal source only when a fantasy roster slot is filled by a team unit (a defence/special-teams unit): arrangement fantasy_roster, position the unit code the pack gives.",
+      "category": "roster",
+      "allowed_source_types": [
+        "person",
+        "team"
+      ],
+      "allowed_target_types": [
+        "team"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {
+          "position": {
+            "type": "string",
+            "description": "Primary position in the sport pack's vocabulary: QB, CB, GK, CM, P, SS, bat, bowl, wk"
+          },
+          "secondary_positions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Other positions they cover"
+          },
+          "jersey_number": {
+            "type": "integer",
+            "description": "Squad or shirt number"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "starter",
+              "rotation",
+              "bench",
+              "reserve",
+              "captain",
+              "vice_captain",
+              "practice_squad",
+              "taxi",
+              "injured_reserve"
+            ],
+            "description": "Standing on the team. captain and vice_captain are starters with the armband; practice_squad and taxi are non-active squads in American football and fantasy. injured_reserve is a reserve list that removes the player from the active roster; no reason is ever recorded."
+          },
+          "arrangement": {
+            "type": "string",
+            "enum": [
+              "contract",
+              "two_way",
+              "loan",
+              "representative",
+              "trial",
+              "substitute",
+              "amateur",
+              "volunteer",
+              "scholarship",
+              "fantasy_roster",
+              "unknown"
+            ],
+            "description": "contract for pros; two_way for a contract split between a senior team and its affiliate; loan for a loanee (parent team on a second, open PLAYS_FOR edge); representative for a national, state or select side held alongside a club edge; trial for a player on trial for a contract; substitute for a one-off or occasional fill-in from outside the roster (edge opens and closes on the match date, or stays open for a regular pick-up player); amateur or volunteer for rec and club players; fantasy_roster for a fantasy team."
+          },
+          "availability": {
+            "type": "string",
+            "enum": [
+              "available",
+              "unavailable",
+              "suspended",
+              "doubtful",
+              "unknown"
+            ],
+            "description": "Whether they can play right now. Never attach a medical reason; suspended is for disciplinary bans, and the ban's terms go in lore on the person."
+          },
+          "slot": {
+            "type": "string",
+            "description": "Fantasy only: the lineup slot they fill this week (QB, RB1, FLEX, BN, IR). Sport pack lists them."
+          },
+          "acquired_via": {
+            "type": "string",
+            "description": "How they arrived: draft, auction, keeper, trade, transfer, free_agent, waiver, academy, signup, loan, unknown"
+          },
+          "fee": {
+            "type": "string",
+            "description": "Transfer fee or contract value as text, e.g. £45m, $2.1M/yr, undisclosed"
+          },
+          "depth_order": {
+            "type": "integer",
+            "description": "1 for the first-string player at the position, 2 for the backup, and so on; a line or pair number in ice hockey. The pack says how it maps to labels like QB1 or WR3."
+          },
+          "roster_list": {
+            "type": "string",
+            "description": "Which of the team's lists the player counts against, in the pack's vocabulary: active, expanded, forty_man, practice_squad, injured_reserve, il_10, il_60, ltir, two_way, restricted, taxi. A list is a roster designation, never a reason; the reason for any unavailability is never recorded."
+          },
+          "availability_until": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO 8601 date the current availability value lapses, for suspensions and announced absences. A date only; no reason attached."
+          },
+          "contract_until": {
+            "type": "string",
+            "description": "Contract expiry as text: 2028-06-30, end of season, unknown."
+          },
+          "designation": {
+            "type": "string",
+            "description": "A roster category the league enforces, in the pack's vocabulary: designated_player, homegrown, franchise_tag, international_slot, keeper."
+          }
+        }
+      },
+      "display_order": 2,
+      "is_active": true
+    },
+    {
+      "type_name": "STAFF_OF",
+      "inverse_label": "has staff",
+      "label": "Staff Of",
+      "description": "A non-playing role at a team or competition: head coach, assistant, manager, GM, owner, commissioner, trainer, analyst, scout, team parent. One edge per spell; set ended when it finishes.",
+      "category": "roster",
+      "allowed_source_types": [
+        "person"
+      ],
+      "allowed_target_types": [
+        "team",
+        "competition"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "required": [
+          "role"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "head_coach",
+              "assistant_coach",
+              "coordinator",
+              "manager",
+              "general_manager",
+              "owner",
+              "president",
+              "director",
+              "commissioner",
+              "captain_organiser",
+              "trainer",
+              "analyst",
+              "scout",
+              "equipment",
+              "team_parent",
+              "treasurer",
+              "other"
+            ],
+            "description": "manager is the soccer-style boss or the rec-team organiser; captain_organiser is the rec player who also runs the team (they get a PLAYS_FOR edge too); commissioner runs a league, so target a competition."
+          },
+          "title": {
+            "type": "string",
+            "description": "The exact title when the enum is too coarse: Offensive Coordinator, Bowling Coach, Director of Football"
+          },
+          "unit": {
+            "type": "string",
+            "description": "What they coach when it matters: offense, defense, special_teams, goalkeeping, batting, bowling, fielding"
+          }
+        }
+      },
+      "display_order": 3,
+      "is_active": true
+    },
+    {
+      "type_name": "PLAYED_IN",
+      "inverse_label": "had player",
+      "label": "Played In",
+      "description": "A player appeared in a match (or was in the squad and did not play). One edge per player per match. Numbers go on a stat_line, not here; this edge says who was there, for which side, and in what capacity. In individual sports the COMPETED_IN edge from the person is the appearance and no PLAYED_IN edge is needed. A team source is only a fantasy team unit in a matchup.",
+      "category": "participation",
+      "allowed_source_types": [
+        "person",
+        "team"
+      ],
+      "allowed_target_types": [
+        "event"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "required": [],
+        "properties": {
+          "for_team": {
+            "type": "string",
+            "description": "Slug of the team they played for in this match, e.g. team/riverside_rovers; in a pickup game with no team entities, the side label the pack names (shirts, skins). Required whenever both sides' players link to the same event; blank only in individual sports."
+          },
+          "started": {
+            "type": "boolean",
+            "description": "true if in the starting lineup"
+          },
+          "played": {
+            "type": "boolean",
+            "description": "false for an unused substitute or inactive; defaults to true"
+          },
+          "position": {
+            "type": "string",
+            "description": "Position in this match, when it differs from the roster position"
+          },
+          "minutes": {
+            "type": "number",
+            "description": "Minutes played, for sports that count them"
+          },
+          "entered_at": {
+            "type": "string",
+            "description": "When a substitute came on: 67', 3rd inning, Q4"
+          },
+          "lineup_order": {
+            "type": "integer",
+            "description": "Batting order or lineup slot"
+          },
+          "jersey_number": {
+            "type": "integer",
+            "description": "Number worn in this match if it differs from the roster number"
+          },
+          "captain": {
+            "type": "boolean",
+            "description": "true if captain on the day"
+          },
+          "slot": {
+            "type": "string",
+            "description": "Fantasy only: the lineup slot the player filled in this matchup (QB, RB, FLEX, BN, IR), from the pack's slot list. started is true for any slot that scores."
+          },
+          "left_at": {
+            "type": "string",
+            "description": "When the player left the field: 67', Q3, 5th inning. Blank if they finished the match."
+          },
+          "replaced_by": {
+            "type": "string",
+            "description": "Slug of the player who replaced this one in the match (substitute, impact player, like-for-like replacement). The reason is never recorded."
+          },
+          "temporary": {
+            "type": "boolean",
+            "description": "true when this appearance was a temporary replacement and the player it replaced later returned. The reason is never recorded."
+          }
+        }
+      },
+      "display_order": 4,
+      "is_active": true
+    },
+    {
+      "type_name": "COMPETED_IN",
+      "inverse_label": "had team",
+      "label": "Competed In",
+      "description": "A team, or in individual sports a person, took part in a match. Exactly two edges per match in two-sided sports, with side saying which was home (or first-named). The score stays on the event; this edge says who and which side. On the edge to a parent tournament event it also carries that tournament's group, seed and final placing.",
+      "category": "participation",
+      "allowed_source_types": [
+        "team",
+        "person"
+      ],
+      "allowed_target_types": [
+        "event"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "required": [
+          "side"
+        ],
+        "properties": {
+          "side": {
+            "type": "string",
+            "enum": [
+              "home",
+              "away",
+              "neutral_first",
+              "neutral_second"
+            ],
+            "description": "home or away; at a neutral site use neutral_first for the first-named team (whose score is home_score) and neutral_second for the other"
+          },
+          "result": {
+            "type": "string",
+            "enum": [
+              "win",
+              "loss",
+              "draw",
+              "tie",
+              "no_result",
+              "pending"
+            ],
+            "description": "This team's result, mirroring the event's result from this team's point of view, so a team's record can be read from its edges"
+          },
+          "formation": {
+            "type": "string",
+            "description": "Starting formation when tracked: 4-3-3, 3-4 defense"
+          },
+          "group": {
+            "type": "string",
+            "description": "Only on the edge to a parent tournament event: the pool or group the side was drawn into for that tournament (Pool C)."
+          },
+          "seed": {
+            "type": "integer",
+            "description": "Only on the edge to a parent tournament event: the side's seed in that tournament."
+          },
+          "final_rank": {
+            "type": "integer",
+            "description": "Only on the edge to a parent tournament event: where the side finished in that tournament, 1 for the winner."
+          }
+        }
+      },
+      "display_order": 5,
+      "is_active": true
+    },
+    {
+      "type_name": "OFFICIATED",
+      "inverse_label": "officiated by",
+      "label": "Officiated",
+      "description": "A person officiated a match: referee, umpire, assistant, scorer, TMO, VAR. A team source is a work team on officiating duty at a club tournament (role work_team).",
+      "category": "participation",
+      "allowed_source_types": [
+        "person",
+        "team"
+      ],
+      "allowed_target_types": [
+        "event"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "required": [
+          "role"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "description": "Sport-pack vocabulary: referee, assistant_referee, fourth_official, var, crew_chief, umpire, down_judge, linesman, plate_umpire, base_umpire, on_field_umpire, third_umpire, match_referee, tmo, chair_umpire, line_judge, scorer, work_team"
+          }
+        }
+      },
+      "display_order": 6,
+      "is_active": true
+    },
+    {
+      "type_name": "INVOLVED_IN",
+      "inverse_label": "involved",
+      "label": "Involved In",
+      "description": "A person or team was part of a non-match event: drafted, traded, transferred, signed, released, honoured, present at a meeting. Which side of it they were on is the role.",
+      "category": "participation",
+      "allowed_source_types": [
+        "person",
+        "team"
+      ],
+      "allowed_target_types": [
+        "event"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "required": [
+          "role"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "subject",
+              "from_team",
+              "to_team",
+              "drafting_team",
+              "drafted",
+              "traded_away",
+              "acquired",
+              "signed",
+              "released",
+              "honoured",
+              "attendee",
+              "host",
+              "other"
+            ],
+            "description": "subject: the person the event is about. from_team and to_team: the two clubs in a transfer or trade. drafting_team and drafted: a draft pick. traded_away and acquired: each player's direction in a trade. honoured: award recipient."
+          },
+          "detail": {
+            "type": "string",
+            "description": "Pick number, fee, contract length, award name, or whatever the role needs: Pick 1.07, £45m, 4 years, Top Scorer"
+          }
+        }
+      },
+      "display_order": 7,
+      "is_active": true
+    },
+    {
+      "type_name": "HELD_AT",
+      "inverse_label": "hosted",
+      "label": "Held At",
+      "description": "An event took place at a venue.",
+      "category": "place",
+      "allowed_source_types": [
+        "event"
+      ],
+      "allowed_target_types": [
+        "venue"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Which field, pitch, court or diamond inside the venue: Field 3, Court B"
+          }
+        }
+      },
+      "display_order": 8,
+      "is_active": true
+    },
+    {
+      "type_name": "HOME_VENUE",
+      "inverse_label": "home of",
+      "label": "Home Venue",
+      "description": "A team's home ground. Set ended and add a new edge when a team moves.",
+      "category": "place",
+      "allowed_source_types": [
+        "team"
+      ],
+      "allowed_target_types": [
+        "venue"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 9,
+      "is_active": true
+    },
+    {
+      "type_name": "STAT_OF",
+      "inverse_label": "has stat line",
+      "label": "Stat Of",
+      "description": "Whose numbers a stat_line holds. Exactly one per stat_line.",
+      "category": "stats",
+      "allowed_source_types": [
+        "stat_line"
+      ],
+      "allowed_target_types": [
+        "person",
+        "team"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 10,
+      "is_active": true
+    },
+    {
+      "type_name": "RECORDED_IN",
+      "inverse_label": "has stat line",
+      "label": "Recorded In",
+      "description": "The match or season a stat_line covers. At most one per stat_line; career lines have none.",
+      "category": "stats",
+      "allowed_source_types": [
+        "stat_line"
+      ],
+      "allowed_target_types": [
+        "event",
+        "season"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 11,
+      "is_active": true
+    },
+    {
+      "type_name": "WON",
+      "inverse_label": "won by",
+      "label": "Won",
+      "description": "An honour: a team won a season or match (title, cup, final), or a person won an award tied to a season or match (most valuable player, top scorer, player of the match). The honour's name is on the edge.",
+      "category": "honours",
+      "allowed_source_types": [
+        "person",
+        "team"
+      ],
+      "allowed_target_types": [
+        "season",
+        "event"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "required": [
+          "title"
+        ],
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Champion, Runner-up, Most Valuable Player, Top Scorer, Player of the Match, Fantasy Champion, Last Place (the trophy nobody wants)"
+          },
+          "detail": {
+            "type": "string",
+            "description": "Vote count, record, margin or anything worth one line"
+          }
+        }
+      },
+      "display_order": 12,
+      "is_active": true
+    },
+    {
+      "type_name": "RIVAL_OF",
+      "inverse_label": "rival of",
+      "label": "Rival Of",
+      "description": "Two teams (or two fantasy managers' teams, or two players) with a rivalry worth tracking. The story goes in lore on either side.",
+      "category": "honours",
+      "allowed_source_types": [
+        "team",
+        "person"
+      ],
+      "allowed_target_types": [
+        "team",
+        "person"
+      ],
+      "is_symmetric": true,
+      "property_schema": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "What the rivalry is called, if it has a name: the Derby, the Grudge Match"
+          }
+        }
+      },
+      "display_order": 13,
+      "is_active": true
+    },
+    {
+      "type_name": "APPLIES_TO",
+      "inverse_label": "governed by",
+      "label": "Applies To",
+      "description": "A rule governs an entity. Sport-pack vocabulary rules apply to their competitions, so the AI can find the right vocabulary from any competition.",
+      "category": "governance",
+      "allowed_source_types": [
+        "rule"
+      ],
+      "allowed_target_types": null,
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "properties": {}
+      },
+      "display_order": 14,
+      "is_active": true
+    }
+  ]
+}

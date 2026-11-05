@@ -1,0 +1,720 @@
+{
+  "entities": [
+    {
+      "entity_type": "competition",
+      "name": "Pro League (32 teams, two conferences)",
+      "slug": "competition/pro_league_32_teams_two_conferences",
+      "data": {
+        "tags": [
+          "american_football",
+          "competition",
+          "league-shape"
+        ],
+        "properties": {
+          "sport": "american_football",
+          "level": "pro",
+          "format": "league_playoffs",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "scoring_system": "win_loss"
+        },
+        "short_description": "Placeholder for a national professional American football league: 32 teams in two conferences of four divisions, 17-game regular season over 18 weeks, 14-team playoffs. Onboarding renames this and every Team N."
+      },
+      "lore": [
+        {
+          "title": "Structure",
+          "content": "Conference A and Conference B, each with East, North, South and West divisions of four teams. This file seeds no season, so no COMPETES_IN edges. When onboarding creates the first season it gives each team a COMPETES_IN edge with conference \"Conference A\" or \"Conference B\" and group the division alone (\"West\"), read from the team's tags (conference-a, division-west), which stay as the team's standing membership. Rename the competition, the teams (full name, short_name, abbreviation, city) and the conferences to what the owner's league uses; the tags can stay. Vocabulary: rule/sport_american_football; weekly routine: rule/american_football_game_week.",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 1",
+      "slug": "team/team_1",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 1",
+          "abbreviation": "T1"
+        },
+        "short_description": "Placeholder franchise, Conference A East. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 2",
+      "slug": "team/team_2",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 2",
+          "abbreviation": "T2"
+        },
+        "short_description": "Placeholder franchise, Conference A East. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 3",
+      "slug": "team/team_3",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 3",
+          "abbreviation": "T3"
+        },
+        "short_description": "Placeholder franchise, Conference A East. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 4",
+      "slug": "team/team_4",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 4",
+          "abbreviation": "T4"
+        },
+        "short_description": "Placeholder franchise, Conference A East. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 5",
+      "slug": "team/team_5",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 5",
+          "abbreviation": "T5"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 6",
+      "slug": "team/team_6",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 6",
+          "abbreviation": "T6"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 7",
+      "slug": "team/team_7",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 7",
+          "abbreviation": "T7"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 8",
+      "slug": "team/team_8",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 8",
+          "abbreviation": "T8"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 9",
+      "slug": "team/team_9",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 9",
+          "abbreviation": "T9"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 10",
+      "slug": "team/team_10",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 10",
+          "abbreviation": "T10"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 11",
+      "slug": "team/team_11",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 11",
+          "abbreviation": "T11"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 12",
+      "slug": "team/team_12",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 12",
+          "abbreviation": "T12"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 13",
+      "slug": "team/team_13",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 13",
+          "abbreviation": "T13"
+        },
+        "short_description": "Placeholder franchise, Conference A West. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 14",
+      "slug": "team/team_14",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 14",
+          "abbreviation": "T14"
+        },
+        "short_description": "Placeholder franchise, Conference A West. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 15",
+      "slug": "team/team_15",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 15",
+          "abbreviation": "T15"
+        },
+        "short_description": "Placeholder franchise, Conference A West. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 16",
+      "slug": "team/team_16",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 16",
+          "abbreviation": "T16"
+        },
+        "short_description": "Placeholder franchise, Conference A West. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 17",
+      "slug": "team/team_17",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 17",
+          "abbreviation": "T17"
+        },
+        "short_description": "Placeholder franchise, Conference B East. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 18",
+      "slug": "team/team_18",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 18",
+          "abbreviation": "T18"
+        },
+        "short_description": "Placeholder franchise, Conference B East. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 19",
+      "slug": "team/team_19",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 19",
+          "abbreviation": "T19"
+        },
+        "short_description": "Placeholder franchise, Conference B East. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 20",
+      "slug": "team/team_20",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-east"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 20",
+          "abbreviation": "T20"
+        },
+        "short_description": "Placeholder franchise, Conference B East. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 21",
+      "slug": "team/team_21",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 21",
+          "abbreviation": "T21"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 22",
+      "slug": "team/team_22",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 22",
+          "abbreviation": "T22"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 23",
+      "slug": "team/team_23",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 23",
+          "abbreviation": "T23"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 24",
+      "slug": "team/team_24",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 24",
+          "abbreviation": "T24"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 25",
+      "slug": "team/team_25",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 25",
+          "abbreviation": "T25"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 26",
+      "slug": "team/team_26",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 26",
+          "abbreviation": "T26"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 27",
+      "slug": "team/team_27",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 27",
+          "abbreviation": "T27"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 28",
+      "slug": "team/team_28",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 28",
+          "abbreviation": "T28"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 29",
+      "slug": "team/team_29",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 29",
+          "abbreviation": "T29"
+        },
+        "short_description": "Placeholder franchise, Conference B West. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 30",
+      "slug": "team/team_30",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 30",
+          "abbreviation": "T30"
+        },
+        "short_description": "Placeholder franchise, Conference B West. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 31",
+      "slug": "team/team_31",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 31",
+          "abbreviation": "T31"
+        },
+        "short_description": "Placeholder franchise, Conference B West. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 32",
+      "slug": "team/team_32",
+      "data": {
+        "tags": [
+          "american_football",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-west"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 32",
+          "abbreviation": "T32"
+        },
+        "short_description": "Placeholder franchise, Conference B West. Rename at onboarding."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "rule/sport_american_football",
+      "target_id": "competition/pro_league_32_teams_two_conferences",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    },
+    {
+      "source_id": "rule/american_football_game_week",
+      "target_id": "competition/pro_league_32_teams_two_conferences",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

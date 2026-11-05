@@ -21,6 +21,7 @@ Portable apps a template bundles (ones that work in any world, like the movie an
 | [Commonplace Book](commonplace-book/) | A personal commonplace book for ideas, quotes, observations, questions, and links, captured fast in your own words and tied to their sources. Ships its own Building Blocks (four kinds, four connections) instead of the default schema. |
 | [Event Workspace](event-workspace/) | A one-world-per-event planning workspace for galas, conferences, and parties, shareable with that event's client and staff. Six mini apps cover the brief, vendors, guests, budget, run of show, and deadlines. |
 | [Agent Team Workspace](agent-team-workspace/) | A shared workspace where several AI agents, from any vendor, work on one goal you set: they divide it up, keep each other posted, and check each other's work. Ships its own Building Blocks (six kinds, six connections) and a leaderless coordination protocol as its instructions, and is also offered as a built-in starting template on Standard plans and up. |
+| [Sports World](sports-world/) | Any sport, any level: competitions, seasons, teams, people, matches, venues and stats for a pro league you follow, a rec team you play on, or a fantasy league, in one world. Ships its own Building Blocks (eight kinds, fifteen connections), a shared fantasy app and ten sport packs, and is also offered as a built-in starting template on every plan. |
 
 ## Installing a template
 

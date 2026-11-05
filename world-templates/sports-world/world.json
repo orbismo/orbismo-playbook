@@ -1,0 +1,453 @@
+{
+  "entities": [
+    {
+      "entity_type": "rule",
+      "name": "Core Model",
+      "slug": "rule/core_model",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "guidance",
+          "trigger": "every session, before any other work in this world",
+          "scope": "world",
+          "priority": 200,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "What goes where. Read at the start of every session: the kinds, the edges, the one-home-per-fact map, and how a sport pack plugs in."
+      },
+      "lore": [
+        {
+          "title": "The eight kinds",
+          "content": "competition: the standing thing (a national pro league, a top-flight football league, our fantasy league, the Tuesday co-ed softball league). One per competition, never per year.\nseason: one edition of a competition. PART_OF its competition. Everything that happens in a year hangs off it.\nteam: a side, for its whole life. Enters a season with COMPETES_IN. A fantasy team is a team with team_type fantasy; its roster is real players on PLAYS_FOR edges with arrangement fantasy_roster.\nperson: a player, coach, official, executive, staff member or fantasy manager. What they do for a team is on PLAYS_FOR (playing) and STAFF_OF (everything else). A player-coach has both edges.\nevent: anything dated. event_type match is the main case; drafts, trades, transfers, signings, releases, tryouts, awards and meetings are the rest. Scores live on match events only.\nvenue: a physical place. Teams point at it with HOME_VENUE, events with HELD_AT.\nstat_line: a block of numbers about one subject (STAT_OF a person or team) in one context (RECORDED_IN a match or season; career lines have none).\nrule: guidance for you, including each sport pack's vocabulary.",
+          "display_index": 0
+        },
+        {
+          "title": "The fifteen connections and where each fact lives",
+          "content": "PART_OF: season→competition (or season→season for a tournament edition inside a tour year), event→season and/or event→parent event (a tournament, tie or series inside the season, when the match counts for both), team→team (reserve or merged side → senior side).\nCOMPETES_IN team→season (or person→season in individual sports): carries conference, group/division, seed, entry, final_rank, outcome, status.\nPLAYS_FOR person→team (or team→fantasy team for a defence unit): carries position, jersey_number, depth_order, role, roster_list, arrangement, availability, availability_until, slot (fantasy), acquired_via, fee, contract_until, designation, plus started/ended dates.\nSTAFF_OF person→team or competition: carries role, title, unit, plus started/ended.\nPLAYED_IN person→event: who appeared, for_team (required when teams exist), started, minutes, entered_at, left_at, replaced_by, temporary, lineup_order, slot (fantasy), position on the day. Not used in individual sports, where the COMPETED_IN edge is the appearance.\nCOMPETED_IN team→event (or person→event in individual sports): side (home/away/neutral_first/neutral_second), that side's result, formation; on an edge to a parent tournament event also that tournament's group, seed, final_rank.\nOFFICIATED person→event (or a work team→event): role.\nINVOLVED_IN person or team→event: role in a non-match event (traded_away, acquired, to_team, drafted, honoured...), detail.\nHELD_AT event→venue (field). HOME_VENUE team→venue.\nSTAT_OF stat_line→person or team. RECORDED_IN stat_line→event or season.\nWON person or team→season or event: title (Champion, MVP, Player of the Match).\nRIVAL_OF team↔team or person↔person.\nAPPLIES_TO rule→anything; every sport pack APPLIES_TO each competition in its sport.\nUse only these. A fantasy competition has two APPLIES_TO edges: rule/app_fantasy and the real sport's pack. The platform's built-in semantic predicates (inspired_by, rules_over and so on) are not part of this world.",
+          "display_index": 1
+        },
+        {
+          "title": "Finding the sport pack",
+          "content": "Every competition has exactly one sport pack rule pointing at it with APPLIES_TO. To work on anything under a competition, find the pack: query_relationships on the competition, relationship type APPLIES_TO, and read the rule whose slug starts with rule/sport_. The pack lists positions, stat keys, stages, decided_by values, match_format values, roster rules and default tiebreakers; a competition's House rules lore chunk overrides the pack for that competition. If a competition has no pack, stop and follow rule/sport_packs before recording anything in it.\nA world can hold several sports at once. Tags keep them apart: every entity carries its sport code tag (american_football, soccer, cricket, softball) and every match carries its season tag. When a person appears in two sports (a real pro player who is also on a fantasy roster is one person, one sport; a person who plays softball and coaches soccer is one person, two sport tags), it is still one person.",
+          "display_index": 2
+        },
+        {
+          "title": "Session start",
+          "content": "1. get_world_context, then this rule.\n2. search_entities entity_type competition. None: follow rule/onboarding. Otherwise note which competitions exist and which seasons are active (search_entities entity_type season, filter properties.status eq active).\n3. If the owner's first message names a competition, team or person, search for it before replying. If it is ambiguous which competition they mean and more than one is active, ask once.\n4. Greet with what is live: \"The Rovers are 7-2 after Week 9, your fantasy team is 5-4, and softball has a doubleheader Tuesday.\" Read season stat_lines (scope season, subject_kind team) for the records; do not recompute a whole table just to say hello.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Onboarding",
+      "slug": "rule/onboarding",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "workflow",
+          "trigger": "first session; no competition exists; the owner wants to start tracking a new league, team, season or fantasy league",
+          "scope": "competition, season, team, venue, person",
+          "priority": 100,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "First session, or adding a new competition: pick the sport pack, create the competition, its current season, its teams and home venues, and the owner's own team if they have one."
+      },
+      "lore": [
+        {
+          "title": "The conversation",
+          "content": "Ask what they want to track, in their words. Most answers fall into one of: a pro league they follow (a national American football league, a football (soccer) league, international cricket), a team they are on or run (rec softball, a Sunday-league soccer side, a club cricket XI), or a fantasy league. One world can hold more than one; take them one at a time.\nThen, one question at a time, get: the sport (to choose the pack), what the competition is called and who runs it, the current season's label and roughly when it runs, the teams (all of them for a league they follow; at least their own and this week's opponent for a team they play on), and whether they want player-level stats or just results. Do not demand the full league on day one. A rec player who only wants their own team's games and their own batting line is a complete setup.",
+          "display_index": 0
+        },
+        {
+          "title": "What to create, in order",
+          "content": "1. Confirm the sport pack exists: search_entities entity_type rule, query \"sport <code>\". Missing: follow rule/sport_packs first.\n2. competition: name, sport, level, format, match_format when the sport has several, governing_body, region, scoring_system from the pack's defaults. Tiebreakers: ask whether the owner knows the competition's published order; if so, write it in a lore chunk on the competition titled House rules, otherwise note that the pack's default applies. Tag it with the sport code. Then APPLIES_TO from the pack rule to the competition.\n3. season: label, status (upcoming or active), start_date, end_date if known, stage, rounds_total. PART_OF the competition. Tag it with the sport code and its own season tag (e.g. league-2026-27, softball-spring-2026).\n4. teams: one each, team_type and status, short_name, abbreviation. COMPETES_IN the season with conference and group when the league has them. In an individual sport the entrants are persons and they COMPETES_IN the season themselves. A generic league shape (a 32-team two-conference league, a group-then-knockout cup, an individual tour) may already hold placeholder teams: rename them rather than creating new ones. Tag with the sport code. The owner's own team also gets the tag mine.\n5. venues: the home grounds the owner names. HOME_VENUE from each team.\n6. the owner as a person, if they play, coach or manage: primary_role, PLAYS_FOR or STAFF_OF their team, tag mine.\nConfirm before creating when the list runs past eight (a full 32-team or 20-club league always will): show the plan, create on a yes, and create in batches of up to 100 with skip_existing true.",
+          "display_index": 1
+        },
+        {
+          "title": "Fantasy leagues",
+          "content": "A fantasy league is a competition with level fantasy, sport the real sport's code, and format league_playoffs (most) or league, with two APPLIES_TO edges: rule/app_fantasy and the real sport's pack. Its season is the fantasy season (label 2026, rounds_total 14 or 17). Each manager's roster is a team with team_type fantasy; the manager is a person with primary_role fantasy_manager and a STAFF_OF edge with role owner. The real players are persons who also PLAYS_FOR their real club (install the real sport's pack and create its teams too, at least the ones the roster needs). Weekly matchups are match events between fantasy teams, PART_OF the fantasy season, with round Week N and home_score/away_score as fantasy points. rule/app_fantasy has the roster, lineup, waiver, trade, matchup and standings workflows; the sport pack's Fantasy chunk has the slots, scoring table and category lists.",
+          "display_index": 2
+        },
+        {
+          "title": "Finishing",
+          "content": "When the structure is in, say what is on the books in one short paragraph and ask what to log first: the next fixture, last week's result, or the roster. Set each season's status to active once a match has been played.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Recording a Match",
+      "slug": "rule/recording_a_match",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "workflow",
+          "trigger": "any match, game, fixture, matchup, scrimmage, friendly or final: scheduling, scores, lineups, box scores, postponements, forfeits",
+          "scope": "event, venue, person, team, stat_line",
+          "priority": 100,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "Scheduling a match, logging its result, who played, who officiated, and what happened. Covers games, fixtures, fantasy matchups, postponements, forfeits and multi-day matches."
+      },
+      "lore": [
+        {
+          "title": "One match, one event",
+          "content": "Search first: search_entities entity_type event with the two team names and the date; also check the season's fixtures for that round, since a postponed match keeps its entity and gets a new date. Create a match only when nothing matches.\nCreate the event with event_type match, status, date_year/month/day (date_hour and date_minute when known), stage and round from the pack's vocabulary, and name it per the world instructions. Give it a one-line short_description with both sides and, once played, the result (\"Rovers 3, Hawks 1, Week 4\"): search_entities matches on name and description, and a match described only as \"Week 4\" is invisible to a head-to-head search. PART_OF the season. HELD_AT the venue (field when the venue has several). One COMPETED_IN edge per side (team, or person in individual sports) with side; at a neutral site use neutral_first and neutral_second and set neutral_site true. Set match_format on the event only when it differs from the competition's. Tag: the sport code, the season tag, and match.\nA match in a tournament inside a season (a cup round, a weekend tournament, a tie's rubber) is PART_OF the parent event, and also PART_OF the season when it counts in the season's table. A series that is the whole competition between two sides (a bilateral tour) is not a parent event but a season of a competition with format series; the pack says which.",
+          "display_index": 0
+        },
+        {
+          "title": "Scoring it",
+          "content": "When the result comes in: status completed, home_score and away_score as the pack's single number (points, goals, runs, sets won), periods when the pack keeps set, innings or line scores, score_display when the numbers alone lose meaning (cricket always; penalties; overtime), result from the event's point of view, decided_by when it was not settled in regulation, margin_type and margin when the pack defines them, toss_won_by and toss_decision when the sport has a toss. Then set result on each COMPETED_IN edge from that side's point of view (win/loss/draw/tie/no_result).\nTies and draws: the pack says which the sport uses. Equal scores with decided_by regulation or extra_time are a draw; equal scores with decided_by penalties, shootout or super_over are a win for the side the pack names, and score_display carries the shootout. For W-D-L records the pack says whether a shootout loss counts as a draw or a loss.\nForfeits and walkovers: status forfeited (or completed with decided_by walkover, retired or default where the pack prefers), the awarded score in the score fields (the pack says what, e.g. 7-0 softball, 3-0 football), result accordingly, and why in lore only when the reason is not medical; a retirement or walkover never carries a reason.\nPostponed (never started): status postponed, keep the entity, move the date when it is rescheduled, note the original date in lore. Suspended (started, resumes later from the point of stoppage): keep the one event, status suspended, end_date the day it finished, both dates in score_display, stat lines accumulate on it, and the result counts in standings on the completion date. Abandoned (started, will not resume): status abandoned, result no_result unless the pack awards one (a rain rule, a par score), the position when play stopped in score_display; a replay ordered from scratch is a new event with round Replay that names the original in lore, and the pack says whether anything from the abandoned match counts. Never create a second event for a postponement.",
+          "display_index": 1
+        },
+        {
+          "title": "Who played",
+          "content": "Only when the owner wants lineups (ask once per competition; remember the answer as a tag on the competition: lineups-tracked). One PLAYED_IN edge per player per match with for_team (the team slug, required), started, played false for unused subs, minutes where the sport counts them, lineup_order for batting orders, position on the day if it differs from the roster.\nPlayers on a side's lineup must have a PLAYS_FOR edge, open on the match date, to that team or to a team it is PART_OF (a club's first XI, reserves and veterans share the club roster). If not, ask whether they joined (then add the roster edge, started on the match date, acquired_via unknown) or were a one-off ringer (then PLAYS_FOR with arrangement substitute, ended the same day). Substitutions: entered_at on the incoming player, left_at and replaced_by on the outgoing one, temporary true on a replacement whose player later returned; never a reason. In individual sports there is no PLAYED_IN edge: the person's COMPETED_IN edge is the appearance.\nOfficials: OFFICIATED with role from the pack, only when the owner names them.",
+          "display_index": 2
+        },
+        {
+          "title": "Numbers and the story",
+          "content": "Scores belong on the event. Everything else numeric (a player's yards, a bowler's figures, a batter's line, team totals beyond the score, fantasy points per player) goes on stat_lines per rule/stats, never in the event's properties or lore.\nThe story (key plays, a controversial call, the weather, who brought the orange slices, the fantasy trash talk) goes in lore on the event, one chunk per subject, titled plainly: Summary, Key moments, Conditions, Notes. Keep the owner's wording; your own additions are in a chunk titled Agent note.\nA Player of the Match or similar: WON from the person to the event with title.",
+          "display_index": 3
+        },
+        {
+          "title": "Multi-day and multi-leg",
+          "content": "A Test match, a two-leg tie or a best-of series: the match event carries date_* of day one and end_date of the last day. For a two-leg tie create one event per leg (round Leg 1, Leg 2) PART_OF a parent event for the tie, whose score_display holds the aggregate and whose result is the tie's outcome. A best-of series inside a season (a playoff series) is a parent event (event_type match, stage from the pack, score_display 4-2) with one child event per game (round Game N). A team tie made of rubbers works the same way, with each rubber a child event. A tournament that is one of several in a season is a parent event too: the sides get a COMPETED_IN edge to it carrying that tournament's group, seed and final_rank.",
+          "display_index": 4
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Stats",
+      "slug": "rule/stats",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "workflow",
+          "trigger": "any number about a player or team beyond the match score: box scores, totals, averages, records, leaders, fantasy points, projections",
+          "scope": "stat_line, person, team, event, season",
+          "priority": 100,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "Stat lines: match box scores, weekly fantasy points, season totals, career totals and splits. How to store them, aggregate them, derive rates and keep them honest."
+      },
+      "lore": [
+        {
+          "title": "One line per subject per context",
+          "content": "A stat_line is STAT_OF one person or team and RECORDED_IN one match or season (career lines have no RECORDED_IN; a split names its slice in split_label and has one only when the slice lies inside one match or season; a segment line names its innings, set or period in segment and is RECORDED_IN the match). Before creating, search_entities entity_type stat_line with the subject's name and the context; if it exists, update it. Never two lines for the same subject and context.\nRequired: scope, subject_kind, stats, completeness, and for player lines for_team when the person has more than one open roster edge. for_team is part of a player line's context: a player who appears for two teams in one season has one season line per team, and their club-wide total is the sum. source says where the numbers came from; as_of is required on season and career lines. Name it <Subject> — <Context>, and give it a one-line short_description with the headline numbers (\"17/24, 212 yds, 3 TD\"; \"4-0-18-2\"; \"28 pts, 11 reb\"): it costs nothing, search previews read it, and audit_world stops flagging the line. Tag: the sport code, stats, the season tag for match and season lines, and the subject's slug fragment (e.g. sam-k) so a player's lines are one tag away.",
+          "display_index": 0
+        },
+        {
+          "title": "Keys come from the pack",
+          "content": "The keys inside stats are the sport pack's stat vocabulary, exactly as spelled there, lowercase snake_case. If the owner gives a number the pack has no key for, ask whether to add the key to the pack (then add it to the pack's lore, under Extended keys, before using it) or to keep it as a note in lore. Never invent a key, never store the same quantity under two names, never store text in stats.\nKeys start with a letter (fg3m, not 3pm). Durations are seconds under a key ending _seconds, never mm:ss text; when the pack lists minutes or time on ice as a stat key, playing time lives there and PLAYED_IN.minutes stays empty for that sport. Counting stats (yards, goals, runs, wickets, strikeouts) are stored. Rate stats (average, economy, completion percentage, ERA) are stored only when the pack lists them as stored; otherwise derive them when asked and say so. A rate stat in a season line that the owner typed in (a published batting average) is stored with source official or owner and the components left null if unknown.",
+          "display_index": 1
+        },
+        {
+          "title": "Aggregating",
+          "content": "A season line is the sum of the match lines when the owner tracks every match, and a typed-in total otherwise. When you build or update a season line from match lines: a null is skipped, never treated as zero; a season line built from any partial match line gets completeness partial, and its Derived from chunk names the keys that are incomplete and the matches they are missing from; derive a rate stat only over the matches where every component is non-null and say how many that is. Match lines tagged exhibition, or RECORDED_IN an event with stage exhibition or friendly, are never summed into a season line unless asked. Set source derived, games_played to the number of match lines, as_of to the latest match date, and list the match lines you summed in a lore chunk titled Derived from. When you later add a match line to that season, update the derived season line in the same breath.\nA season line with source official or owner is the owner's truth; do not overwrite it with your own sum. If your sum disagrees, say so with both numbers and ask which to keep.\nCareer lines: source derived from season lines, same rules, games_played the total.\nFantasy: a player's weekly fantasy points are a match-scope line on the real player, RECORDED_IN the fantasy matchup event (not the real match), with stats {fantasy_points, projected_points} plus whatever real stats the owner wants. A fantasy team's weekly total is the matchup's home_score/away_score, not a stat_line; a round-scope team line may hold numbers that are not the score (optimal lineup points, bench points, weekly category totals). rule/app_fantasy has the detail.",
+          "display_index": 2
+        },
+        {
+          "title": "Leaders and records",
+          "content": "To answer \"who leads the league in X\": search_entities entity_type stat_line, filter path properties.stats.<key> operator gte value 0 cast numeric, scoped to the season tag and scope season, then sort yourself. State how many lines you compared and the as_of date of the oldest one. For records across seasons use career or season lines, never match lines summed on the fly unless asked.\nWhen the owner asks for something the stored lines cannot answer (a split nobody logged), say so plainly rather than estimating.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Rosters and Staff",
+      "slug": "rule/rosters_and_staff",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "workflow",
+          "trigger": "who is on a team; positions; jersey numbers; captains; availability; signing, releasing, trading, transferring, loaning or drafting anyone; coaches, managers, owners, GMs, commissioners; waivers, free agents, lineups in fantasy",
+          "scope": "person, team, competition, event",
+          "priority": 100,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "Who is on a team and in what capacity: players, positions, numbers, availability; coaches, managers, owners, commissioners; signings, releases, trades, transfers, loans, draft picks and fantasy roster moves."
+      },
+      "lore": [
+        {
+          "title": "Roster edges",
+          "content": "A player on a team is one PLAYS_FOR edge per spell: started when they joined (season start if unknown), ended when they left, never deleted. position, secondary_positions, jersey_number, role, arrangement and availability live on the edge. A player who leaves and comes back gets a second edge.\nA loan is two open edges: PLAYS_FOR the loan club with arrangement loan, and the parent club's edge stays open with role reserve and a lore note on the person saying where they are. When the loan ends, end the loan edge and restore the parent edge's role. A player optioned or assigned to an affiliate that is PART_OF the parent team follows the same pattern; a two_way contract is one arrangement on the parent edge with the affiliate spells as loan edges when the owner tracks them.\nA national, state or select side is a second open edge with arrangement representative; the club edge stays untouched. Which list a player counts against (active, practice_squad, injured_reserve, forty_man...) is roster_list, in the pack's vocabulary, and depth_order is their place on the depth chart; neither ever carries a reason.\nA fantasy roster is PLAYS_FOR the fantasy team with arrangement fantasy_roster, slot for this week's lineup position, acquired_via draft, waiver, free_agent or trade. The real-club edge is separate and untouched.\nA dual-role person (player-coach, the rec captain who also runs the team) has both a PLAYS_FOR and a STAFF_OF edge. A team that changes its name stays one entity: update name and short_name, record former names in a lore chunk titled Former names, never create a second team.",
+          "display_index": 0
+        },
+        {
+          "title": "Staff edges",
+          "content": "STAFF_OF person→team for coaches, managers, GMs, owners, trainers, analysts, scouts and team parents; STAFF_OF person→competition for a commissioner, league secretary or referee coordinator. role is required from the enum; title holds the exact job name when the enum is coarse (Offensive Coordinator, Director of Football); unit says what they coach. One edge per spell, started/ended as for players. A head coach fired mid-season: end the edge on the date, open the interim's edge, log the change as an event with event_type staff_change and INVOLVED_IN edges (role subject for both people, role from_team for the team).",
+          "display_index": 1
+        },
+        {
+          "title": "Moves are events",
+          "content": "Every roster move the owner cares to record is an event, so it shows on the timeline, plus the edge changes it implies:\n- signing: event signing, INVOLVED_IN person role signed, team role to_team, detail with contract terms. Open a PLAYS_FOR edge, acquired_via free_agent (or draft, academy).\n- release or cut: event release, INVOLVED_IN person role released, team role from_team. End the edge; person status free_agent if no other open playing edge.\n- transfer (between clubs, soccer and cricket style): event transfer, INVOLVED_IN person role subject, old club from_team, new club to_team, detail the fee. End old edge, open new one with acquired_via transfer and fee.\n- trade (closed leagues and fantasy): one event trade, INVOLVED_IN each team (from_team/to_team is meaningless in a swap, so use role other with detail naming the side) and each player with role traded_away or acquired and detail naming the team they went to. Picks and cash in detail. End and open edges for each player.\n- draft pick: event draft for the draft itself (one event per draft, end_date for multi-day), INVOLVED_IN person role drafted with detail the pick (Round 1, Pick 7 or 1.07), team role drafting_team. Open the edge with acquired_via draft.\n- loan: event transfer with detail \"loan until <date>\", edges per the loan pattern above.\n- roster_move: any one-team move that changes a list or status without changing clubs (option, recall, activation, placement on a reserve list, waiver claim, call-up, loan return): event roster_move, INVOLVED_IN person role subject with detail naming the move in the pack's vocabulary, team role to_team; update roster_list or availability on the edge. A proposed move that is turned down (a vetoed trade, a lost waiver claim) keeps its event with status rejected and the verdict in lore.\nBatch the edges and the event in as few calls as possible, and confirm the plan first when a trade touches more than three players.",
+          "display_index": 2
+        },
+        {
+          "title": "Availability, suspensions, retirements",
+          "content": "availability on PLAYS_FOR is the only place fitness to play is recorded: available, unavailable, suspended, doubtful, unknown, with availability_until when the owner knows the date it lapses. Set it when the owner says someone is out and clear it when they are back. Never record why someone is unavailable when the reason is medical; a disciplinary suspension gets its terms (matches, dates, the offence as the league stated it) in lore on the person. A retiring player: end every open PLAYS_FOR edge, person status retired, an event with event_type other if the owner wants the date remembered.\nFantasy IR and bench are slots (IR, BN), not availability; the real player's availability is on their real-club edge if the owner tracks it, and the pack says how fantasy lineups treat it.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Seasons and Standings",
+      "slug": "rule/seasons_and_standings",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "workflow",
+          "trigger": "standings, table, record, playoff picture, seed, bracket, wildcard, promotion, relegation, champion, title, trophy, season over, new season, offseason",
+          "scope": "season, team, event, stat_line",
+          "priority": 100,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "Season lifecycle, standings and tables, playoff brackets, promotion and relegation, champions and awards."
+      },
+      "lore": [
+        {
+          "title": "Season lifecycle",
+          "content": "A season is upcoming until its first match is completed, then active, then completed when the final result is in (or the owner says so), or cancelled. stage and current_round move with the calendar: update them when a round's matches are logged. The roster_deadline on the season is where registration cut-offs and trade deadlines live. When a season completes: set final_rank and outcome on every COMPETES_IN edge, WON from the champion to the season with title Champion (and Runner-up, Promoted, Relegated as the pack uses them), and offer to open the next season (same competition, new label, teams rolled over with COMPETES_IN, group carried unless the owner says it changed).\nOffseason moves between seasons are events PART_OF the season just ended until the new one exists, then moved (PART_OF the new season) only if the owner prefers.",
+          "display_index": 0
+        },
+        {
+          "title": "Standings are computed, then cached",
+          "content": "A team's season record lives on one stat_line: scope season, subject_kind team, RECORDED_IN the season, STAT_OF the team, with the pack's standings keys (wins, losses, ties, draws, points, points_for, points_against, goals_for, goals_against, goal_difference, net_run_rate as the pack lists them). This line is the cache. The truth is the COMPETED_IN edges' result values, the match scores and decided_by (in sports with a loser point or a graded table, the table value of a result depends on how it was decided; the pack maps it), plus any team match-line keys the pack names for the rebuild (tries for bonus points, net run rate components, division records). A pack may add split records (division, conference, home, away wins and losses) to the season line when its tiebreakers need them.\nWhen asked for standings: read every team's season line for that season; if any line's as_of is older than the latest completed match in the season, rebuild those lines whose source is derived from COMPETED_IN edges and match scores (query_relationships per team, type COMPETED_IN, then the events), set as_of, and say you did; a line with source owner or official is never overwritten, only reported with its as_of and flagged as possibly stale. When a match the rebuild needs is missing a team match line the pack requires, say the table is provisional and name the match. Order by the competition's House rules tiebreakers if that lore chunk exists, otherwise the pack's default, applying them in the order listed, and name the tiebreaker that split any tied teams. Byes count only where the pack awards bye points. Present the table in the sport's shape (the pack says which columns).\nNever cache a table on the season entity.",
+          "display_index": 1
+        },
+        {
+          "title": "Playoffs and brackets",
+          "content": "A tournament that is one event among several in a season is a parent event; the sides in it get a COMPETED_IN edge to the parent event carrying that tournament's group, seed and final_rank, and each pool is ordered by the pack's group tiebreakers from the pool's match events. Playoff matches are match events with stage from the pack (wildcard, divisional, conference, final; quarterfinal, semifinal, final; group_stage, round_of_16) and round for the game or leg. Seeds go on COMPETES_IN seed when set. A team knocked out: COMPETES_IN status eliminated. The bracket is read off the events by stage; do not create a bracket entity. For a group-then-knockout competition, group on COMPETES_IN is the group letter and the pack's group tiebreakers order each group.",
+          "display_index": 2
+        },
+        {
+          "title": "Awards",
+          "content": "Season awards (most valuable player, top scorer, best bowler, league player of the year, fantasy champion, last place) are WON edges from the person or team to the season with title and detail. League-wide awards nights can also be an event with event_type award and INVOLVED_IN role honoured, when the owner wants the date. Search the person first; an award to someone not yet in the world creates the person with primary_role player and the roster edge if the team is known.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "People and Privacy",
+      "slug": "rule/people_and_privacy",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "policy",
+          "trigger": "adding or editing a person; anything about a child or youth player; anything about injuries, fitness or medical matters; contact details; looking someone up",
+          "scope": "person",
+          "priority": 300,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "Adding and editing people, with the limits that keep this world safe: no health data, minimal data on children, nothing about private people from the web."
+      },
+      "lore": [
+        {
+          "title": "Creating a person",
+          "content": "Search by name first, then name plus team, then by nickname. A hit on a different team may still be the same person who moved; ask. Create with primary_role and status; add nationality, handedness, birth_date, height and weight only for adult professionals and only when given. external_id when the owner imports from a stats site or fantasy platform. Description: one line in the owner's words. Tag with the sport code and player, coach, official, staff or manager as fits. The owner's own entity is tagged mine.\nNever fill a field from your own knowledge about a real athlete unless the owner asks you to look it up and the competition is a public pro league; even then, record only sporting facts (position, team, nationality, number) and cite the source in a lore chunk titled Source.",
+          "display_index": 0
+        },
+        {
+          "title": "No health data",
+          "content": "This world does not hold health information about any person, professional or amateur. Do not record injuries, their nature, severity, dates of surgery, rehab, concussion protocols, illness, pregnancy, medication, or medical appointments, even when the owner volunteers them, even for public figures whose injury reports are published, and even when it would explain a lineup. Record the sporting consequence only: availability on the PLAYS_FOR edge (unavailable, doubtful, suspended), a PLAYED_IN edge with played false, a season line's games_played. If the owner types a medical detail into a note, leave it out of what you save and say in one line that you keep this world free of health details. Never argue about it.",
+          "display_index": 1
+        },
+        {
+          "title": "Children and youth sport",
+          "content": "When a person is under 18, or the competition is a youth or school league, or the owner's team has kids on it: is_minor true, name as first name plus last initial (Sam K.), no birth_date, no contact details, no address, no photos, no links to profiles, no description beyond position and team. The owner may ask for a full name and you may store it; nothing else is added on request. Never search the web for a minor. Parents and guardians are persons only if the owner wants them tracked as staff (team_parent, treasurer) and get the same light touch as any private person: name and role, nothing more.",
+          "display_index": 2
+        },
+        {
+          "title": "Private people",
+          "content": "Everyone in a rec, club, school or fantasy world is a private person. Record what the owner says, nothing more; no web searches about them, no enrichment, no guessing at ages or hometowns. Contact details go in only when the owner asks you to keep them, and then in a lore chunk titled Contact, not in properties. Public professionals in public competitions are different only in that their sporting facts may be looked up when asked.",
+          "display_index": 3
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Retrieval",
+      "slug": "rule/retrieval",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "guidance",
+          "trigger": "what happened; how did we do; record against; head-to-head; streak; who leads; who played; when did; show me the season; what is coming up",
+          "scope": "world",
+          "priority": 100,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "Answering questions from the record: results, records, head-to-head, streaks, leaders, what happened on a date or in a round, who was on a team when."
+      },
+      "lore": [
+        {
+          "title": "Where to look",
+          "content": "Results and schedules: get_timeline with entity_ids (the team or person), event_types match, and the season's date range; or search_entities entity_type event with the season tag and a date filter. Rosters as of a date: query_relationships on the team, type PLAYS_FOR, then keep edges whose started is on or before the date and whose ended is empty or after it. Numbers: stat_lines by the subject's tag and scope. Stories: search_lore across the events.\nA match completed on a later day than it started (suspended then resumed, a multi-day match) sits on the timeline under its start date; for \"what happened in <period>\" also check end_date, or the result lands outside the window it counted in. Always say which season you answered for. When the owner's question spans seasons, say so and group by season.",
+          "display_index": 0
+        },
+        {
+          "title": "Head-to-head and streaks",
+          "content": "Head-to-head: the match events with a COMPETED_IN edge from each side (team or person), in date order; count by result from the first team's point of view, note draws separately, and name the most recent meeting. Streaks: walk the team's COMPETED_IN edges by event date; a streak ends at the first different result, and no_result does not break it (say so). Home and away records come from the side property.",
+          "display_index": 1
+        },
+        {
+          "title": "Being straight about gaps",
+          "content": "If a match has status scheduled or a season line is stale, say so rather than presenting stale numbers as current. If lineups are not tracked for a competition, say \"I don't keep lineups for this league\" rather than guessing who played. When nothing matches, say nothing matches; do not pad with loose semantic hits. Offer a web lookup only for public pro competitions and only if the owner wants it, and store what you find per rule/people_and_privacy. audit_world will report the core rules as entities with no relationships; that is expected in this template (only sport packs carry APPLIES_TO edges) and is not something to fix. A stat line it flags for having no description just needs its one-line description per rule/stats.",
+          "display_index": 2
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "Sport Packs",
+      "slug": "rule/sport_packs",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "guidance",
+          "trigger": "a competition in a sport with no pack; adding a sport; a position, stat key or stage the pack does not list; the owner wants to change scoring or tiebreakers",
+          "scope": "rule, competition",
+          "priority": 150,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0"
+        },
+        "short_description": "How a sport's vocabulary plugs into this world, and how to add a sport that has no pack yet."
+      },
+      "lore": [
+        {
+          "title": "What a pack is",
+          "content": "A sport pack is one rule entity, slug rule/sport_<code>, rule_type vocabulary, sport set to the code, status active, APPLIES_TO every competition in that sport. Its lore chunks, in this order and with these titles, are the contract the rest of the world reads:\n1. Overview: the sport, what a match is called, its parts (quarters, halves, innings, overs), what the single score number is, whether draws or ties exist, and the default competition format and scoring_system.\n2. Positions: the position codes allowed on PLAYS_FOR, one line each.\n3. Stages and rounds: the stage values, how round is written, the decided_by values.\n4. Stat keys: player keys and team keys, grouped, one line each with its meaning; which rate stats are stored and which are derived, with the formula.\n5. Standings: the keys on a team season line, the columns to show, and the tiebreakers in order.\n6. Roster rules: squad sizes, lineup rules, substitution limits, anything the league enforces that you should check before logging a lineup.\n7. Officials: the OFFICIATED role values.\n8. Extended keys: starts empty; keys the owner adds later go here, dated.\nOptional chunks after these, with these titles when they apply: Recreational (what a local or amateur league changes), Professional (what the top level adds), Fantasy (slots, default scoring, category lists, roster sizes; rule/app_fantasy has the workflows), Forfeits and abandonments, Glossary, Season calendar; a pack may add others it needs (Innings and results, Doubles pairs, Tournaments and tours).\nTiebreakers are a default: competitions in the same sport order their tables differently, so the Standings chunk gives presets and the competition's House rules chunk picks or overrides one.",
+          "display_index": 0
+        },
+        {
+          "title": "Adding a sport",
+          "content": "When the owner names a sport with no pack: tell them, then draft the pack from the sport's standard vocabulary and show it before creating it (the whole thing, not a summary; they will correct house rules). Create it with trust ai-generated and source \"drafted in conversation <date>\", then APPLIES_TO the competition. The playbook ships packs for american_football, basketball, baseball, ice_hockey, soccer (football (soccer)), rugby, cricket, softball, volleyball and tennis, each covering recreational, professional and fantasy play; install one of those before drafting your own when it fits. Sport codes are machine names and stay as they are; in conversation use the international name: \"American football\", \"football (soccer)\".",
+          "display_index": 1
+        },
+        {
+          "title": "Changing a pack",
+          "content": "A house rule (a mercy rule, custom fantasy scoring, an away-goals rule, a tiebreaker order) goes in a lore chunk on that competition titled House rules, which overrides the pack for that competition. Only when a rule is true of the sport everywhere in this world does it change the pack's lore instead. Record who asked and when at the end of the chunk.",
+          "display_index": 2
+        }
+      ]
+    },
+    {
+      "entity_type": "rule",
+      "name": "App: Fantasy",
+      "slug": "rule/app_fantasy",
+      "data": {
+        "tags": [
+          "rule",
+          "sports-world",
+          "app",
+          "fantasy"
+        ],
+        "properties": {
+          "status": "active",
+          "rule_type": "app",
+          "trigger": "any fantasy league: setting one up; a fantasy roster, lineup, slot, bench, IR, taxi; waivers, FAAB, free agents, add/drop, trades, vetoes, keepers, dynasty, draft (snake or auction); weekly matchups and fantasy points; median games; fantasy standings, playoffs, consolation, last place and punishments; commissioner actions; importing from a fantasy platform",
+          "scope": "competition, season, team, person, event, stat_line",
+          "priority": 110,
+          "trust": "imported",
+          "source": "orbismo-playbook/sports-world@1.0",
+          "owns_tags": [
+            "fantasy",
+            "fantasy-move"
+          ]
+        },
+        "short_description": "The sport-agnostic fantasy app: how a fantasy league, its teams, managers, rosters, lineups, roster moves, weekly matchups, standings, playoffs and honours are recorded, for any real sport. The real sport's pack supplies the slot names, scoring table and real stat keys in its Fantasy chunk."
+      },
+      "lore": [
+        {
+          "title": "What a fantasy league is in this world",
+          "content": "A fantasy league is a competition whose teams are rosters of real players from a real sport. It is not its own sport: the competition's sport is the real sport's code (american_football, basketball, baseball, ice_hockey, soccer, cricket) and its level is fantasy. Two rules point at it with APPLIES_TO: this app (rule/app_fantasy, the mechanics every fantasy league shares) and the real sport's pack (rule/sport_<code>), whose optional chunk titled Fantasy supplies what is sport-specific: the lineup slot names, the default scoring table, the real stat keys that feed it, category lists for rotisserie formats, and default roster sizes. If the sport pack has no Fantasy chunk, say so and draft one with the owner before logging a lineup (rule/sport_packs, Changing a pack).\nThe pieces:\n- competition: level fantasy; format league_playoffs (head-to-head with a playoff bracket, the common case), league (head-to-head, no playoffs, or rotisserie/points-only decided by the final table), or ladder for a best-ball or guillotine league. scoring_system is the short label from the sport pack's Fantasy chunk (ppr, half_ppr, standard, categories, roto, points, custom). governing_body is the friend group or office; website is the league page on the platform. Tags: fantasy, the sport code, and a platform tag when the owner wants one (lowercase, their word for it).\n- season: one per year, label the year (2026), rounds_total the number of regular-season weeks, stage preseason, draft, regular_season, playoffs, offseason; current_round \"Week N\". Tag fantasy, the sport code, and its season tag (e.g. league-name-2026).\n- team: one per franchise for its whole life, team_type fantasy, status active. The team name is whatever the manager calls it this year; when it changes, update name and short_name on the same entity and add the old one to a lore chunk titled Former names. Never create a second team for a rename: all-time records depend on it. owner holds the manager's display name only when the manager is not tracked as a person. Tag fantasy and the sport code; the owner's own team is also tagged mine.\n- person (manager): primary_role fantasy_manager, STAFF_OF the team with role owner (started when they took the team). Co-managers get a second STAFF_OF edge with role owner and title \"Co-manager\". When a manager quits and someone takes over the orphan team, end the old edge and open a new one; the team and its history stay. The commissioner is STAFF_OF the competition with role commissioner; a co-commissioner the same with title \"Co-commissioner\". All managers are private people: platform display name, nothing else, per rule/people_and_privacy.\n- person (real player): the same person entity the real sport uses. One person, two kinds of PLAYS_FOR edge: the real-club edge (arrangement contract, or whatever the real sport uses) and one fantasy edge per fantasy team that rosters them (arrangement fantasy_roster). Search by name and external_id before creating; the fantasy platform's id goes in external_id so imports match. Never create a second person for the fantasy side, and never let the fantasy side touch the real-club edge.\n- venue: fantasy leagues have none. Do not create one. A draft party's location can be a lore note on the draft event.\nSeveral fantasy leagues in one world are fine: each is its own competition with its own season tag, and a real player may carry a fantasy edge per league.",
+          "display_index": 0
+        },
+        {
+          "title": "League settings: the House rules chunk",
+          "content": "Every fantasy league has settings the platform enforces and this world only records. They live in one lore chunk on the competition titled House rules, in this order, so the AI can read them before any lineup or roster move. Collect them at onboarding in one or two questions (\"paste your league settings page or tell me the basics\"), fill what you are given, write unknown for the rest, and update the chunk when the owner corrects it; end the chunk with who set it and when.\nHouse rules template:\nPlatform: <the fantasy platform, in the owner's words | spreadsheet | other>, league id <id>\nTeams: <N>; divisions: <none | names>\nScoring: <label from the sport pack's Fantasy chunk, then only the lines that differ from that chunk's default table>\nLineup: <slot counts in the sport pack's slot vocabulary, e.g. QB 1, RB 2, WR 2, TE 1, FLEX 1, K 1, DST 1>; bench <N>; IR <N>; taxi <N>\nRoster size: <total>\nLineup lock: <per player at kickoff | all at first game of the week>\nWaivers: <FAAB budget $N, min bid $0 | rolling priority | reverse standings | none>; waivers clear <day/time>; free agents after\nTrades: deadline <Week N | none>; review <commissioner | league vote N of M | none>, review period <hours>; future picks tradable <yes, N years | no>\nRegular season: Weeks <1-N>; median game <yes | no>; double-headers <none | weeks>\nPlayoffs: <N> teams, Weeks <N-M>, byes for seeds <1-2 | none>, reseeding <yes | no>, tiebreaker on tied playoff score <higher seed | bench points | ...>; consolation bracket <yes | no>, toilet bowl <yes | no>\nKeepers: <none | N keepers, cost rule> ; dynasty: <no | yes, rookie draft <rounds>>\nDraft: <snake | auction $N | linear | third-round reversal>; date <date>; order <random | reverse standings | lottery>\nDues and payouts: <amount; split, e.g. 1st 60%, 2nd 25%, regular-season champion 15%>\nLast place: <the punishment, in the league's words>\nSet by <manager display name>, <date>.\nWhere the same fact has a property home, use the property too: scoring_system on the competition, rounds_total on the season, website on the competition. The House rules chunk is the detail; the properties are the summary. A setting that changes mid-season (the league votes to add a median game) is an edit to the chunk with a dated line at the end, plus an event with event_type meeting if the owner wants the vote remembered. If the sport's pack has no Fantasy chunk, there are no default slots, scoring table or categories for that sport: ask the owner for them and write them into House rules before creating anything.",
+          "display_index": 1
+        },
+        {
+          "title": "Rosters and lineups",
+          "content": "A rostered player is a PLAYS_FOR edge from the real player to the fantasy team: arrangement fantasy_roster, started the date acquired, acquired_via one of draft, auction, waiver, free_agent, trade, keeper, unknown, fee when money or cost attached (\"$12 FAAB\", \"$47 auction\", \"Round 8 keeper cost\"), slot the lineup slot they fill this week from the sport pack's Fantasy chunk, role taxi for a dynasty taxi squad, otherwise leave role empty (starter/bench is what slot says). position is the real position in the sport pack's vocabulary; copy it from the real-club edge when it exists. Dropping a player ends the edge (ended the date); a player dropped and re-added gets a new edge.\nTeam units: a slot filled by a whole real team (a team defence/special teams unit in American football, a goalie-by-team stream in ice hockey) is a PLAYS_FOR edge whose source is the real team entity, arrangement fantasy_roster, position the unit code the sport pack gives (DST). The team is not a person; do not create one named \"<Team> D/ST\". (Depends on PLAYS_FOR and PLAYED_IN accepting team as a source; until then, record the unit in a lore chunk on the fantasy team titled Team units, dated, and say so.)\nSetting a lineup (\"start Jordan Lee at FLEX\", \"bench my second tight end\", \"swap my kickers\"):\n1. Read the fantasy team's open PLAYS_FOR edges (query_relationships, type PLAYS_FOR, direction incoming) and the House rules Lineup line.\n2. Check the move: the player's position must be legal for the slot (the sport pack's slot list says which positions each slot takes), the slot counts must match House rules after the move, a player in IR stays there unless the owner moves them out, and nobody can be in two slots. If the owner names a player not on the roster, ask whether they were added first.\n3. Update slot on the edges involved and nothing else. If the owner says a player is locked (their real game has started), say the platform will refuse it and log what they asked for only if they insist.\n4. Warn, do not refuse, when you can see a problem: the player's real-club edge says availability unavailable or doubtful, or the real sport's season has a bye event for the player's club in this round (query the real team's events for this round when the real competition is tracked). If the real competition is not tracked, you cannot see byes or availability; say \"I don't have the real schedule on file\" rather than guessing.\nWeekly lineup history: slot on PLAYS_FOR is only the current lineup. When a matchup is logged (see Matchups and scoring), snapshot the lineup with one PLAYED_IN edge per rostered player to the matchup event: for_team the fantasy team's slug, slot the slot they filled, started true for a scoring slot and false for BN, IR and taxi. That is how \"who did I start in Week 7\" is answered later. (Depends on slot on PLAYED_IN; until then use position for the slot.) Only snapshot when the owner tracks lineups for this league (ask once; tag the competition lineups-tracked); many managers only want scores.\nBye weeks and injury designations: a bye is a schedule fact about the real team, read from the real sport's bye events, never stored on the player and never recorded as unavailable. A platform designation (Out, Doubtful, Questionable, IR, Suspended) maps to availability on the real-club edge only if the owner tracks the real competition: Out and IR = unavailable, Doubtful and Questionable = doubtful, Suspended = suspended, active = available; the reason, body part and timeline are never stored anywhere. Moving a player to the fantasy IR slot is slot IR, nothing more; do not check IR eligibility (the platform does) and do not ask why.\nMinors: a family league may have a child managing a team; is_minor true, first name and last initial, nothing else, per rule/people_and_privacy. The real players are adult professionals and get the sporting facts the sport pack allows.",
+          "display_index": 2
+        },
+        {
+          "title": "Roster moves",
+          "content": "Every move is an event so the timeline shows it, plus the edge changes. Tag each event fantasy, the sport code, the season tag and fantasy-move. Name them plainly: \"<Team>: add <Player>, drop <Player> — <date>\", \"Trade: <Team A> / <Team B> — <date>\", \"<League> Draft <year>\".\n- Add and drop: one event, event_type signing, INVOLVED_IN the added player role signed (detail \"waiver, $12 FAAB\" or \"free agent\"), the dropped player role released, the team role to_team. Open the new PLAYS_FOR edge (acquired_via waiver or free_agent, fee the bid, slot BN unless the owner says otherwise) and end the dropped one. A drop with no add is event_type release; an add with no drop is event_type signing. The dropped player's person status does not change (they are still on their real club).\n- Waiver claim lost: nothing happened on the roster. Record it only if the owner wants it: event_type signing, status rejected, detail \"lost to <team>, $N\" (status cancelled with a lore note until rejected is in the Building Blocks).\n- FAAB: the budget is in House rules; spending is faab_spent on the team's season stat_line (stored, updated with each claim) so remaining = budget - faab_spent. Waiver priority, for leagues that use it, is waiver_priority on the same line, updated when the owner says it changed.\n- Trade: event_type trade, status scheduled while pending review, completed when processed, rejected when vetoed by the commissioner or the league vote (cancelled plus a lore chunk titled Veto until rejected exists), with who vetoed and why in lore in the owner's words. INVOLVED_IN each team role other with detail \"sends: ... / receives: ...\"; each player role traded_away or acquired with detail the destination team; FAAB dollars and future draft picks are text in detail (\"2027 R2\", \"$25 FAAB\"), never entities. Process the edges only when the trade completes: end each player's edge on the sending team, open one on the receiving team with acquired_via trade, slot BN. More than three players: show the plan and confirm first. A trade proposed and withdrawn before review is cancelled.\n- Draft: one event, event_type draft, named \"<League> Draft <year>\", stage draft, date of draft night, end_date for a slow draft. House rules says snake, linear or auction. INVOLVED_IN each drafted player role drafted with detail \"1.03 (3rd overall)\" for snake and linear, \"$47\" for auction; each team role drafting_team once per pick (one edge per pick is a lot; the platform's export has it). Open each PLAYS_FOR with acquired_via draft or auction, started the draft date, fee the auction price or keeper cost, slot BN until the owner sets a lineup. A full draft is 150-240 roster edges plus the same number of INVOLVED_IN edges, so the bulk-confirm rule always fires: offer three depths, (a) the owner's own roster only, (b) every team's roster with pick numbers in detail, (c) rosters without pick detail, and build in batches of up to 100. Draft-night stories (who autodrafted, who took a kicker in round 3) go in lore on the draft event.\n- Keepers: a keeper league rolls the fantasy team into the new season with the kept players' edges left open; update fee to the keeper cost (\"Round 8 pick, 2027\"), acquired_via keeper if the league treats it as a new acquisition, and list the keepers in a lore chunk on the team titled \"Keepers <year>\". Every non-kept edge is ended on the date the platform clears rosters. In a dynasty league nothing is ended at rollover; the rookie draft is a draft event like any other; the taxi squad is role taxi on the edge, promoted by clearing role.\n- Orphan team: a manager leaving ends their STAFF_OF edge; the new manager gets a new one. If the league replaces the team instead (the platform deletes it and creates a fresh one), the owner decides: same team entity with a lore note, or status inactive and a new team.\n- Commissioner actions (manual score adjustment, forced drop, lineup correction, settings change): event_type meeting or other, INVOLVED_IN the commissioner role subject and the affected team role other, detail and lore saying what and why. A score adjustment also updates the matchup's score fields with a lore note on the matchup titled Adjustment.\nBatch the event and its edges in as few calls as possible, and say what you logged in one line (\"Got it: Lee in for $12, Alvarez out, 38 FAAB left\").",
+          "display_index": 3
+        },
+        {
+          "title": "Matchups and scoring",
+          "content": "Head-to-head weeks: one match event per matchup, event_type match, stage regular_season or the playoff stage, round \"Week N\" (the real sport's week number, so the two line up), named \"<Away> at <Home> — <YYYY-MM-DD>\" using the platform's home/away or, when the platform has none, the team listed first as home; date the first day of the real sport's round (the Thursday in American football). PART_OF the fantasy season; two COMPETED_IN edges with side; no HELD_AT. home_score and away_score are fantasy points as decimals (131.4); result home_win, away_win or tie (fantasy scores level to the decimal are a tie unless House rules names a tiebreaker, in which case apply it and put decided_by tiebreaker with the rule in lore); decided_by regulation otherwise. Tag fantasy, the sport code, the season tag, match. A week with two matchups per team (a double-header week) is two events, the second named with \" — Game 2\".\nA team with no matchup in a week (a playoff bye) has no event that week; say \"bye\" when asked, do not create one.\nPlayer points: each rostered player's fantasy_points for the week is a match-scope stat_line on the real player (or the real team, for a team unit), RECORDED_IN the fantasy matchup event, for_team the fantasy team slug, source import (from the platform) or owner, stats {fantasy_points, projected_points} plus, when the owner wants them, the real stat keys the sport pack lists, spelled exactly as the real sport's pack spells them. Tag fantasy, the sport code, the season tag, stats and the player's slug fragment. The real sport's own match line for the same game is a different stat_line RECORDED_IN the real game; the two may disagree (stat corrections, platform quirks) and the fantasy line is the record of what scored. When the owner asks \"how did my quarterback do\", show both if both exist, labelled.\nChecking the arithmetic: the sport pack's Fantasy chunk gives the default scoring table and House rules gives the overrides. When the real keys are on the line, fantasy_points should equal the table applied to them; if it does not, say so with both numbers and keep the platform's figure as fantasy_points (the platform is the official scorer) with the difference in a lore note titled Scoring check. Never compute fantasy_points from real stats and store the result as if the platform reported it; a computed figure is source derived.\nTeam totals: the fantasy team's weekly score is the matchup's home_score/away_score and nowhere else. Numbers about the week that are not the score go on a round-scope team stat_line RECORDED_IN the matchup: optimal_points (the best lineup the roster could have scored), bench_points (points left on the bench), projected_total. Store them only when the owner gives them or asks you to compute them from the player lines; mark computed ones source derived.\nStat corrections: when the platform corrects a score days later, update the matchup's scores and the affected player line in place, flip result and the COMPETED_IN results if it changed the winner, and add a lore chunk on the matchup titled Stat correction with the before and after. Never create a second matchup.\nDepth of tracking: ask once per league and tag the competition. scores-only: matchups and scores. starters: plus the starters' player lines. full: plus bench lines and lineup snapshots. Default to starters when the owner shrugs. A whole-season import at full depth is thousands of lines; show the count and confirm.\nRotisserie and head-to-head categories: in a roto league there are no matchups. Each team's season stat_line carries the category keys the sport pack lists (e.g. home_runs, stolen_bases, earned_run_average, as the sport pack spells them), source import, as_of the date, and roto_points as the sum of its rank points across categories (N points for first in a category of N teams, 1 for last, ties split). In head-to-head categories, each matchup's score_display is the category record \"6-3-1\" and home_score/away_score are categories won; result follows the record; the per-category numbers for the week go on each team's round-scope line RECORDED_IN the matchup.\nTrash talk, write-ups and the weekly recap go in lore on the matchup in the owner's words (chunk titles Recap, Trash talk, Notes), about the games and the lineups only; nothing about anyone's job, relationships, body or anything else personal, and no links or images. Keep what the owner wrote; add nothing of your own except in a chunk titled Agent note.",
+          "display_index": 4
+        },
+        {
+          "title": "Standings, playoffs and honours",
+          "content": "Standings cache: one stat_line per fantasy team per season, scope season, subject_kind team, RECORDED_IN the season, keys:\nwins, losses, ties           head-to-head record, regular season only\npoints_for                   fantasy points scored, regular season, decimal\npoints_against               fantasy points allowed\nmedian_wins, median_losses   for leagues with a median game: each week a team scoring above the league median that week gets a median win, below it a median loss (an even number of teams has no team at the median; a tie at the median is a median_tie). DERIVED from the week's matchup scores; stored on this line as the cache. Total record for a median league is wins+median_wins, losses+median_losses.\nall_play_wins, all_play_losses  DERIVED: each week, wins against every other team's score. Compute on request; store only if the owner asks.\nhigh_score_weeks             weeks as the league's top scorer (derived, cached)\nfaab_spent                   FAAB spent so far (stored)\nwaiver_priority              current waiver position for priority leagues (stored)\nmoves                        roster moves this season, when the league caps them (stored)\nroto_points                  rotisserie leagues: total rank points (derived, cached)\nmax_points_for               DERIVED = sum of optimal_points across the season's round lines, when tracked\nTruth is the COMPETED_IN results and the matchup scores; rebuild stale lines from them per rule/seasons_and_standings and say you did. Columns to show: W-L(-T), median record in brackets when the league has one, PF, PA, and streak derived from the edges. Divisions: group on COMPETES_IN; show the table by division when the league has them.\nTiebreakers: the platform's, as House rules states them. Default when House rules is silent: 1. head-to-head record among the tied teams, 2. points_for, 3. points_against (fewer), 4. coin flip or commissioner (say so). Division winners seeded first when House rules says so. Apply them in order and name the one that split any tie.\nPlayoffs: stage quarterfinal, semifinal and final for the bracket (a two-round bracket is semifinal then final; a four-team bracket with byes is quarterfinal for the first round even if only two games are played); round \"Week N\"; seeds on COMPETES_IN seed when set; a team knocked out gets COMPETES_IN status eliminated. Third-place and consolation games are stage consolation with round \"Week N\" and the bracket's name in lore (\"Toilet Bowl semifinal\"). Reseeding, two-week championship matchups (one event with end_date and the combined score) and the tiebreaker for a level playoff score come from House rules.\nHonours at season end: set final_rank and outcome on every COMPETES_IN edge (champion, runner_up, playoffs, eliminated, none). WON edges from the team to the season: title Champion (detail the final score), Runner-up, Regular Season Champion (best record), Highest Scorer (most points_for), Last Place (detail the punishment as House rules names it, and whether it was served, in the owner's words). Consolation bracket winner: title Consolation Champion when the league cares. Then season status completed, offer to open the next season (teams rolled over with COMPETES_IN, managers' edges left open, keepers per Roster moves), and move the competition's stage to offseason.\nRecords across seasons: a fantasy team is one entity for life, so head-to-head all-time, most championships and most last-place finishes come straight from the edges and WON titles, grouped by season per rule/retrieval. Rivalries between two managers' teams are RIVAL_OF with the name they give it, story in lore on either team.",
+          "display_index": 5
+        },
+        {
+          "title": "Imports and platforms",
+          "content": "Platforms export league history in different shapes; the owner usually pastes or describes rather than uploads. Map what arrives to this world's homes and ignore the rest: scores to matchups, player points to player lines, transactions to move events, settings to House rules, standings to season lines (source import, as_of the import date). Store the platform's player id in external_id on the person, the team id in the team's website URL or description, the league id in House rules. When an import and the stored record disagree, the import wins for scores (the platform is the official scorer) and the owner is asked for everything else.\nA season imported in one go: build the structure first (teams, managers, House rules), then matchups by week, then player lines at the agreed depth, each in batches under 100 with skip_existing true, confirming the count before the first batch. Say what you skipped (bench lines, projections) so the owner knows what is not on file.\nHistory before this world existed: previous champions and last places can be seasons with status completed, no matchups, just COMPETES_IN with final_rank and outcome and the WON edges, when the owner wants the trophy case without the box scores. Say in the season's ruleset_notes \"results only, imported <date>\".",
+          "display_index": 6
+        }
+      ]
+    }
+  ],
+  "relationships": [],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

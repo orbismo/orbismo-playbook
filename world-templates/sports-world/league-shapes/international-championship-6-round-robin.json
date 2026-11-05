@@ -1,0 +1,176 @@
+{
+  "entities": [
+    {
+      "entity_type": "competition",
+      "name": "International Championship (6 teams, round robin)",
+      "slug": "competition/international_championship_6_teams_round_robin",
+      "data": {
+        "tags": [
+          "rugby",
+          "rugby-union",
+          "international",
+          "league-shape"
+        ],
+        "properties": {
+          "sport": "rugby",
+          "level": "international",
+          "format": "round_robin",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "scoring_system": "union_bonus_margin",
+          "match_format": "union_15s"
+        },
+        "short_description": "Placeholder for an annual six-nation rugby union championship: a single round robin of five rounds, every nation plays every other once, home advantage alternating each year, bonus-point table (4/2/0, try-margin bonus, losing bonus within 7, extra points for winning every match). Rename it and its six nations during onboarding."
+      },
+      "lore": [
+        {
+          "title": "House rules",
+          "content": "Scoring: win 4, draw 2, loss 0; try bonus 1 for scoring at least three more tries than the opponent; losing bonus 1 for losing by seven or fewer; a nation that wins all five matches gets 3 extra points. tiebreakers: h2h_first (head-to-head table_points, head-to-head points_difference, points_difference, tries_for, points_for, disciplinary record, drawing of lots). Each season is five rounds over seven weekends with two rest weekends (not scored byes); home and away alternate per pairing each year. Edit this chunk to the competition's published rules and record who asked and when.",
+          "display_index": 0
+        }
+      ]
+    },
+    {
+      "entity_type": "team",
+      "name": "Nation 1",
+      "slug": "team/nation_1",
+      "data": {
+        "tags": [
+          "rugby",
+          "rugby-union",
+          "national-team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Nation 1",
+          "abbreviation": "N1",
+          "country": "unknown"
+        },
+        "short_description": "Placeholder national team 1 of 6 in the international championship starter. Rename to the nation during onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Nation 2",
+      "slug": "team/nation_2",
+      "data": {
+        "tags": [
+          "rugby",
+          "rugby-union",
+          "national-team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Nation 2",
+          "abbreviation": "N2",
+          "country": "unknown"
+        },
+        "short_description": "Placeholder national team 2 of 6 in the international championship starter. Rename to the nation during onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Nation 3",
+      "slug": "team/nation_3",
+      "data": {
+        "tags": [
+          "rugby",
+          "rugby-union",
+          "national-team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Nation 3",
+          "abbreviation": "N3",
+          "country": "unknown"
+        },
+        "short_description": "Placeholder national team 3 of 6 in the international championship starter. Rename to the nation during onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Nation 4",
+      "slug": "team/nation_4",
+      "data": {
+        "tags": [
+          "rugby",
+          "rugby-union",
+          "national-team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Nation 4",
+          "abbreviation": "N4",
+          "country": "unknown"
+        },
+        "short_description": "Placeholder national team 4 of 6 in the international championship starter. Rename to the nation during onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Nation 5",
+      "slug": "team/nation_5",
+      "data": {
+        "tags": [
+          "rugby",
+          "rugby-union",
+          "national-team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Nation 5",
+          "abbreviation": "N5",
+          "country": "unknown"
+        },
+        "short_description": "Placeholder national team 5 of 6 in the international championship starter. Rename to the nation during onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Nation 6",
+      "slug": "team/nation_6",
+      "data": {
+        "tags": [
+          "rugby",
+          "rugby-union",
+          "national-team",
+          "league-shape"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Nation 6",
+          "abbreviation": "N6",
+          "country": "unknown"
+        },
+        "short_description": "Placeholder national team 6 of 6 in the international championship starter. Rename to the nation during onboarding."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "rule/sport_rugby",
+      "target_id": "competition/international_championship_6_teams_round_robin",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

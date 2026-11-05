@@ -1,0 +1,161 @@
+{
+  "entities": [
+    {
+      "entity_type": "competition",
+      "name": "Individual Tour",
+      "slug": "competition/individual_tour",
+      "data": {
+        "tags": [
+          "tennis",
+          "league-shape",
+          "tour",
+          "mens_singles"
+        ],
+        "properties": {
+          "sport": "tennis",
+          "level": "pro",
+          "format": "league",
+          "scoring_system": "ranking_points",
+          "governing_body": "unknown",
+          "region": "unknown"
+        },
+        "short_description": "Placeholder for a tour year: the standing circuit whose season holds the ranking stat lines and whose tag groups the tournaments. Rename it to the tour you follow at onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "competition",
+      "name": "Tournament 1",
+      "slug": "competition/tournament_1",
+      "data": {
+        "tags": [
+          "tennis",
+          "league-shape",
+          "tournament",
+          "tier_unknown",
+          "mens_singles"
+        ],
+        "properties": {
+          "sport": "tennis",
+          "level": "pro",
+          "format": "knockout",
+          "scoring_system": "win_loss",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "match_format": "best_of_3"
+        },
+        "short_description": "Placeholder tournament 1 on the Individual Tour: a knockout draw whose editions are seasons. Rename it, set its tier tag and match_format at onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "competition",
+      "name": "Tournament 2",
+      "slug": "competition/tournament_2",
+      "data": {
+        "tags": [
+          "tennis",
+          "league-shape",
+          "tournament",
+          "tier_unknown",
+          "mens_singles"
+        ],
+        "properties": {
+          "sport": "tennis",
+          "level": "pro",
+          "format": "knockout",
+          "scoring_system": "win_loss",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "match_format": "best_of_3"
+        },
+        "short_description": "Placeholder tournament 2 on the Individual Tour: a knockout draw whose editions are seasons. Rename it, set its tier tag and match_format at onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "competition",
+      "name": "Tournament 3",
+      "slug": "competition/tournament_3",
+      "data": {
+        "tags": [
+          "tennis",
+          "league-shape",
+          "tournament",
+          "tier_unknown",
+          "mens_singles"
+        ],
+        "properties": {
+          "sport": "tennis",
+          "level": "pro",
+          "format": "knockout",
+          "scoring_system": "win_loss",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "match_format": "best_of_3"
+        },
+        "short_description": "Placeholder tournament 3 on the Individual Tour: a knockout draw whose editions are seasons. Rename it, set its tier tag and match_format at onboarding."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "competition",
+      "name": "Tournament 4",
+      "slug": "competition/tournament_4",
+      "data": {
+        "tags": [
+          "tennis",
+          "league-shape",
+          "tournament",
+          "tier_unknown",
+          "mens_singles"
+        ],
+        "properties": {
+          "sport": "tennis",
+          "level": "pro",
+          "format": "knockout",
+          "scoring_system": "win_loss",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "match_format": "best_of_3"
+        },
+        "short_description": "Placeholder tournament 4 on the Individual Tour: a knockout draw whose editions are seasons. Rename it, set its tier tag and match_format at onboarding."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "rule/sport_tennis",
+      "target_id": "competition/individual_tour",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    },
+    {
+      "source_id": "rule/sport_tennis",
+      "target_id": "competition/tournament_1",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    },
+    {
+      "source_id": "rule/sport_tennis",
+      "target_id": "competition/tournament_2",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    },
+    {
+      "source_id": "rule/sport_tennis",
+      "target_id": "competition/tournament_3",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    },
+    {
+      "source_id": "rule/sport_tennis",
+      "target_id": "competition/tournament_4",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

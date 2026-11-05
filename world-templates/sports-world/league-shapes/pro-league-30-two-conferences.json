@@ -1,0 +1,678 @@
+{
+  "entities": [
+    {
+      "entity_type": "competition",
+      "name": "Pro League (30 teams, two conferences)",
+      "slug": "competition/pro_league_30_teams_two_conferences",
+      "data": {
+        "tags": [
+          "basketball",
+          "competition",
+          "league-shape"
+        ],
+        "properties": {
+          "sport": "basketball",
+          "level": "pro",
+          "format": "league_playoffs",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "scoring_system": "win_loss"
+        },
+        "short_description": "Placeholder for a national professional basketball league: 30 teams in two conferences of three divisions, 82-game regular season, play-in for seeds 7-10, four best-of-7 playoff rounds. Onboarding renames this and every Team N."
+      },
+      "lore": [
+        {
+          "title": "Structure",
+          "display_index": 0,
+          "content": "Conference A and Conference B, each with North, Central and South divisions of five teams. This file seeds no season, so no COMPETES_IN edges. When onboarding creates the first season it gives each team a COMPETES_IN edge with conference \"Conference A\" or \"Conference B\" and group the division alone (\"North\"), read from the team's tags (conference-a, division-north), which stay as the team's standing membership. Rename the competition, the teams (full name, short_name, abbreviation, city) and the conferences and divisions to what the owner's league uses; the tags can stay. Vocabulary: rule/sport_basketball; routine: rule/basketball_game_log."
+        }
+      ]
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 1",
+      "slug": "team/team_1",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 1",
+          "abbreviation": "T1"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 2",
+      "slug": "team/team_2",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 2",
+          "abbreviation": "T2"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 3",
+      "slug": "team/team_3",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 3",
+          "abbreviation": "T3"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 4",
+      "slug": "team/team_4",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 4",
+          "abbreviation": "T4"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 5",
+      "slug": "team/team_5",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 5",
+          "abbreviation": "T5"
+        },
+        "short_description": "Placeholder franchise, Conference A North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 6",
+      "slug": "team/team_6",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 6",
+          "abbreviation": "T6"
+        },
+        "short_description": "Placeholder franchise, Conference A Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 7",
+      "slug": "team/team_7",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 7",
+          "abbreviation": "T7"
+        },
+        "short_description": "Placeholder franchise, Conference A Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 8",
+      "slug": "team/team_8",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 8",
+          "abbreviation": "T8"
+        },
+        "short_description": "Placeholder franchise, Conference A Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 9",
+      "slug": "team/team_9",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 9",
+          "abbreviation": "T9"
+        },
+        "short_description": "Placeholder franchise, Conference A Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 10",
+      "slug": "team/team_10",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 10",
+          "abbreviation": "T10"
+        },
+        "short_description": "Placeholder franchise, Conference A Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 11",
+      "slug": "team/team_11",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 11",
+          "abbreviation": "T11"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 12",
+      "slug": "team/team_12",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 12",
+          "abbreviation": "T12"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 13",
+      "slug": "team/team_13",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 13",
+          "abbreviation": "T13"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 14",
+      "slug": "team/team_14",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 14",
+          "abbreviation": "T14"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 15",
+      "slug": "team/team_15",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-a",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 15",
+          "abbreviation": "T15"
+        },
+        "short_description": "Placeholder franchise, Conference A South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 16",
+      "slug": "team/team_16",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 16",
+          "abbreviation": "T16"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 17",
+      "slug": "team/team_17",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 17",
+          "abbreviation": "T17"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 18",
+      "slug": "team/team_18",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 18",
+          "abbreviation": "T18"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 19",
+      "slug": "team/team_19",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 19",
+          "abbreviation": "T19"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 20",
+      "slug": "team/team_20",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-north"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 20",
+          "abbreviation": "T20"
+        },
+        "short_description": "Placeholder franchise, Conference B North. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 21",
+      "slug": "team/team_21",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 21",
+          "abbreviation": "T21"
+        },
+        "short_description": "Placeholder franchise, Conference B Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 22",
+      "slug": "team/team_22",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 22",
+          "abbreviation": "T22"
+        },
+        "short_description": "Placeholder franchise, Conference B Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 23",
+      "slug": "team/team_23",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 23",
+          "abbreviation": "T23"
+        },
+        "short_description": "Placeholder franchise, Conference B Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 24",
+      "slug": "team/team_24",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 24",
+          "abbreviation": "T24"
+        },
+        "short_description": "Placeholder franchise, Conference B Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 25",
+      "slug": "team/team_25",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-central"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 25",
+          "abbreviation": "T25"
+        },
+        "short_description": "Placeholder franchise, Conference B Central. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 26",
+      "slug": "team/team_26",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 26",
+          "abbreviation": "T26"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 27",
+      "slug": "team/team_27",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 27",
+          "abbreviation": "T27"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 28",
+      "slug": "team/team_28",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 28",
+          "abbreviation": "T28"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 29",
+      "slug": "team/team_29",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 29",
+          "abbreviation": "T29"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 30",
+      "slug": "team/team_30",
+      "data": {
+        "tags": [
+          "basketball",
+          "team",
+          "league-shape",
+          "conference-b",
+          "division-south"
+        ],
+        "properties": {
+          "team_type": "franchise",
+          "status": "active",
+          "short_name": "Team 30",
+          "abbreviation": "T30"
+        },
+        "short_description": "Placeholder franchise, Conference B South. Rename at onboarding."
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "rule/sport_basketball",
+      "target_id": "competition/pro_league_30_teams_two_conferences",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    },
+    {
+      "source_id": "rule/basketball_game_log",
+      "target_id": "competition/pro_league_30_teams_two_conferences",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}

@@ -1,0 +1,7 @@
+# League shape: 32-team pro ice hockey league, two conferences of two divisions
+
+Seeds the shape of a national professional ice hockey league: one competition (`competition/pro_ice_hockey_league_32_teams_two_conferences`, sport `ice_hockey`, level pro, format league_playoffs, scoring_system 2-1-0) and 32 placeholder franchises `Team 1` to `Team 32`, tagged by conference (`conference-a`, `conference-b`) and division (`division-north`, `division-east`, `division-central`, `division-west`), eight per division. It links the ice hockey pack rule (`rule/sport_ice_hockey`) and the game-log workflow (`rule/ice_hockey_game_log`) to the competition with APPLIES_TO.
+
+It seeds no season, no people and no venues. Install the base Sports World and `packs/ice-hockey/world.json` first, then this file, then let onboarding rename the competition, the conferences and divisions, and each team (full name, short_name, abbreviation, city), and create the current season (label "2026-27" style, rounds_total 82, roster_deadline the trade deadline) with COMPETES_IN edges carrying `conference` ("Conference A") and `group` (the division alone, "Division North"), or whatever the league calls them. The tags can stay as they are.
+
+Generic as of 2026-11: 32 teams, 2 conferences x 2 divisions x 8 teams, 82-game regular season, 16-team divisional playoff bracket of best-of-seven series. If the league you follow has a different shape (a women's pro league with eight teams, a continental league with regional divisions), create the competition in onboarding instead.

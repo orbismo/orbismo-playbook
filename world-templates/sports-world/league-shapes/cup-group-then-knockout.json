@@ -1,0 +1,720 @@
+{
+  "entities": [
+    {
+      "entity_type": "competition",
+      "name": "Group-Then-Knockout Cup",
+      "slug": "competition/group_then_knockout_cup",
+      "data": {
+        "tags": [
+          "soccer",
+          "competition",
+          "league-shape",
+          "group-knockout"
+        ],
+        "properties": {
+          "sport": "soccer",
+          "level": "international",
+          "format": "group_knockout",
+          "governing_body": "unknown",
+          "region": "unknown",
+          "scoring_system": "3-1-0"
+        },
+        "short_description": "Placeholder tournament shape: 32 teams in 8 groups of 4, top two from each group to a round of 16, then quarterfinals, semifinals, a third-place match and a final. Rename the competition and the teams in onboarding; set level to pro for a club tournament."
+      },
+      "lore": [
+        {
+          "title": "House rules",
+          "content": "tiebreakers: world_tournament_group (goal difference, goals for, head-to-head points, head-to-head goal difference, head-to-head goals for, fair play points, drawing of lots)\naway_goals: no\nknockout: single match; level after 90 minutes goes to extra time then penalties\nSeeded by orbismo-playbook league shape cup-group-then-knockout; replace this chunk with the real regulations when the competition is renamed.",
+          "display_index": 0
+        },
+        {
+          "title": "Structure",
+          "content": "Create one season per edition (label the year, e.g. 2026). Each team COMPETES_IN the season with group 'Group A' .. 'Group H'. Group matches: stage group_stage, round 'Group A Matchday 1'. Knockout: stage round_of_16, quarterfinal, semifinal, third_place, final, with neutral_site true and COMPETED_IN sides neutral_first/neutral_second. For a 48-team shape, add groups I-L and a round_of_32 and change the House rules line on how third-placed teams advance.",
+          "display_index": 1
+        }
+      ]
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 1",
+      "slug": "team/team_1",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-a"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 1",
+          "abbreviation": "T01"
+        },
+        "short_description": "Placeholder team 1, Group A. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 2",
+      "slug": "team/team_2",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-a"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 2",
+          "abbreviation": "T02"
+        },
+        "short_description": "Placeholder team 2, Group A. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 3",
+      "slug": "team/team_3",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-a"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 3",
+          "abbreviation": "T03"
+        },
+        "short_description": "Placeholder team 3, Group A. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 4",
+      "slug": "team/team_4",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-a"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 4",
+          "abbreviation": "T04"
+        },
+        "short_description": "Placeholder team 4, Group A. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 5",
+      "slug": "team/team_5",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-b"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 5",
+          "abbreviation": "T05"
+        },
+        "short_description": "Placeholder team 5, Group B. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 6",
+      "slug": "team/team_6",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-b"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 6",
+          "abbreviation": "T06"
+        },
+        "short_description": "Placeholder team 6, Group B. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 7",
+      "slug": "team/team_7",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-b"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 7",
+          "abbreviation": "T07"
+        },
+        "short_description": "Placeholder team 7, Group B. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 8",
+      "slug": "team/team_8",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-b"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 8",
+          "abbreviation": "T08"
+        },
+        "short_description": "Placeholder team 8, Group B. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 9",
+      "slug": "team/team_9",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-c"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 9",
+          "abbreviation": "T09"
+        },
+        "short_description": "Placeholder team 9, Group C. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 10",
+      "slug": "team/team_10",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-c"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 10",
+          "abbreviation": "T10"
+        },
+        "short_description": "Placeholder team 10, Group C. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 11",
+      "slug": "team/team_11",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-c"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 11",
+          "abbreviation": "T11"
+        },
+        "short_description": "Placeholder team 11, Group C. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 12",
+      "slug": "team/team_12",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-c"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 12",
+          "abbreviation": "T12"
+        },
+        "short_description": "Placeholder team 12, Group C. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 13",
+      "slug": "team/team_13",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-d"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 13",
+          "abbreviation": "T13"
+        },
+        "short_description": "Placeholder team 13, Group D. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 14",
+      "slug": "team/team_14",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-d"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 14",
+          "abbreviation": "T14"
+        },
+        "short_description": "Placeholder team 14, Group D. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 15",
+      "slug": "team/team_15",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-d"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 15",
+          "abbreviation": "T15"
+        },
+        "short_description": "Placeholder team 15, Group D. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 16",
+      "slug": "team/team_16",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-d"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 16",
+          "abbreviation": "T16"
+        },
+        "short_description": "Placeholder team 16, Group D. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 17",
+      "slug": "team/team_17",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-e"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 17",
+          "abbreviation": "T17"
+        },
+        "short_description": "Placeholder team 17, Group E. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 18",
+      "slug": "team/team_18",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-e"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 18",
+          "abbreviation": "T18"
+        },
+        "short_description": "Placeholder team 18, Group E. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 19",
+      "slug": "team/team_19",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-e"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 19",
+          "abbreviation": "T19"
+        },
+        "short_description": "Placeholder team 19, Group E. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 20",
+      "slug": "team/team_20",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-e"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 20",
+          "abbreviation": "T20"
+        },
+        "short_description": "Placeholder team 20, Group E. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 21",
+      "slug": "team/team_21",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-f"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 21",
+          "abbreviation": "T21"
+        },
+        "short_description": "Placeholder team 21, Group F. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 22",
+      "slug": "team/team_22",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-f"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 22",
+          "abbreviation": "T22"
+        },
+        "short_description": "Placeholder team 22, Group F. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 23",
+      "slug": "team/team_23",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-f"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 23",
+          "abbreviation": "T23"
+        },
+        "short_description": "Placeholder team 23, Group F. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 24",
+      "slug": "team/team_24",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-f"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 24",
+          "abbreviation": "T24"
+        },
+        "short_description": "Placeholder team 24, Group F. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 25",
+      "slug": "team/team_25",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-g"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 25",
+          "abbreviation": "T25"
+        },
+        "short_description": "Placeholder team 25, Group G. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 26",
+      "slug": "team/team_26",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-g"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 26",
+          "abbreviation": "T26"
+        },
+        "short_description": "Placeholder team 26, Group G. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 27",
+      "slug": "team/team_27",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-g"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 27",
+          "abbreviation": "T27"
+        },
+        "short_description": "Placeholder team 27, Group G. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 28",
+      "slug": "team/team_28",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-g"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 28",
+          "abbreviation": "T28"
+        },
+        "short_description": "Placeholder team 28, Group G. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 29",
+      "slug": "team/team_29",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-h"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 29",
+          "abbreviation": "T29"
+        },
+        "short_description": "Placeholder team 29, Group H. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 30",
+      "slug": "team/team_30",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-h"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 30",
+          "abbreviation": "T30"
+        },
+        "short_description": "Placeholder team 30, Group H. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 31",
+      "slug": "team/team_31",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-h"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 31",
+          "abbreviation": "T31"
+        },
+        "short_description": "Placeholder team 31, Group H. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    },
+    {
+      "entity_type": "team",
+      "name": "Team 32",
+      "slug": "team/team_32",
+      "data": {
+        "tags": [
+          "soccer",
+          "team",
+          "league-shape",
+          "group-h"
+        ],
+        "properties": {
+          "team_type": "national",
+          "status": "active",
+          "short_name": "Team 32",
+          "abbreviation": "T32"
+        },
+        "short_description": "Placeholder team 32, Group H. Rename in onboarding; set team_type club for a club tournament."
+      },
+      "lore": []
+    }
+  ],
+  "relationships": [
+    {
+      "source_id": "rule/sport_soccer",
+      "target_id": "competition/group_then_knockout_cup",
+      "relationship_type": "APPLIES_TO",
+      "properties": {}
+    }
+  ],
+  "skip_existing": true,
+  "skip_duplicates": true
+}
