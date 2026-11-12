@@ -13,9 +13,10 @@ A life journal and personal knowledge graph. The assistant becomes a warm, curio
 | `rule/onboarding` | First-session interview that builds the initial graph: you, your home, your key people, what's going on in your life. Archives itself when done. |
 | `rule/app_movie_tracker` | Movie diary mini app: watchlist, per-watch ratings and reviews, co-watcher history, favorites, year-in-review stats. |
 | `rule/app_book_tracker` | Reading diary mini app: shelves (to-read, reading, read, DNF), progress, per-read ratings, series, authors as first-class entities, recommendations. |
-| `interest/watching_movies`, `interest/reading` | Collection anchors the trackers hang their items on. |
+| `rule/app_podcast_tracker` | Listening log mini app: shows you follow, an episode queue, per-episode ratings, takeaways and quotes, hosts and guests as first-class entities, the books and movies that come up. |
+| `interest/watching_movies`, `interest/reading`, `interest/listening_to_podcasts` | Collection anchors the trackers hang their items on. |
 
-The two trackers are bundled copies of the [Movie Tracker](../../mini-apps/movie-tracker/) and [Book Tracker](../../mini-apps/book-tracker/) packages from the [mini-app library](../../mini-apps/), included here so the template installs in one step.
+The three trackers are bundled copies of the [Movie Tracker](../../mini-apps/movie-tracker/), [Book Tracker](../../mini-apps/book-tracker/), and [Podcast Tracker](../../mini-apps/podcast-tracker/) packages from the [mini-app library](../../mini-apps/), included here so the template installs in one step.
 
 ## Installation
 
@@ -27,5 +28,5 @@ The two trackers are bundled copies of the [Movie Tracker](../../mini-apps/movie
 ## Customizing
 
 - **Tone**: the role and tone live in the opening paragraph and the closing "Tone" section of `instructions.md`; adjust them freely.
-- **Apps**: add or remove trackers by creating or archiving `rule` entities, then keeping the app index in `instructions.md` in sync. The two included trackers are good models for writing your own.
+- **Apps**: add or remove trackers by creating or archiving `rule` entities, then keeping the app index in `instructions.md` in sync. The three included trackers are good models for writing your own.
 - **Tags**: the tagging strategy section lists suggested tags; adapt them to your own vocabulary before the graph grows.

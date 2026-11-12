@@ -8,13 +8,13 @@ A world template is a complete starting point for an Orbismo world. Each one pai
 
 This split is deliberate: the instructions stay short and stable, while behaviors live in the world where they can be inspected, tuned, paused, or extended without rewriting the prompt.
 
-Portable apps a template bundles (ones that work in any world, like the movie and book trackers) have their canonical home in the [mini-app library](../mini-apps/), where they can also be installed on their own. Behaviors coupled to a template's own schema, like the wedding apps or the RPG rules engine, live only in the template.
+Portable apps a template bundles (ones that work in any world, like the movie, book, and podcast trackers) have their canonical home in the [mini-app library](../mini-apps/), where they can also be installed on their own. Behaviors coupled to a template's own schema, like the wedding apps or the RPG rules engine, live only in the template.
 
 ## Catalog
 
 | Template | What it turns your world into |
 | --- | --- |
-| [Personal Companion](personal-companion/) | A life journal and personal knowledge graph (people, places, events, memories) with a warm companion that remembers everything. Ships with Movie Tracker and Book Tracker mini apps. |
+| [Personal Companion](personal-companion/) | A life journal and personal knowledge graph (people, places, events, memories) with a warm companion that remembers everything. Ships with Movie Tracker, Book Tracker, and Podcast Tracker mini apps. |
 | [Story Bible](story-bible/) | For anyone writing a novel, series, memoir, or other long story. It keeps your characters, timeline, and decisions organized and consistent while you write. |
 | [Tabletop RPG](tabletop-rpg/) | A persistent single-player tabletop RPG with the assistant as Game Master. A full rules engine (dice resolution, character progression, NPC disposition, quests and consequences, live saves) lives in the world as rule entities. |
 | [Wedding Planner](wedding-planner/) | A shared wedding-planning workspace with a calm, jargon-free companion. Four mini apps cover the big picture, vendors and venues, the guest list, and the budget. |

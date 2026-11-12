@@ -21,7 +21,7 @@ New to Orbismo? The [help site](https://help.orbismo.com/) covers the underlying
 
 | Template | What it turns your world into |
 | --- | --- |
-| [Personal Companion](world-templates/personal-companion/) | A life journal and personal knowledge graph, with movie and book trackers included. |
+| [Personal Companion](world-templates/personal-companion/) | A life journal and personal knowledge graph, with movie, book, and podcast trackers included. |
 | [Story Bible](world-templates/story-bible/) | A story bible for a novel, series, or memoir: characters, timeline, scenes, and decisions kept consistent while you write. |
 | [Tabletop RPG](world-templates/tabletop-rpg/) | A persistent single-player RPG with the assistant as Game Master and the rules engine living in the world. |
 | [Wedding Planner](world-templates/wedding-planner/) | A shared, calm wedding-planning workspace covering vision, vendors, guests, and budget. |
