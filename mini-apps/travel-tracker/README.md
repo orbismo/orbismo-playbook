@@ -33,4 +33,4 @@ In use, the app creates `project` entities for trips, `reference` entities for b
 - The trip lifecycle lives in `trip_status` on the trip, mapped onto the built-in project `status` (completed only when the trip is done). It is never encoded as tags.
 - Repeat visits are dated events, so they never collide; the VISITED edge upgrades to FREQUENTS on the third visit by an exact procedure that respects Orbismo's one-active-edge rule.
 - Verdicts are deliberately blunt: one of three tags per place, revised trip over trip, plus one line of why in the place's lore.
-- Pairs naturally with the [Personal Companion](../../world-templates/personal-companion/) template and its movie and book trackers.
+- Pairs naturally with the [Personal Companion](../../world-templates/personal-companion/) template and its movie, book, and podcast trackers.

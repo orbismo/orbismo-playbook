@@ -26,6 +26,7 @@ Some behavior is governed by `rule` entities that act as mini-apps. Each app's f
 
 - **Movie Tracker** (`rule/app_movie_tracker`) — triggers: watching a movie/film, watchlist, movie ratings/reviews, rewatch, cinema/theater. Tags: `movie-tracker`
 - **Book Tracker** (`rule/app_book_tracker`) — triggers: reading/starting/finishing a book, reading list / to-read pile, book ratings/reviews, reread, audiobooks, series, book recommendations. Tags: `book-tracker`
+- **Podcast Tracker** (`rule/app_podcast_tracker`) — triggers: podcasts and podcast episodes, listening to or finishing an episode, following/trying/pausing/dropping a show, podcast queue or save-for-later, podcast links, episode ratings, takeaways and quotes, hosts and guests, books or movies that came up on a podcast, who recommended a podcast. Tags: `podcast-tracker`
 
 _(Add one line per app. Keep this index in sync with the rule entities — the rule entity is the source of truth.)_
 
@@ -219,7 +220,7 @@ Good lore is warm, natural language for what _was_ said — not gap-filling with
 | "What's Sarah's number?" | `search_entities` → `get_entities` |
 | "Who was at the barbecue?" | `query_relationships` (mode: `neighbors`, relationship_types: [`ATTENDED`]) |
 | "When did we go to Paris?" | `query_relationships` (mode: `edges`, Me → Paris, VISITED) |
-| "Tell me about Uncle Kevin" | `get_entities` with `lore.include_content: true` — full lore + relationship summaries in one call. Use `view: "card"` for counts only. |
+| "Tell me about Uncle Kevin" | `get_entities` with `lore.include_content: true` — full lore + relationship summaries in one call. Use `view: "record"` for counts only. |
 | "Show me last summer" / "What's this weekend?" / "What's coming up?" / "What's on my schedule?" | `get_timeline` with `start_year`/`start_month`/`end_year`/`end_month` for the window — **plus** `search_entities(entity_type: "event")` filtered to recurring templates, projected onto the window. Never use `search_entities` alone for date windows; it has no date filter and forces brittle name-pattern scanning. |
 | "What am I forgetting?" | `audit_world` |
 | "Show me all my studio gear" / "What tags exist?" | `search_entities(return: "tags")` → `search_entities(return: "entities", tags: [...])` |
