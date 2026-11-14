@@ -4,7 +4,7 @@
       "type_name": "investigation",
       "label": "Investigation",
       "description": "One line of work with its own question and output: a story, a standing watch, a line of family or local research.",
-      "icon": "manage_search",
+      "icon": "policy",
       "property_schema": {
         "type": "object",
         "description": "With one active investigation, everything belongs to it; never ask which. Claims and questions belong to one or more investigations: a PART_OF edge to each (authoritative) plus each one's tag (its searchable copy). Sources carry the tag of every investigation using them; actors and places carry none. Lore: one Output <date time> chunk per delivered output.",
@@ -57,7 +57,7 @@
       "type_name": "event",
       "label": "Claim",
       "description": "Something that may or may not be true: a happening, a role or link between two actors, an attribute, an identity question or a judgement, dated or not.",
-      "icon": "fact_check",
+      "icon": "checklist",
       "property_schema": {
         "type": "object",
         "description": "A CLAIM: stored as kind event so dated claims reach the timeline; call it a claim to the owner. One proposition, dated or not: a happening, role, link, attribute, identity question, decision or assessment. Who says it, and how, lives on each BEARS_ON edge, never on the claim. Never repeat a claim from its name. In every sentence, lead, summary line, one-word answer and clause, possessives included (\"his first ship\" asserts it), state a claim bare only when standing is confirmed and no asserting edge is put_as alleged, stated or reported without a documented or observed edge beside it; otherwise lead with the attribution (\"the census puts him at 4 Quay Row\"). Never state a negative as fact; say nothing recorded shows it. Accusations, a party's own statements and secondhand reports stay attributed even when confirmed; a denial is shown beside its claim. Name: neutral headline with the date as the source gives it (Ana Reyes director of Harbor Holdings (2014 to 2019)); announcements named as announced. Description: the proposition beginning \"That ...\", no attribution or verdict. PART_OF each investigation it belongs to (one record, never twins), with each tag. ABOUT each actor or place it concerns; a link between two actors is one claim ABOUT both. At least one BEARS_ON from a source, or from the claims a conclusion rests on.",
