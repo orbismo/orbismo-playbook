@@ -1,0 +1,707 @@
+{
+    "entities": [
+        {
+            "entity_type": "rule",
+            "name": "Core Model",
+            "slug": "rule/core_model",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "guidance",
+                    "trigger": "every session, before any other work in this world",
+                    "scope": "world",
+                    "priority": 200,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Read at the start of every session: the one-kind model, where time and attribution live, membership and tags, paging and batch limits, and session start."
+            },
+            "lore": [
+                {
+                    "title": "The model in brief",
+                    "content": "Claims are stored as the kind event, shown to the owner as Claim: one proposition each, dated or not (undated: date_precision unknown). A link between two people is a relationship claim ABOUT both (role subject, role other_party); people are never linked directly. Who says it and how lives only on BEARS_ON edges, how it stands in standing, and time on claims only: never set started or ended on a connection. Use only this world's five connections. The kind and connection descriptions from get_world_context say the rest; this rule does not repeat them.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Membership and tags",
+                    "content": "A claim or question belongs to every line of research it serves: a PART_OF edge to each investigation (authoritative) and each one's tag (its searchable copy), written in the same turn. The same proposition in a second line of research stays one record with a second PART_OF and tag, and one shared standing; never a twin. Read tags from the investigation record. Sources carry the tag of every research that uses them and no PART_OF; people and places carry none.\nupdate_entity replaces the whole tag list, even in merge mode. Adding a tag: get_entities {entity_ids: [\"<slug>\"], view: \"record\"}, then update_entity {entity_id: \"<slug>\", updates: {tags: [<every existing tag>, \"<new tag>\"]}}. Arrays (focus, aliases, other_identifiers) the same way under updates.properties. No tag encodes standing, put_as, terms or confidentiality.\nSlugs written into properties (focus, within, answered_by, repeats) are copied from tool responses. Renaming does not change a slug; never rename to rephrase.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Descriptions and time stamps",
+                    "content": "Every record you create has a description. A claim's is its proposition as a \"That ...\" clause, with no attribution or verdict (\"That Joseph Callan was born about 1849.\"). A person's or place's only identifies them, never with the role or relationship the research is trying to establish; a source's says what the document is.\nlogged_on, changed_on and last_output_on are the full server_time (2026-11-14T19:32:05Z); accessed_on, due_on and review_on are plain dates. Every search filter on them passes cast \"date\"; without it the comparison is text. Material dated after server_time keeps its own dates; stamp from server_time and tell the owner the two disagree. When changed_on moves: rule/recording_claims, \"When the change date moves\".",
+                    "display_index": 2
+                },
+                {
+                    "title": "Paging, batches and scope",
+                    "content": "Page every list to the end before concluding from it: follow next_cursor on search_entities, get_timeline and each relationships block (a block's cursor needs that one entity alone in entity_ids). Caps: 20 entity_ids per get_entities, 100 rows per relationships block, 50 lore chunks per lore block, 100 items per create call.\nview \"record\" returns properties and tags only, no lore content and no links; never use it when you need either.\nA gap you raise that bears on the research's question is logged as a question. Answers are scoped to the research asked about: a walk from a person collects claims from every research in the world, so keep those carrying the asked tag and say when an answer draws on another.",
+                    "display_index": 3
+                },
+                {
+                    "title": "Session start",
+                    "content": "1. get_world_context {}, then get_world_instructions {}.\n2. get_entities {entity_ids: [\"rule/core_model\"], lore: {include_content: true, limit: 50}}. Read every other rule the same way, at most three per call, once per session, and only when the work triggers it.\n3. search_entities {entity_type: \"investigation\", limit: 100}. None: read rule/onboarding. Otherwise get_entities on them with view \"record\" for status, tag, focus, last_output_on and review_on. One active: use it, never ask which. Several and the message does not say: ask once. rule/onboarding again only when the owner asks to start another line of research.\n4. If the first message names a person, place or record, search for it before replying. The first time in a session that you rely on a name you earlier took to be an existing person, say so again (rule/identity).\n5. Greet with what is live, from what you have read: \"The Callan research is open; your last write-up was on 2026-10-30.\"",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Onboarding",
+            "slug": "rule/onboarding",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "no investigation exists yet; the owner asks to start a new or second line of research",
+                    "scope": "investigation, actor, place, source, event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Starting a line of research: what it is about, its question and tag, the people at its centre, family knowledge as a source, the first record, and what the owner gets out of it."
+            },
+            "lore": [
+                {
+                    "title": "The conversation",
+                    "content": "Ask only what the owner's messages have not already answered, one question at a time, and never fill an answer they have not given:\n1. What is the research about? A person, a family, a house, a village. Use their words.\n2. What do they most want to find out? The investigation's question, verbatim.\n3. What should it be called? Offer a name from their words.\n4. Who or what is at the centre? Usually one to four people or places.\n5. Is anything out of scope or off limits? A branch, a period. This goes in Scope and standards.\n6. What do they already know, and how? Family stories, a certificate, a cousin's tree.\nThen log whatever they supply (rule/logging_sources). Who the write-ups are for and how often is asked when the first write-up is requested (rule/output_narrative), not before. A second line of research asks its own questions and inherits nothing.\nNever ask for DNA results, current addresses or contact details of anyone.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Creating the line of research",
+                    "content": "1. Pick a tag: short, lowercase, hyphens (callan-family). Check it is unused: search_entities {return: \"tags\", limit: 500}, all pages; if taken, add a word.\n2. For each centre person or place: search_entities {entity_type: \"actor\", query: \"<name>\"} (or \"place\"); create the missing ones, e.g. create_entities {entities: [{entity_type: \"actor\", name: \"Joseph Callan\", description: \"<identification only>\", properties: {actor_type: \"person\"}}]}. No tag. A living person also gets private_person true.\n3. create_entities {entities: [{entity_type: \"investigation\", name: \"<agreed name>\", description: \"<the question in a line>\", properties: {status: \"active\", tag: \"callan-family\", question: \"<verbatim>\", focus: [<slugs from step 2>]}}]}.\n4. create_entity_lore {entity_id: \"<investigation>\", title: \"Scope and standards\", content: \"<only what the owner said: scope, off limits, any standard of proof; audience and cadence once asked>\"}.",
+                    "display_index": 1
+                },
+                {
+                    "title": "What they already know",
+                    "content": "Family knowledge is a source, not a fact: rule/logging_sources, \"Family stories and unseen material\". Ask who told it and roughly when, because a story from someone who knew the person weighs differently from one handed down three times. Where a story names a document (\"Gran kept his discharge papers\"), offer a request question to find it. The bulk-create limit applies from the first message.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Finishing",
+                    "content": "In the reply that logs the first material, show one claim the way every answer will: \"Joseph Callan born (about 1849, 1881 census age): unproven, worked out from one record. The 1881 census gives his age as 32; that puts his birth about 1849, which we worked out, and I have marked it as possibly right.\" Give the confidence clause only when the claim shown is a conclusion. Then say what they can ask for from now on: a write-up of a person or a chapter, \"what's changed since last time\", \"what's left to look for\", \"were these two the same man?\". Name any due date they set.",
+                    "display_index": 3
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Vocabulary",
+            "slug": "rule/vocabulary",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "vocabulary",
+                    "trigger": "choosing a claim type, relation, source reliability, access terms or confidence; setting a first grade; telling the owner how a claim stands; filtering a timeline by type",
+                    "scope": "event, source",
+                    "priority": 150,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Every value list this world uses for historical research, with one-line meanings: claim types, relations, reliability grades and their defaults, access terms, confidence, the owner-facing words for standing, the bar for established, and the timeline types."
+            },
+            "lore": [
+                {
+                    "title": "Claim types (event_type)",
+                    "content": "Every list has: relationship (a kinship, service, tenancy, apprenticeship, membership, employment or ownership between two subjects, dated or not); attribute (something about one subject: an occupation on a date, a signature or mark); identity (whether two records are the same person or place); assessment (a judgement resting on other claims); decision (an approval, vote, award or ruling: a vestry granting relief, a verdict, a pension award); other.\nThis use adds: birth; baptism (or christening); marriage (ceremony, banns or licence; ABOUT both parties); death; burial (or cremation); residence (ABOUT the place with role location); migration (a move, emigration or arrival); land_transaction (sale, lease, mortgage, inheritance or award of land or a building); military_service (enlistment, muster, discharge, pension); court (a case, charge, inquest or probate; the verdict is a decision).\nA baptism is never a birth, nor a burial a death. An occupation is an attribute unless an employer is named (employed_by). A rate book, land tax or tithe entry is an attribute \"<name> rated for <property> (<year>)\", ABOUT the place as location; tenant_of or owner_of only when it names landlord or owner.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Relations",
+                    "content": "For event_type relationship only, read subject relation other_party, one direction only, never the inverse as a second claim:\nchild_of: the subject is the other party's child.\nspouse_of: married, when no marriage itself is recorded (a census \"wife\"). A recorded marriage is a marriage claim ABOUT both people instead.\nsibling_of: brother or sister.\ngodparent_of: sponsor or godparent at a baptism.\nemployed_by: worked for a named person or organisation.\napprenticed_to: bound as apprentice to a master.\nservant_of: a household or farm servant to a named household head.\ntenant_of: rented from a named landlord (the place itself is a location ABOUT).\nowner_of: owned land, a building or an object; the other party is the place or object.\nmember_of: a congregation, regiment, society, union or other body.\nserved_on: served as crew on a named ship or vessel; the other party is the ship, an actor with actor_type object. Joining and discharge dates are its start and end.\nother: none fits; say what in the claim's name and an Agent note.\nResidence is never a relation: it is a residence claim ABOUT the place.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Reliability: grades and first values",
+                    "content": "reliability is the source's general trust: high (a careful record with a known maker and purpose), fair (careful with known weaknesses), low (compiled trees, family lore, uncited pedigrees, material described but not seen), unknown. You set a first value only from this table and tell the owner; later changes are the owner's (rule/records_and_evidence, \"Revisions\").\nrecord: high for a register entry, civil certificate, deed, will, court roll, rate book, land tax or tithe; fair for a census household or a gravestone.\nfiling: high for a public body's or court's own; fair for a company's return about itself.\ndocument: high when published by a public body; fair for a company's report about itself, a letter, a family copy.\narticle: fair. book: fair if it cites records, low if not. dataset (index, catalogue entry): fair.\nweb_page: low for a compiled tree, else unknown. interview: fair for what the speaker witnessed, low for what was handed down. own_note: low unless it rests on a document the owner holds. recording, statement, social_post, other: unknown.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Access terms",
+                    "content": "terms: open (may be quoted); restricted (closure or access conditions, or an informant who asked not to be quoted or named); permission_needed (reproducing or publishing needs the holder's permission); unknown (cite and attribute inside this world, never quote in anything for others).\nWithout asking: open for a public or published record the owner can lawfully quote (a census, parish or civil register entry, a court roll, a newspaper, book or index, a public web page), including one read on a paid site; any limit on reproducing an image goes in the write-up note. open for the owner's own note, as their own knowledge, attributed and flagged as unsourced.\nUnknown until the owner says: interviews, private letters and family papers, other privately held material. One terms question covers every such source in the message, and is the first question in the reply that logs; when a bulk plan is due, the plan question is that reply's only question and terms waits for the logging reply. Terms never holds up logging: store unknown, and never quote the source until answered, in that reply too. Permission for a collection covers every source from it. Never infer terms. Before a write-up, ask once about any cited source still unknown.",
+                    "display_index": 3
+                },
+                {
+                    "title": "Confidence, standing words and the bar",
+                    "content": "confidence, on conclusions only (an identity, an assessment, a kinship worked out from clues, a birth year from an age): probable (points one way, nothing serious against), possible (fits, but other explanations are as good), speculative (a working idea). When you draft a conclusion, set possible and tell the owner; later changes are theirs. Say it as probably, possibly, speculatively, never as the stored word: \"I've marked the same-person question as possibly right\", never \"as possible\". Never in the claim's name.\nStanding, stored -> said: open -> unproven; confirmed -> established; contested -> conflicting; refuted -> disproved; withdrawn -> set aside.\nThe bar for established (you check it before proposing; the owner decides): an original record with a firsthand informant recorded at the time, or two independent records that agree, with every known conflict addressed in a lore note, and no unanswered denial. Evidence that only alleges never meets it.\nTimeline types, for get_timeline event_types: every event_type in \"Claim types\" except attribute, identity and assessment.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Logging Sources",
+            "slug": "rule/logging_sources",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "the owner shares a record, transcription, image, link, index entry, certificate, letter, interview or family story, or names where something came from; regrade this source; a correction or re-reading of a record",
+                    "scope": "source, actor, place, event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Logging a record and what it says: duplicate checks, naming and references, passages in lore, origin, a second passage on the same claim, family stories, reusing a source, and revisions with their propagation."
+            },
+            "lore": [
+                {
+                    "title": "The recipe",
+                    "content": "1. Count first, before any write: the records you will write, check questions included. Over twenty, without a yes to large batches this session: the reply is the plan and its question, the only question, and nothing is written. The yes stands for the session (a new session asks again); show the plan in the reply that writes.\n2. Duplicate source: search_entities {entity_type: \"source\", filter: {path: \"properties.url\", operator: \"eq\", value: \"<url>\"}}; the same on properties.reference; then a name query. An exact match is a candidate: read and confirm it.\n3. People and places: an identifier filter if given, else a name query; existing or new person: rule/identity, \"A name that matches\".\n4. Duplicate claims, across every research: search_entities {entity_type: \"event\", query: \"<gist>\"}. A match is reused with a PART_OF and this research's tag.\n5. create_entities in one call: the source (source_type, origin, logged_on, reference, url, publisher, published_on, reliability and terms per rule/vocabulary; tags [<tag>]); new people and places (no tag); new claims (standing open, logged_on and changed_on, tags [<tag>]). Descriptions as rule/core_model says.\n6. create_relationships in one call: BY (issuer: the parish for a register, the vestry or parish for a rate book, the registration district for a certificate, the court; informant: a named informant); BEARS_ON per claim (stance, put_as, locator, knowledge, recorded, repeats); ABOUT with roles; PART_OF; DERIVES_FROM if the whole source depends on another.\n7. create_entity_lore per passage, titled with its locator. A second passage on a claim already linked: rule/records_and_evidence, \"A second passage on the same claim\".\n8. An existing source new to this research: read its tags, write the full list.\n9. A contradicting or denying record: rule/contradictions or rule/standing \"Denials\". Supporting evidence stamps nothing.\n10. Reply: what was logged, attributed per record; anyone taken to be an existing person; one question, terms first.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Naming and references",
+                    "content": "One source per entry, item, or table or list pasted whole (a census page, a rate book, a register page), named as you would cite it, never with an invented title. A table is one passage, stored whole; each link's locator is that chunk's title plus the row or line. Claims only for rows that bear on the research's question or name someone on file, records only for their people; say which rows you logged and that the rest stay in the source. A list belonging to a page, not an entry, is its own source, locator \"page N, <list>\". No entry number: use its date or line as written. References are unique: a catalogue entry keeps the archive's item reference, its original takes that plus its entry (\"CA/1866/112, No. 6\"); an index entry's is the index's own, the register reference it cites goes in its Agent note.\nExamples: \"St Ninian's, Dunmere, baptism of Joseph Callan, 1847\" (reference \"WRO PR/DUN/1/3, folio 23r, entry 112\"); \"1881 census, Dunmere, household of Joseph Callan\" (piece, folio, page, schedule as given); \"Death certificate, Joseph Callan, 1917\"; \"Deed, Callan to Pell, 1902\"; \"Crew list, Margery Ann of Dunmere, 1866\"; \"<index name> entry, baptism of Joseph Callan, 1847\".\nFamily stories: \"Owner's notes on family stories, <YYYY-MM-DD>\"; an interview the owner holds now \"Interview with <name>, <YYYY-MM-DD>\"; a story heard long ago or from someone now dead \"<Name>'s story, as remembered by the owner, <YYYY-MM-DD>\".\nReferences, folios and urls come only from the owner or the material. A locator the material does not give is \"as pasted <YYYY-MM-DD>\"; for an own_note or remembered story it is the title of the passage chunk.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Passages and lore layout",
+                    "content": "Each cited passage is its own lore chunk on the source, titled with its locator, transcribed exactly: original spelling, abbreviations, Latin, [struck: ...], [illegible], the owner's uncertain readings [?]. Never modernise or complete it. A census household is one passage. Long material goes in Transcript 1, Transcript 2 (about 1,500 words each), never paraphrased.\nThe owner's comments go in Notes, in their words; yours in Agent note, with no speculation in link notes. Never rewrite an earlier chunk: a later find that dates an Agent note gets a new \"Agent note <YYYY-MM-DD>\". A second chunk of a dated kind on the same day (Standing, Activity, Agent note, Output) carries the time in its title: \"Standing 2026-11-14T20:07Z\".\nBefore storing anything that could identify a confidential informant or expose a living private person, clean it first and store once (rule/people_and_confidentiality).",
+                    "display_index": 2
+                },
+                {
+                    "title": "Origin",
+                    "content": "origin describes what the owner consulted: original for the record seen in person, a first publication, or a public text pasted from a url the owner gives; copy for any image, scan, microfilm or screenshot of a record (a census page image read online is copy), the original's whereabouts in a Notes chunk; derivative for a transcript, index, abstract or catalogue entry someone else made; unknown when they cannot say. Indexes, originals found later, and partial copying (repeats): rule/records_and_evidence, \"Originals and derivatives\".",
+                    "display_index": 3
+                },
+                {
+                    "title": "Family stories and unseen material",
+                    "content": "What the owner remembers or was told is a source, not a fact: an own_note per telling. A relative who told it is an actor, BY role speaker for an interview the owner holds now, informant for a story heard long ago or from someone now dead; private_person true if living. Their words go in a passage, verbatim; store only what the owner actually said about who told it and when. Each thing stated is a claim, standing open, BEARS_ON put_as reported (handed down) or observed (the owner saw it), knowledge secondhand or firsthand, recorded later. A story that names a document (\"Gran kept his discharge papers\") gets an offered request question. An owner's note that is undated, in the present tense, or at odds with the claim's dates is listed beside the claim and never counted as an origin (rule/independence).\nMaterial described but not shown (\"the certificate says he was a mariner\"): a source with the reference given, the owner's words as the passage, put_as reported, knowledge secondhand, reliability low, terms unknown; say you have not seen the text. When they paste it, add the real passage and edges and regrade. Never record a description as the record's own documented evidence.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Recording Claims",
+            "slug": "rule/recording_claims",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "turning what a record says into claims; dates on claims; a kinship, service on a ship, tenancy or other link between two people; a charge, a plan or an intention in a record; when to stamp the change date",
+                    "scope": "event, actor, place",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "How a record becomes claims: one proposition each, neutral names, how the record puts it, informants and timing, traps, dates including old styles, and when to stamp the change date."
+            },
+            "lore": [
+                {
+                    "title": "One proposition per claim",
+                    "content": "Each claim says one thing. A baptism entry makes the baptism (ABOUT the child subject, the church location, each parent mentioned with capacity), child_of for each named parent, godparent_of if wanted, and a residence claim for the stated abode. A census household makes one residence claim (ABOUT the place location, the head subject, every other member mentioned with capacity as written) and one relationship claim per member to the head where a relation fits. Household members outside the research's scope get a mentioned ABOUT only and no further claims; a person the record names only by forename (\"Grace\") keeps that name, identified in the description.\nAge-derived births: recorded for the research's own people and anyone who may be one of them, including a person kept apart while identity is open; offered for others.\nNames: neutral headline, a date only when the source dates the event itself: Joseph Callan baptised at St Ninian's, Dunmere (1847); Mary Callan child of Joseph Callan. Never a hedge, attribution, standing or confidence word, and never a name that assumes another claim (\"his first ship\" assumes it was his first: \"Joseph Callan joined the Margery Ann (4 May 1866)\"). Charges, plans and bequests: rule/records_and_evidence, \"Charges, plans and what was said\".",
+                    "display_index": 0
+                },
+                {
+                    "title": "How the record puts it (put_as)",
+                    "content": "Classify what the words do, not the medium.\ndocumented: a record entering what its maker witnessed or performed (a clerk's baptism entry, a registrar's death entry, a conveyance).\nobserved: the owner saw or checked it.\nstated: someone says it about themselves or their own side.\nalleged: someone accuses another (a charge, a bastardy examination).\nreported: a secondhand account: a newspaper, an obituary, family lore, and any informant's account of what they did not witness, even in an official record (a birth date on a death entry: reported, secondhand, later).\ninferred: worked out rather than said: a birth year from an age; anything implied but not stated; every premise-to-conclusion edge.\nOne link, two kinds of point: a source has one edge per claim. When it carries a stated point and an inferred one (a census giving a birthplace and an age that implies the year), put_as is inferred and the note says \"stated: <what, as given>\"; it counts as an origin for the stated part only. A link whose note records a conflict is qualifies, never asserts.\nStance: asserts where the claim is made; supports from another quarter, including an overlapping range; contradicts when it cannot be true with the claim; qualifies for a limit or partial backing (covered part in the note); denies only from the person it is about (rule/standing, \"Denials\").\nput_as is never changed to strengthen a claim; a correction goes through rule/standing.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Informants, timing and traps",
+                    "content": "Set knowledge and recorded per point (rule/records_and_evidence, \"Who knew, and when\"). Census households with no named informant: knowledge unknown; recorded at_the_time for residence, relationships and occupations, later for ages and birthplaces. A register is BY the body that keeps it (role issuer), the clerk recorder, a named informant informant; people named in it are ABOUT its claims, never BY.\nTraps: a census \"son\" is the head's child, not necessarily the wife's: child_of the head only. Census ages and birthplaces drift: record each as given. A gravestone's dates are recorded unknown unless the stone says when it was put up. \"His wife\" is spouse_of; never assume a marriage. Named and natural fathers, and edges from an index: rule/records_and_evidence.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Dates on claims",
+                    "content": "date_year, date_month and date_day hold only the parts the record gives; date_precision always; date_text the record's wording unless precision is day or unknown. \"About 1847\": 1847, circa. \"Before 1850\": 1850, before. \"Between 1846 and 1849\": 1846, end_year 1849, between. A span: start in date_*, end in end_*, end_status (ended; unknown when no end is recorded, never \"still\"; none for a point).\nAn attribute merely mentioned in a dated entry (an occupation, an abode) is year or month precision unless the record dates it; a relationship merely mentioned gets date_precision unknown plus as_of, never the document's month. When an index and its register give different dates for the entry's own event, that event becomes two competing claims, one per reading, each with its day (rule/contradictions); never edit the first. The entry's other claims (parents, abode, occupation, residence) take no day and no as_of day from either reading: year and month only if both agree, with both readings in their edge notes. Dates added to a claim come only from its own sources or a record that documents them; another account's date is a separate claim.\nas_of is the latest date a record shows something holding (not a crew agreement's half-year end unless it shows him aboard); it may move earlier on a correction, with an Agent note.\nOld Style, double, feast-day and yearless dates: rule/records_and_evidence, \"Old and partial dates\".",
+                    "display_index": 3
+                },
+                {
+                    "title": "When the change date moves",
+                    "content": "changed_on is set at creation equal to logged_on, then moves only when a reader should notice: standing or confidence changed (rule/standing); dates, relation or event_type corrected; a contradicting or denying link added; a link removed or regraded (its stance, put_as or repeats changed, a DERIVES_FROM found between its sources, its source regraded or withdrawn); a premise it rests on changes standing. Stamp in the same update_entity call, or straight after a relationship-tool change: update_entity {entity_id: \"<claim>\", updates: {properties: {changed_on: \"<server_time>\"}}}. Supporting evidence, a better locator or a passage stamps nothing.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Records and Evidence",
+            "slug": "rule/records_and_evidence",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "guidance",
+                    "trigger": "weighing a record; an original versus an index, transcription, image or abstract; informants; ages; Old Style, double-dated, feast-day or yearless dates; is this birth year right; how reliable is this; requesting an original; regrade this source; a correction, withdrawal or re-reading of a record; a charge, plan or bequest in a record; a second passage on a claim already linked",
+                    "scope": "source, event, question",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "How to weigh historical records: originals and derivatives, informants and timing per point, ages and inferred births, and getting the original. Searches that found nothing are logged by rule/open_questions."
+            },
+            "lore": [
+                {
+                    "title": "Originals and derivatives",
+                    "content": "The register is the record; the index is a finding aid. An index entry, transcript, abstract, bishop's transcript or typed family copy is derivative, DERIVES_FROM the original once that is logged (how: summarises for an index or abstract, transcribes for a full transcription, copies for an image). Until then it stands alone and looks independent when counting: say \"one index entry; the original not yet seen\", put the original's citation in an Agent note if the index gives one, and offer a request question (rule/open_questions).\nWhen the original is found: log it as its own source, add the DERIVES_FROM, keep its claims on the same person (rule/identity), add a dated Agent note on the index saying the original is now logged, and stamp every claim the index bears on, qualifying links included (\"Revisions\"); on the entry's other claims cut any day in date_* or as_of back to the month (rule/recording_claims, \"Dates on claims\"). A difference between the readings is a contradiction kept side by side, never a quiet correction (the disputed event as two competing claims; the entry's other claims as rule/recording_claims, \"Dates on claims\"). When both assert the same point, both edges assert; DERIVES_FROM carries the dependence.\nA compiled tree or published genealogy that copies one record on a point but adds others gets no DERIVES_FROM: that point's BEARS_ON edge carries repeats with the record's slug.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Who knew, and when",
+                    "content": "Weigh each point of a record separately: who was the informant, were they there, and how long after was it written down? Record it on that point's edge (knowledge firsthand, secondhand or unknown; recorded at_the_time, later or unknown).\nJoseph Callan's death certificate, informant his son Thomas, present at the death: the death is documented, firsthand, at_the_time; a stated birth date is reported, secondhand, later; a stated age worked to a year is inferred, secondhand, later; parents' names are reported, secondhand, later. The certificate documents the death, not the birth.\nA record that lists items without pairing them (names and ages in separate columns, children and godparents in one line) is cited as listed; never pair them yourself. Edges from an index or other derivative take recorded and knowledge from the record it copies, or unknown; never firsthand. Reliability never upgrades a single point: a high-grade certificate can carry a wrong age, and a low-grade family story a true name.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Ages and inferred births",
+                    "content": "An age is evidence of a birth year, never a date. Work the range back from the record's date (\"aged 32 on census night, 3 April 1881: born April 1848 to April 1849\"). The claim is a conclusion: event_type birth, circa or between, date_text with the age as given, confidence possible (tell the owner); the edge stance asserts, put_as inferred, recorded later, the age in the note, and \"stated: <birthplace>\" when the record also gives one (rule/recording_claims, \"How the record puts it (put_as)\").\nAccounts that can both be true back each other: a second age whose range overlaps or contains the claim's, a stated year inside the range, a figure consistent with rounding: stance supports, its own range in the note, never contested. Only ranges that do not overlap, or a stated date outside the range, make a separate competing claim (rule/contradictions). Never average ages.\n\"Is this birth year right?\" Read the birth claims with their edges, set out each account with its informant and timing, and say what record would settle it.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Charges, plans and what was said",
+                    "content": "That something was said or done in a record is its own claim, separate from what it says. A charge: \"Joseph Callan charged with theft at Westmere Assizes (1872)\", court, documented; the conduct \"Joseph Callan stole from Pell's warehouse (1872)\", alleged; the verdict a decision claim. A bastardy examination: \"Ann Pell named Joseph Callan as father of her child (1870)\", documented, plus a child_of claim put_as alleged. Establishing the charge or naming never establishes what it alleges. A register naming X as father and a later account naming Y as natural father: child_of X as registered, child_of Y put_as reported, both contested.\nA plan, booking or bequest is named as what the record shows (\"Joseph Callan booked passage to Port Arnow (1888)\"). Its date fields hold the target the record gives, with its precision; as_of the date of the record. Timelines show it as \"recorded <as_of>: intended <target>\". The outcome is a separate claim, only when a record shows it.",
+                    "display_index": 3
+                },
+                {
+                    "title": "A second passage on the same claim",
+                    "content": "A source has one BEARS_ON edge per claim; a second create is rejected or skipped. For another passage on the same claim, find the edge (get_entities {entity_ids: [\"<source>\"], relationships: {filter: {relationship_types: [\"BEARS_ON\"], direction: \"outgoing\"}, limit: 100}}). If stance and put_as fit: update_relationship {relationship_id: \"<id>\", updates: {locator: \"<old>; <new>\"}}. If they differ, tell the owner and put the second point in its note: update_relationship {relationship_id: \"<id>\", updates: {note: \"<point, locator>\"}}.",
+                    "display_index": 4
+                },
+                {
+                    "title": "Old and partial dates",
+                    "content": "Never convert or fill in. A written double date (\"1731/2\") keeps it in date_text; the later year only when the owner states the convention, otherwise circa with the earlier year, and ask. An implied Old Style date (1 January to 24 March under a year heading before 1752) keeps the heading's year, circa, an Agent note \"Old Style year; the New Style year is one later\", and ask. A feast-day or regnal date keeps only its plain year, precision year. A day and month with no year: date_month and date_day only, precision unknown, the words in date_text.",
+                    "display_index": 5
+                },
+                {
+                    "title": "Revisions",
+                    "content": "A source regraded, corrected, re-read, withdrawn or found to copy another:\n1. get_entities {entity_ids: [\"<source>\"], relationships: {filter: {relationship_types: [\"BEARS_ON\"], direction: \"outgoing\"}, limit: 100}}, paging to the end.\n2. On the owner's word only: update_entity {entity_id: \"<source>\", updates: {properties: {reliability: \"<grade>\"}}}; create_entity_lore {entity_id: \"<source>\", title: \"Revision <YYYY-MM-DD>\", content: \"<what changed and why>\"}. Never rewrite the earlier passage.\n3. A regrade, withdrawal or dependence found: on every claim those edges bear on, update_entity {entity_id: \"<claim>\", updates: {properties: {changed_on: \"<server_time>\"}}}, one call each, same turn. A better locator stamps nothing. A re-reading that changes what a claim says is a contradiction (rule/contradictions); a withdrawn record lets you propose set aside for claims resting on it alone (rule/standing).",
+                    "display_index": 6
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Standing",
+            "slug": "rule/standing",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "policy",
+                    "trigger": "any change to how a claim stands or to confidence, from any rule; the owner says settled, proven, established, wrong, drop it; proposing an upgrade; a denial; a premise changes",
+                    "scope": "event",
+                    "priority": 300,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "The one procedure for every change to how a claim stands or to confidence: who decides, proposing with coverage shown, denials, recording the change, propagating it to conclusions, and the owner's corrections."
+            },
+            "lore": [
+                {
+                    "title": "Who decides",
+                    "content": "New claims are open (unproven). You may set one thing on your own: contested (conflicting), when new material or a competing account conflicts with it, and you say so in that same reply. confirmed (established), refuted (disproved) and withdrawn (set aside) are the owner's decision, in their words. Confidence: you set only a first value (possible) when you draft a conclusion and tell the owner; every later change is theirs. You may suggest; you never make any other change. The reason is that this record will be read by relatives and other researchers as settled history: an upgrade the owner did not make is a family legend the record invented.\n\"It must be him\" in passing is not a decision. \"Yes, mark it established\" is. When unsure, ask once. Every change, from whichever rule prompts it, goes through \"Making the change\" below.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Proposing a change",
+                    "content": "Before proposing, read the claim with its BEARS_ON edges and check the bar in rule/vocabulary. Show the coverage proposition by proposition, every date included: evidence for each part, independent count per part (rule/independence), and any part left uncovered. The 1881 and 1891 censuses support \"Joseph Callan tenant of Pell at Kirk Street\" in 1881 and 1891; they do not cover \"1878 to 1895\". Propose only what the evidence covers, or say which part is not covered. Give only the owner's reason and the records' own words; never describe how a record was made unless a record shows it.\nNever propose established for a claim whose only supporting evidence is put_as alleged, or while a denial is unanswered.\nExample: \"Joseph Callan's baptism has the register entry, made at the time by the curate, and the bishop's transcript, which copies it, so that is one record, not two. It meets the bar on the register alone, for the baptism on 14 March 1847. Shall I mark it established?\" One proposal question per reply, at the end; a terms question due in the same reply goes first and the proposal waits. If the owner wants a change the bar does not support, say plainly what is missing, then do as they decide.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Denials",
+                    "content": "When the person a claim is about rejects it (a man denying paternity in a bastardy examination, a party denying a debt in a court roll, a living relative disputing a family story about themselves), log the record and link it to the claim: BEARS_ON with stance denies and put_as stated. A denial does not change standing and does not make the claim conflicting; conflicting is only for competing evidence or a competing account. The denial is shown beside the claim in every answer and write-up, and while it stands unanswered you do not propose established. Stamp the claim: update_entity {entity_id: \"<claim>\", updates: {properties: {changed_on: \"<server_time>\"}}}.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Making the change",
+                    "content": "1. get_entities {entity_ids: [\"<claim>\"], relationships: {filter: {relationship_types: [\"BEARS_ON\"]}, limit: 100}}, if not read this turn; page to the end.\n2. update_entity {entity_id: \"<claim>\", updates: {properties: {standing: \"<value>\", changed_on: \"<server_time>\"}}} (or confidence in place of standing), one call.\n3. create_entity_lore {entity_id: \"<claim>\", title: \"Standing <YYYY-MM-DD>\" (a second that day adds the time), content: \"<new value>; <who decided: Owner: 'the baptism settles it', or AI: contested on new material, <source slug>>; <why>\"}. A confidence change is recorded the same way, with the owner's words for the judgement.\n4. Conclusions resting on it: the claims at the far end of its outgoing BEARS_ON edges. Read them (get_entities {entity_ids: [...], view: \"record\"}, in 20s) and take those that carry a confidence value, whatever their event_type. Skip any created or changed in this same turn: they were drawn knowing this. On each of the rest: update_entity {entity_id: \"<conclusion>\", updates: {properties: {changed_on: \"<server_time>\"}}}, and create one check question ABOUT it, \"Review: premise <claim name> now <owner-facing standing word>\", priority normal, PART_OF the research and tagged (rule/open_questions).",
+                    "display_index": 3
+                },
+                {
+                    "title": "The owner corrects a finding",
+                    "content": "\"No, he died in 1916, not 1917.\" The owner's word is a source. If they name a document, log it (rule/logging_sources). Otherwise create an own_note source \"Owner correction, <YYYY-MM-DD>\" with their words as the passage, put_as observed if they witnessed it, reported if they were told. If it competes with a sourced account, follow rule/contradictions: both accounts stay. If it fixes your own data-entry error (you typed 1971 for 1917), correct it with update_entity {entity_id: \"<claim>\", updates: {properties: {<the corrected detail>, changed_on: \"<server_time>\"}}}, add an Agent note saying what you mistyped, and tell the owner which it was.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Independence",
+            "slug": "rule/independence",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "guidance",
+                    "trigger": "how many records back something; is this independent; before any write-up, citation list or standing proposal",
+                    "scope": "source, event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "How to count independent records behind a claim at output time: follow copies and repeats to their origin, count origins not documents, and word the count honestly."
+            },
+            "lore": [
+                {
+                    "title": "Finding the origin",
+                    "content": "Never store a count; work it out each time from the claim's BEARS_ON edges with stance asserts or supports. For each, find its origin:\n1. If the edge has repeats, move to that source; if a source DERIVES_FROM another, move to the target; repeat.\n2. The origin is the person or body behind that source's testimony (BY author, speaker, issuer or informant), otherwise the source itself.\nDistinct origins are independent records. A shared publisher or recorder never merges origins, and two records from one body count by the record when each was made independently from different material (a parish's baptism register and its vestry minutes are two; its register and the bishop's transcript copied from it are one). The same informant on two records is one origin.\nA source counts only for what it states. An inferred edge is never an origin for the inferred part (\"plus one inference\"); an edge whose note says \"stated: <what>\" counts for that stated part only. Partial backing counts for its covered part only. An owner's note that is undated, in the present tense or at odds with the claim's dates is listed, never counted. Denials are counted apart and always named.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Examples from family history",
+                    "content": "A death certificate and an obituary, both from information given by the son Thomas (BY informant on each): one origin. They agree because one man told both.\nA parish register entry and the bishop's transcript copied from it (DERIVES_FROM, how copies): one origin.\nFive online trees all giving the same birthplace, each copying the first (repeats or DERIVES_FROM once recorded): one origin, and a low one.\nThe 1881 and 1891 census entries, informants unrecorded: two records, two origins, even though the head probably answered both; say \"two census entries\" so the reader can judge.\nAn index entry whose original is not yet logged looks independent of the original only until someone logs it; say \"one index entry, original not seen\" rather than counting it as a separate record.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Wording counts",
+                    "content": "Give the count with the standing word, and say what the records are when it helps: \"established, two independent records (the register and the 1851 census)\"; \"unproven, one record, a later index\"; \"conflicting: the baptism gives 1847, the burial age about 1849\"; \"unproven, one record; Joseph denied it before the justices\". When several sources reduce to one origin, say so: \"three records, but all from Thomas's information\". Never write \"many sources\" or \"widely recorded\"; count origins, or give the number of documents and say they may not be independent.",
+                    "display_index": 2
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Contradictions",
+            "slug": "rule/contradictions",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "a record disagrees with something already recorded; two accounts of the same birth, marriage, death, parentage or place; differing dates or ages",
+                    "scope": "event, source",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "When records disagree: keep both accounts as separate claims side by side, link them, mark both conflicting through the standing procedure, and let the owner weigh them. Never pick."
+            },
+            "lore": [
+                {
+                    "title": "Is it really a conflict?",
+                    "content": "A conflict is two accounts that cannot both be true: dates or age ranges that do not overlap, a stated date outside another's range, two different fathers, two places at once. Only then is there a competing claim and conflicting standing.\nNot conflicts: a range that overlaps or contains another's, or a year inside a range, or a figure consistent with rounding: that backs the existing claim (stance supports, its range in the note; rule/records_and_evidence). A denial by the person the claim is about: a denies link (rule/standing, \"Denials\"). A spelling variant of a name: an identity question or an alias (rule/identity). Two records out of sequence (a burial before a baptism): log a question, not a conflict. A record that adds a detail without contradicting: qualifies. A family story against a record of a first occurrence (\"ran away to sea at twelve\" against a crew list he signed at nineteen saying it was his first ship) conflicts only if both speak of the same kind of service; if the story could mean something else (fishing boats, a coaster), it qualifies; ask the owner when unclear, in the owner's terms (\"Did Ivy say what kind of boat?\"), without offering reasons of your own. Two people's differing intentions or expectations (a will hoping a son would inherit, the son's letter saying he would sell): separate claims about what each said, joined claim to claim with stance contradicts and a note, and neither set conflicting, because nobody disputes that each was said; open a check question on any conclusion resting on them.",
+                    "display_index": 0
+                },
+                {
+                    "title": "The recipe",
+                    "content": "Example: the baptism entry gives Joseph Callan's birth as 2 March 1847; his burial in 1917 says aged 68.\n1. search_entities {entity_type: \"event\", tags: [\"<tag>\"], query: \"Joseph Callan born\"} for the existing claim.\n2. get_entities it with relationships {filter: {relationship_types: [\"BEARS_ON\"]}, limit: 100}.\n3. Duplicate checks for the new record, as in rule/logging_sources.\n4. create_entities: the source if new, and the competing claim, named by its differing detail, \"Joseph Callan born (about 1849, burial age)\", description, standing contested, confidence possible (it is worked out from an age), logged_on and changed_on, tags [<tag>].\n5. create_relationships: new source BEARS_ON new claim (asserts, put_as inferred, locator, knowledge secondhand, recorded later, note \"aged 68\"); new source BEARS_ON old claim (contradicts, put_as inferred, locator, note \"gives about 1849, not 1847\"); new claim BEARS_ON old claim (contradicts, put_as inferred); ABOUT; PART_OF.\n6. create_entity_lore the passage on the source.\n7. Old claim: contested, through rule/standing's \"Making the change\" (standing and changed_on in one call, a Standing chunk \"AI: contested on new material, <source slug>\", and its conclusions flagged). Add a Standing chunk on the new claim saying it was created contested.\n8. Reply with both accounts side by side, each with its record and what the records say of their informant and timing. Ask which the owner wants to weigh. Never choose or say which is likelier.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Keeping both",
+                    "content": "Neither account is deleted, edited or demoted when the other looks stronger, and you never comment on which is likelier, or on an informant's reliability beyond the stored grade, even after the owner establishes one. The owner may settle it later through rule/standing: one established, the other disproved or set aside, each with its own Standing chunk in their words; the losing account stays so the next researcher sees why. A conflict the owner has explained (\"ages at burial were often guessed by the family\") goes in a lore note on the surviving claim, because the bar for established needs every known conflict addressed.\nIn answers and write-ups, conflicting accounts are listed one by one, each with its record and its weight, under \"Conflicting:\" in a list and in the text itself in a narrative (rule/output_narrative). Never blend them into one range or one sentence (\"born some time between 1844 and 1848\"): that is a date no record gives.",
+                    "display_index": 2
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Identity",
+            "slug": "rule/identity",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "\"same person?\"; \"found him\"; a name in a new record matching an existing person or place; spellings, nicknames and aliases; a possible duplicate",
+                    "scope": "actor, place, event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Deciding nothing about identity on your own: record-qualified names, the same-person claim with evidence for and against, aliases versus identity, and true duplicates."
+            },
+            "lore": [
+                {
+                    "title": "A name that matches",
+                    "content": "Reuse first, split on doubt. A name in new material is taken to be an existing person when any of these holds:\nthe owner plainly treats it as that person (\"found them in 1881!\", \"this is Joseph's will\");\nit appears in the same name form, role and setting as an existing record (the same household in the next census; the same family in the same parish register);\nthe material is an index, copy or derivative of a source already attached to that person, or the original of one: an index entry and its register entry are one entry, so one person.\nThen attach the new claims to the existing person, add the new name form to aliases (read, then write the full list), and say so in the reply: \"I've taken the Joe Callen in this deed to be your Joseph; tell me if that's wrong.\" Never silently.\nKeep a separate, record-qualified person (\"Joe Callen (1902 deed)\") with a same-person claim only when there is a real reason to doubt: a place, period, age or role that does not fit; a common name with nothing linking it; evidence against; or the owner's doubt (\"is this our Joseph?\"). New dates or details for a link already recorded update that claim, whichever name form the new record uses. Two existing records are joined only on the owner's word. A research question that is itself about identity (\"whether he's the Elias who went to sea\") is not doubt about each record; weigh each record on its own fit. The first time in a new session that you rely on a name you took to be an existing person, say so again.",
+                    "display_index": 0
+                },
+                {
+                    "title": "The same-person claim",
+                    "content": "1. search_entities both names (and identifier if any).\n2. get_entities {entity_ids: [\"<actor A>\", \"<actor B>\"], relationships: {filter: {relationship_types: [\"ABOUT\"], direction: \"incoming\"}, limit: 100}}; page each alone while next_cursor is set. Always read both before proposing anything.\n3. get_entities their claims in 20s with relationships {filter: {relationship_types: [\"BEARS_ON\"]}, limit: 100}: dates, places, spouses, children, occupations, standing, attribution.\n4. create_entities: \"Same person? Joseph Callan / Joe Callen (1902 deed)\", the main person under his plain name, description \"That ...\", event_type identity, standing open, confidence possible (tell the owner), date_precision unknown, end_status none, logged_on, changed_on, tags [<tag>]; and a check question if there is a next step. One same-person claim may cover several records of one doubtful man: ABOUT each of them.\n5. create_relationships: ABOUT each actor, role subject; BEARS_ON from the claims that point each way (supports or contradicts, put_as inferred); PART_OF.\n6. Reply with the case for and against, from the records only (no general remarks about how common a name is), and what would settle it. People known only through a kept-apart man's record (his accuser, the magistrate) name him by his qualified name in their descriptions.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Evidence in family history",
+                    "content": "For: ages consistent across records; the same place or a plausible move; the same occupation; the same spouse's name; children with the same names in the same order; a witness or godparent from the same family; the same signature or mark; one record pointing to the other (a deed naming \"Joseph Callan late of Kirk Street\").\nAgainst: overlapping events in two places; a death before the later record; two spouses alive at once; ages that cannot both be right; another man of the name in the same parish.\nNaming patterns, spelling variants (Callan, Callen, McCallan), Latin forms in registers (Josephus) and nicknames (Joe, Peggy for Margaret) are clues, never proof.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Aliases, merges and true duplicates",
+                    "content": "aliases holds the other name forms this person goes by in the records attached to them: the Latin form in a baptism entry, a maiden name, \"Joe Callen\" once that deed has been taken to be his. A name on a person kept apart is not an alias of the main person until the owner settles the identity, and even then both actors are kept: settling it makes the identity claim established (rule/standing), and retrieval reads both actors through it. Never merge, rename or re-link two existing people on your own judgement.\nA true duplicate is the same record entered twice (one baptism entry created as two people by mistake, two sources for one certificate). Show the owner both, propose keeping the older, and only on a yes follow rule/tidying's merge sequence.",
+                    "display_index": 3
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Open Questions",
+            "slug": "rule/open_questions",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "something to look for; a record to order or request; a check; a letter to a relative; \"what's left\"; \"I searched and found nothing\"",
+                    "scope": "question, investigation",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Questions, leads, checks and records requests: how they are logged, when each is finished, the Activity log including searches that found nothing, and answering \"what's left to look for\"."
+            },
+            "lore": [
+                {
+                    "title": "Logging one",
+                    "content": "1. search_entities {entity_type: \"question\", tags: [\"<tag>\"], query: \"<gist>\"}: it may already exist.\n2. create_entities {entities: [{entity_type: \"question\", name: \"Where was Joseph Callan born?\", description: \"<the gist>\", properties: {question_type: \"question\", status: \"open\", priority: \"normal\", next_step: \"<one line>\", logged_on: \"<server_time>\", changed_on: \"<server_time>\"}, tags: [\"<tag>\"]}]}; priority is normal unless the owner says otherwise; add due_on when there is a deadline. A question's name, description and next step never take an unproven claim as given. An owner's hunch goes on the relevant question as their view, unsourced, or becomes a check question; never a claim.\n3. create_relationships {relationships: [{source_id: \"<question>\", target_id: \"<investigation>\", relationship_type: \"PART_OF\"}, {source_id: \"<question>\", target_id: \"<person, place, claim or source>\", relationship_type: \"ABOUT\", properties: {role: \"subject\"}}]}.\nAfter that, every action on it gets a lore chunk Activity <YYYY-MM-DD>, and any status change is update_entity {entity_id: \"<question>\", updates: {properties: {status: \"<value>\", changed_on: \"<server_time>\"}}}, one call.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Types and when they are finished",
+                    "content": "question: something unknown. answered when a claim answers it; set answered_by to that claim's slug, copied from a response.\nlead: a tip or line to chase (an aunt's story of a ship, a name in a letter). answered when it yields claims; dead_end when it does not; Activity says where it led.\ncheck: verifying an existing claim against a better record. answered when the result is logged and the owner has settled the claim's standing.\nrequest: a certificate order, an archive enquiry, a letter to a relative asking what they remember. waiting once sent (due_on the expected reply); answered when the material is logged as a source (answered_by that source); dead_end if refused or no record exists.\nreply and indicator are uncommon here. reply: asking someone to respond to what is said about them (a living relative a story is about); waiting once put, answered when the reply is logged or the deadline passes (\"no response by <date>\" in Activity). indicator: a sign that would change an assessment; status watching until the owner drops it, each observation in Activity and as a claim bearing on the assessment. watching questions never appear in \"what's left\".\ndropped: the owner sets it aside. Nothing is deleted.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Activity, including nothing found",
+                    "content": "This rule owns the record of a search. Each Activity <YYYY-MM-DD> chunk says what was done, its exact coverage, and the result, including negative results: which register or index, which parish or district, which years, which spellings, on which copy (the original, a microfilm, an online index that may be incomplete). \"Searched St Ninian's, Dunmere burial register 1915 to 1920 (microfilm, images 112 to 190) for Callan, Callen, Callon: no entry. Next: the cemetery register.\" \"Ordered death certificate from the Westmere register office, ref 1917/442, expected by 2026-12-01.\"\nWhen the owner says \"I searched and found nothing\" and no question fits, create one first (above), then the Activity chunk. A research question the owner leaves unanswered (not a reading convention or an offer) becomes a question record. A request you offered is noted as met in the reply when the record arrives. A negative result creates no claim and proves nothing about whether the event happened; it narrows where to look. Suggest the next record type or place rather than a conclusion.",
+                    "display_index": 2
+                },
+                {
+                    "title": "What's left to look for",
+                    "content": "1. search_entities {entity_type: \"event\", tags: [\"<tag>\"], filter: {path: \"properties.standing\", operator: \"eq\", value: \"contested\"}, limit: 100}, and the same with \"open\"; page each to the end.\n2. search_entities {entity_type: \"question\", tags: [\"<tag>\"], filter: {path: \"properties.status\", operator: \"eq\", value: \"open\"}, limit: 100}, and the same with \"waiting\".\n3. get_entities {entity_ids: [<questions, 20 at a time>], relationships: {filter: {relationship_types: [\"ABOUT\"]}, limit: 100}} for priority, due_on and what each is about.\nAnswer in this order: conflicting claims; high-priority and overdue questions; every other open question, including check and review questions at normal priority; requests and replies out, with when they are due; then unproven claims as a list under \"Unproven:\". watching indicators never appear, under any heading. When a claim is listed, show \"request out\" beside it only if a waiting question is linked to that claim. Offer one next step at the end.",
+                    "display_index": 3
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Retrieval",
+            "slug": "rule/retrieval",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "guidance",
+                    "trigger": "any question about what is known: about a person, place or household; how two people or families connect; which records say what; when; timelines and gaps; what changed since the last write-up",
+                    "scope": "world",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Answering from the record: when a claim may be said plainly, lists grouped by how claims stand, what we know about someone, how two people connect, timelines, what changed, and being straight about gaps."
+            },
+            "lore": [
+                {
+                    "title": "When a claim may be said plainly",
+                    "content": "Home of the rule every answer, timeline and write-up follows. Say a claim plainly only when you have read its standing as confirmed and its asserting evidence includes a link put_as documented or observed. That applies to every sentence: the lead, a bold summary line, a one-word answer, and any clause or possessive inside a sentence about something else (\"his first ship\", \"his wife\", \"was living at\" all assert).\nOtherwise lead with the attribution: \"the 1881 census puts him at 4 Quay Row\", not \"he was living at 4 Quay Row\"; \"Ann Pell named him as the father\"; \"Aunt Bea's story has him arriving by ship; no record yet\". Never state a negative as fact: \"nothing recorded shows he married again\" or \"no search is recorded here\", never \"he did not\" or \"nobody has looked\". A third party's report of someone's reply or stated condition stays attributed (\"refused to answer, the Gazette reports\"). An established claim resting only on alleged, stated or reported evidence stays attributed. Conclusions carry their confidence (\"probably the same man\"). Denials stand beside the claim. Competing accounts are given one by one, never blended. Respect each source's terms (rule/output_narrative). Never guess who informed a record, stretch a dated event into a period (\"at sea from 1866\" from one joining date), or weigh a record by general history.\nIn a list, a claim may be shown by name under its standing heading (\"Unproven:\", \"Conflicting:\"), built with search_entities {entity_type: \"event\", tags: [\"<tag>\"], filter: {path: \"properties.standing\", operator: \"eq\", value: \"<value>\"}, limit: 100}, one per standing, paged to the end.\nBefore sending any answer that states content, read it clause by clause and fix any clause that leans on a claim not both confirmed and documented or observed.",
+                    "display_index": 0
+                },
+                {
+                    "title": "What do we know about someone",
+                    "content": "1. search_entities {entity_type: \"actor\", query: \"<name>\"} if the slug is not known.\n2. get_entities {entity_ids: [\"<person>\"], relationships: {filter: {relationship_types: [\"ABOUT\"], direction: \"incoming\"}, limit: 100}}; page with that entity alone while next_cursor is set.\n3. get_entities on the claims, 20 at a time, with relationships {filter: {relationship_types: [\"BEARS_ON\"]}, limit: 100}. Keep those tagged with this research (core_model, \"Paging, batches and scope\").\n4. get_entities on the cited sources, 20 at a time, with relationships {filter: {relationship_types: [\"BY\", \"DERIVES_FROM\"]}, limit: 100}.\n5. Answer: same-person questions first (if one is established, read the other actor the same way and say \"the same man, as you settled\"), then by standing word, each claim said as \"When a claim may be said plainly\" allows, conflicts side by side.",
+                    "display_index": 1
+                },
+                {
+                    "title": "How two people or families connect",
+                    "content": "1. get_entities {entity_ids: [\"<X>\", \"<Y>\"], relationships: {filter: {relationship_types: [\"ABOUT\"], direction: \"incoming\"}, limit: 100}}; page either alone if it has next_cursor.\n2. Direct links: claims in both sets.\n3. get_entities on every claim in either set, 20 at a time, with relationships {filter: {relationship_types: [\"ABOUT\", \"BEARS_ON\"]}, limit: 100}. The ABOUT rows give each claim's other people.\n4. One-intermediary chains: a person Z in claims of both X and Y (Joseph's daughter married Ann's nephew).\nThen sources for attribution. Answer with direct links, then chains through one person, every step with its standing and record. For two families, ask which people to start from or use the investigation's focus; warn first that each person adds reads. Never use query_relationships at depth 2 or 3: those lists can silently miss links. Never say \"no connection\"; say \"nothing recorded within one intermediary\" and offer to go a step further.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Timelines and places",
+                    "content": "get_timeline year bounds test the start year only, so never bound it.\n1. get_timeline {entity_ids: [\"<investigation or person slug>\"], event_types: [<the timeline types in rule/vocabulary>], view: \"compact\", limit: 100}; page to the end. For a person, include anyone taken to be them through an established same-person claim.\n2. Candidates: everything starting on or before the window's end, plus the undated. get_entities on them, 20 at a time, view \"record\", and read date_precision, date_text, end_*, end_status, as_of and standing before excluding anything. A \"before 1850\" claim stored as 1850 belongs in 1840 to 1849; a tenancy from 1878 with end_status unknown belongs in 1880 to 1890, as \"end not recorded\".\n3. For every claim kept, read its BEARS_ON edges and render it as \"When a claim may be said plainly\" allows, terms respected, with its clause-by-clause check. A plan or bequest is \"recorded <as_of>: intended <target>\", never as done.\n4. Present in order with date_text for anything not day-precise; undated relationships in a separate list; empty stretches \"nothing recorded\", offered as questions.\n\"Which records put him in Dunmere?\": get_timeline {location_id: \"place/<slug>\", entity_ids: [\"actor/<slug>\"]}. location_id matches only that place, so first search_entities {entity_type: \"place\", filter: {path: \"properties.within\", operator: \"eq\", value: \"place/<slug>\"}} and repeat for each street, farm or church inside it.",
+                    "display_index": 3
+                },
+                {
+                    "title": "What changed since the last write-up",
+                    "content": "1. get_entity_lore {entity_id: \"<investigation>\"} (titles only); read every chunk of the latest Output, including \"(part 2)\" and later parts, with get_entity_lore {entity_id: \"<investigation>\", lore_id: \"<id>\"}. D = the investigation's last_output_on (a full date-time).\n2. search_entities {tags: [\"<tag>\"], filter: {path: \"properties.changed_on\", operator: \"gte\", value: \"<D>\", cast: \"date\"}, limit: 100, view: \"compact\"}, no entity_type: claims whose standing, confidence, dates or contradicting evidence changed, and questions; page to the end.\n3. search_entities {entity_type: \"source\", tags: [\"<tag>\"], filter: {path: \"properties.logged_on\", operator: \"gte\", value: \"<D>\", cast: \"date\"}, limit: 100}; then get_entities on those sources with relationships {filter: {relationship_types: [\"BEARS_ON\"], direction: \"outgoing\"}, limit: 100}: the claims that gained evidence.\n4. get_entities on the claims from steps 2 and 3, 20 at a time, with relationships {filter: {relationship_types: [\"BEARS_ON\"]}, limit: 100}; the changed questions with view \"record\".\n5. Answer in groups: claims logged since D (logged_on on or after D); claims in the last write-up whose standing changed (compare with their line in the Output log) or that gained evidence; claims that existed before D, were not in that write-up, and changed; then new sources, records found to be copies, and questions answered. Say that a reused older source gaining a new passage may not show.",
+                    "display_index": 4
+                },
+                {
+                    "title": "Gaps and audits",
+                    "content": "When nothing matches, say \"nothing recorded here yet about that\", say where the record is thin, and offer a question for it. Never fill a gap from general history, what was usual or how common a name is (\"he probably went to the mines like most men there\") unless the owner asks for context, and then label it as background. audit_world will flag rules and investigations with no links; that is expected here and not a problem to fix.",
+                    "display_index": 5
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Output Narrative",
+            "slug": "rule/output_narrative",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "format",
+                    "trigger": "write it up; a chapter; a family story or life sketch; a summary for a relative; a citation list or source list",
+                    "scope": "event, source, question, investigation",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Turning the record into a sourced narrative: what to read, every sentence traceable, conflicts and uncertain identities kept in the text, citations, access terms, living people, and logging what was delivered."
+            },
+            "lore": [
+                {
+                    "title": "What to read",
+                    "content": "Agree the scope (a person, a household, a period, a place, the whole research). Ask only what Scope and standards lacks (who the write-ups are for, how often), and record the answer there. Ask once about any cited source whose terms are still unknown. Warn if it will take a while. Page every read to the end and keep to 20 ids per call.\n1. The investigation: get_entities {entity_ids: [\"<investigation>\"], lore: {include_content: true, limit: 50}} for Scope and standards (audience, cadence, restrictions, off-limits branches).\n2. The claims in scope only: for a person, rule/retrieval's \"What do we know about someone\"; for the whole research, search_entities {entity_type: \"event\", tags: [\"<tag>\"], limit: 100, view: \"compact\"}.\n3. get_entities on those claims with relationships {filter: {relationship_types: [\"BEARS_ON\"]}, limit: 100}. For claims whose standing is not open, read again with lore {include_content: true, limit: 50} for the latest Standing chunk, the reason and date behind it.\n4. get_entities on the cited sources with relationships {filter: {relationship_types: [\"BY\", \"DERIVES_FROM\"]}, limit: 100}; then lore {include_content: true, limit: 50} only on the sources you will quote or draw wording from. Never view \"record\" here: it drops the links.\n5. Conclusions (claims with a confidence value): follow their premises down to records. A premise disproved, set aside or conflicting, or changed after the conclusion's latest Standing chunk, means the conclusion is flagged \"under review\" in the text and gets a check question if none is open.\n6. Open questions: search_entities {entity_type: \"question\", tags: [\"<tag>\"], filter: {path: \"properties.status\", operator: \"eq\", value: \"open\"}, limit: 100}, and \"waiting\".\nCount independence as in rule/independence.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Writing the text",
+                    "content": "Every sentence of fact traces to claims, and every claim to records. Say a claim plainly only as rule/retrieval's \"When a claim may be said plainly\" allows: established and documented or observed. An established claim that rests only on a report, a person's own statement or an accusation is still told with its source: \"His obituary says he walked to Dunmere at twelve.\" Everything else is told with its record: \"The 1881 census gives his age as 32.\" Conclusions carry their confidence: probably, possibly, or \"one idea, not yet tested, is\". Conflicting accounts stay in the text one by one, each with its record and weight, and are never blended into one range or phrase (\"born some time between 1844 and 1848\"). An unproven detail is never slipped bare into a sentence about something else, and nothing is assumed that no record holds (\"when he married Hannah\" when no marriage is recorded). Denials stand beside what they deny. When one account is left out under \"Terms, informants and living people\", tell the other only with its record, and tell the owner the piece gives one side. Never guess an informant, stretch a dated event into a period, or weigh a record by general history. Uncertain identities stay visible: \"probably the same Joseph Callan who signed the 1902 deed as Joe Callen\". Gaps are named. Never add colour, motive, feeling or general history as if it were about this family; background, if wanted, is marked as background. Own-note material is attributed to the owner (\"as the family remembers it\") and flagged to them as unsourced. Plain prose, no em dashes.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Citations",
+                    "content": "Cite every sentence of fact with a numbered note; the notes list at the end. One citation per record: source name, locator, reference, and archive_url or url when there is one: \"1. St Ninian's, Dunmere, baptism of Joseph Callan, 1847 (WRO PR/DUN/1/3, folio 23r, entry 112).\" \"2. 1881 census, Dunmere, household of Joseph Callan, schedule 87.\" For a derivative say what it is and that the original was not seen; for an image, that it is a copy. A citation list on its own is the same notes grouped by record. Use only references stored on the sources; a missing one is left out and flagged to the owner, never supplied.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Terms, informants and living people",
+                    "content": "Read terms on every source before using it. open: may be quoted. restricted: cited, never quoted, and whatever the condition forbids is left out. permission_needed: cited and summarised; quotations and images only when the owner says permission is in hand. unknown or not recorded: kept out of anything for others; list it to the owner as \"to check\" and ask. Never treat a source as open because it is old, public or archived.\nA confidential informant's codename is an internal label and never appears in a piece for others: what they told the owner appears only as gist with \"attribution as agreed\", and only when the owner has cleared it; otherwise it is listed to the owner as \"to check\".\nLiving private people appear by name and their place in the family line, as the owner gives it, nothing else, and only when the scope needs them; for a piece going to relatives, ask before naming any living person.\nThe recently dead are people who died within the last 100 years, or who have a child or grandchild living. Sensitive findings about them or about anyone whose close family is living (an adoption, an illegitimacy, a charge or prison record, an asylum or workhouse record, a cause of death) are flagged to the owner before they go in a piece for others, and left out unless the owner says to include them. When it is unknown whether a child or grandchild is living and the person was born less than about 120 years ago, treat them as recently dead; older sensitive findings are still flagged and asked about, but not left out by default.",
+                    "display_index": 3
+                },
+                {
+                    "title": "Delivering and logging it",
+                    "content": "Before delivering, read the draft clause by clause (rule/retrieval, \"When a claim may be said plainly\"): every clause or possessive that leans on a claim not both established and documented or observed has its record in the sentence itself, not only in a footnote. Fix, then deliver.\nAfter delivering, log what was told to whom on the investigation:\n1. create_entity_lore {entity_id: \"<investigation>\", title: \"Output <YYYY-MM-DD>: narrative, <section or scope>\" (a second that day adds the time), content: \"<one line per cited claim: slug | standing at the time | independent count>\"}. Past about 100 lines, continue in a chunk titled \"... (part 2)\".\n2. update_entity {entity_id: \"<investigation>\", updates: {properties: {last_output_on: \"<server_time>\"}}} (the full date-time; and review_on, a plain date, if the owner keeps a cadence).\nThe log records what was said; it does not detect what changed (rule/retrieval, \"What changed since the last write-up\").",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "People and Confidentiality",
+            "slug": "rule/people_and_confidentiality",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "policy",
+                    "trigger": "adding or editing a person; anyone who may be living; I have DNA results; a confidential informant or a relative who asks not to be named; removing identifying detail; looking someone up",
+                    "scope": "actor, source",
+                    "priority": 300,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "The limits that keep this world safe: who counts as living and what they get, DNA, confidential informants by codename, how to remove identifying detail, and what may be looked up."
+            },
+            "lore": [
+                {
+                    "title": "Who counts as living",
+                    "content": "Treat a person as living unless a death is recorded, or they were born more than 100 years ago and nothing on file or said by the owner suggests they are alive. The owner saying someone is living always wins. Never infer a death from silence, age or a gap in the records. A living person with no public role is private_person true.\nA living private person in a family line gets their name and their place in the line as the owner gives it, and nothing else: no address, no dates beyond the year, no health, DNA, movements or contact details. One further family link may be recorded only when a source gives it and the link is itself material to a claim in the research, with the relative named only as the source names them and nothing more gathered. Never compile a living private person's family, home or movements, even when asked; say this world does not keep it, and why: Orbismo, the AI provider and anyone the owner shares the world with can read it.\nA living relative interviewed about the past is an actor (private_person true) and the interview a source BY them.",
+                    "display_index": 0
+                },
+                {
+                    "title": "DNA and health",
+                    "content": "\"I have DNA results\": no match data about living people is ever stored: no match names, shared amounts, kit numbers, trees of matches or ethnicity estimates. The owner's own reading of their results is recorded as an own_note source in their words, in general terms (\"my results point to descent from the Wren line\"), with a BEARS_ON link to any claim it touches, put_as inferred. Treat a conclusion resting on it as possible or speculative until records back it. When you decline to store or look something up, say so in a few lines: what you will not do, why (living people; anyone with access to the world can read it), and what you can do instead. No general remarks about surnames or places.\nHealth of living people is never recorded. A cause of death on the record of someone long dead is part of that record and goes in its passage; for the recent dead, with close family living, keep it in the passage and flag it before using it in anything for others.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Confidential informants",
+                    "content": "Sometimes a relative or local person shares something on condition they are not named (a family secret, an adoption, who a child's father was). They become an actor named by codename, \"Source A\", \"Source B\", actor_type person, confidential true. Their interview source is \"Interview with Source A, <YYYY-MM-DD>\", terms restricted, with the condition in a Notes chunk in the owner's words. Never store their real name or anything that could identify them: their relationship to the family, where they live, their job, where or how the owner met them, or details only they would know. If the owner gives you identifying detail, do not store it, and say why: pseudonyms can still be identified through context. A codename is never used to qualify another record's name or description (\"Joseph Callan (per Source A)\" is wrong). Cleaning covers anything derived from their passage too: a claim, link note, capacity or date only they could give. If it cannot be stored without pointing back to them, keep it only as \"to check: <the checkable question>\" on an open question (no act, timing or access only they could know, nothing about where the lead came from), or leave it out; when the owner's answer is unclear, leave it out. Scope and standards says only \"works with confidential informants\", never who or where they are. When in doubt, leave it out of every write first, then ask; add it back only on the owner's yes; never store a detail in order to ask about it. A confidential informant's account is stored without its date, place or counterpart by default. Write-ups follow rule/output_narrative's \"attribution as agreed\".",
+                    "display_index": 2
+                },
+                {
+                    "title": "Removing identifying detail",
+                    "content": "Clean before storing wherever you can: take the identifying detail out of a passage first and store it once. If it is already stored, never edit it out with update_entity_lore, which keeps the old text in revision history. Instead:\n1. get_entity_lore {entity_id: \"<record>\"} to find the chunk's lore_id, title and display_index.\n2. delete_entity_lore {entity_id: \"<record>\", lore_id: \"<id>\"}.\n3. create_entity_lore {entity_id: \"<record>\", title: \"<same title>\", content: \"<cleaned text, each removal marked [identifying detail removed]>\", display_index: <same index>}.\nA claim or question whose name, description or properties held an identifying detail is deleted and recreated clean, because an update keeps the old text in version history: list its links, delete_entity {entity_id: \"<slug>\", cascade: true, reason: \"confidential cleaning <YYYY-MM-DD>\"}, create it again without the detail, and recreate its links. This is cleaning, not deletion: no withdrawal warning (rule/tidying, \"Deleting\").\nThen tell the owner how many details were removed, naming each kind with one bare noun (a job, a role, a workplace, a place, a date, a person, an act), never what it attaches to, never repeating them, without the person's pronouns or anything else that narrows who they are.",
+                    "display_index": 3
+                },
+                {
+                    "title": "Looking things up",
+                    "content": "You may search public historical records and published sources about the dead, and about public figures and institutions, when the owner asks and a web tool is available. Log what you find as a source with its url and accessed_on, and never cite a page you have not opened. Never search for a living private person, their address, family, social media or DNA matches, even when asked. Never look up a confidential informant at all.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Tidying",
+            "slug": "rule/tidying",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "merge, split, rename, retag, delete or archive anything; check the record; audit; the rule index looks out of date",
+                    "scope": "world",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Tidying safely: reconcile membership by exact sets, repair a misclassified claim type, merge only true duplicates in full sequence, delete a claim only after a warning, and report rule index drift."
+            },
+            "lore": [
+                {
+                    "title": "Reconciling membership",
+                    "content": "A claim missing its tag is invisible to every list, so check membership by exact sets, never by counts. Page every read to the end.\n1. search_entities {entity_type: \"event\", tags: [\"<tag>\"], limit: 100, view: \"compact\"}, and the same for \"question\": the tagged sets.\n2. get_entities {entity_ids: [\"<investigation>\"], relationships: {filter: {relationship_types: [\"PART_OF\"], direction: \"incoming\"}, limit: 100}}: the linked sets, split by kind from the slug prefix.\n3. Compare per kind. Linked but not tagged: read its tags, write the full list with the tag added. Tagged but not linked: if it belongs here, create_relationships PART_OF, up to 100 per call; if the tag is wrong, remove it the same read-then-write way.\nReport what you changed, by name.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Repairs and renames",
+                    "content": "A claim recorded with the wrong event_type or relation (a baptism stored as a birth, a census \"son\" stored as child_of the wife): update_entity {entity_id: \"<claim>\", updates: {properties: {event_type: \"<value>\", changed_on: \"<server_time>\"}}}, and an Agent note saying what it was and why it changed. Kinds never need changing. A wrong date part you entered is fixed the same way; a date that differs between records is a contradiction, not a repair.\nRenaming does not change a slug, so the slug keeps the old wording. Never rename to rephrase or to settle an identity. When the owner asks for a rename, update_entity {entity_id: \"<slug>\", updates: {name: \"<new name>\"}} and say the links are kept and the slug stays as it was.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Merging true duplicates",
+                    "content": "Only the same record entered twice, and only on the owner's explicit yes. Keep the older.\n1. Read both with lore {include_content: true, limit: 50} and all relationships, paged to the end.\n2. Copy each of the duplicate's lore chunks to the keeper unchanged with create_entity_lore.\n3. Reconcile arrays and tags: read the keeper's, write the full combined list (aliases, other_identifiers, tags) with update_entity.\n4. Recreate each of the duplicate's links on the keeper with create_relationships (same type, direction and properties), up to 100 per call.\n5. delete_relationship each of the duplicate's old links.\n6. delete_entity {entity_id: \"<duplicate>\"}; it refuses while any link remains, so step 5 must be complete.\nTwo people who may be one person are never a duplicate; that is rule/identity.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Deleting",
+                    "content": "Confidential cleaning (delete and recreate clean) follows rule/people_and_confidentiality, \"Removing identifying detail\", with no warning. Otherwise deleting a claim happens only on the owner's explicit instruction, after one warning: set aside is the usual way, and deleting loses the claim's evidence links, its standing history and the trace of it in past write-ups. If they still say delete: list its links and lore, then delete_entity {entity_id: \"<claim>\", cascade: true}. A fruitless question is a dead end or dropped, not deleted. Deleting anything else needs an explicit instruction to delete; if it has links or lore, list them and confirm first.",
+                    "display_index": 3
+                },
+                {
+                    "title": "Checking the rules",
+                    "content": "When asked to tidy or check the record, compare the rule index in the world instructions with the rules that exist (search_entities {entity_type: \"rule\", limit: 100}): a rule with no row, a row pointing at a missing rule, or a rule not active. Report the drift to the owner; never fix it silently. audit_world will list rules and investigations with no links; that is expected here.",
+                    "display_index": 4
+                }
+            ]
+        }
+    ],
+    "relationships": [],
+    "skip_existing": true,
+    "skip_duplicates": true
+}

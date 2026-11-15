@@ -1,0 +1,692 @@
+{
+    "entities": [
+        {
+            "entity_type": "rule",
+            "name": "Core Model",
+            "slug": "rule/core_model",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "guidance",
+                    "trigger": "every session, before any other work in this world",
+                    "scope": "world",
+                    "priority": 200,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Read at the start of every session: the one-kind claim model, membership and tags, time stamps, how to read rules, and session start."
+            },
+            "lore": [
+                {
+                    "title": "The model in brief",
+                    "content": "Every claim, dated or not, is one record of kind event, shown to the owner as Claim: write event only in tool calls. A link between two organisations or people is a claim too (event_type relationship, a relation, ABOUT the subject and the other_party); never a direct connection between actors. Who says something, and how, lives only on BEARS_ON links (stance, put_as, locator). Descriptions: a claim's is \"That ...\", no attribution or verdict; an actor's or place's says only who or what it is, never the role the watch is about. Time lives on claims only; never set started or ended on a connection. Use only the five connections listed.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Membership and tags",
+                    "content": "A claim or question belongs to every watch it bears on: one record, a PART_OF link to each (authoritative) and each watch's tag (its searchable copy), written in the same turn; standing is shared. An item that plainly bears on two watches goes in both and the reply says so. An item about an unnamed or unconfirmed party who may be a watched actor is unclear: ask which watch, after any terms question. A gap you raise that bears on a watch's question is logged as a question. Sources carry the tag of every watch that uses them and have no PART_OF; actors and places carry no watch tag. Read a tag from the watch record. Rules carry rule and investigation-research. No tag encodes standing, put_as, terms or confidentiality.\nupdate_entity replaces the whole tag list, even in merge mode: get_entities {entity_ids: [\"<slug>\"], view: \"record\"}, then update_entity {entity_id: \"<slug>\", updates: {tags: [<every existing tag>, \"<new tag>\"]}}. Properties go inside updates: update_entity {entity_id: \"<slug>\", updates: {properties: {standing: \"confirmed\"}}}. Arrays (focus, aliases, other_identifiers) are replaced whole: read, then write the full list. Slugs written into properties are copied from tool responses. If PART_OF and tags disagree, PART_OF is right (rule/tidying).",
+                    "display_index": 1
+                },
+                {
+                    "title": "Time stamps",
+                    "content": "logged_on, changed_on and last_output_on are the full date-time from the latest server_time (2026-11-14T19:32:05Z). accessed_on, due_on and review_on are plain dates. Filters on stamps always pass cast \"date\": filter {path: \"properties.changed_on\", operator: \"gte\", value: \"<last_output_on>\", cast: \"date\"}; without it the comparison is plain text. When to stamp changed_on: rule/recording_claims, Change dates. Material dated later than server_time keeps its own dates as written; stamps still come from server_time, and you tell the owner the clock and the material disagree. A second chunk of a dated kind (Standing, Activity, Agent note, Revision, Output) on the same day adds <HH:MM> to its title.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Reading rules and session start",
+                    "content": "Read a rule with get_entities {entity_ids: [\"rule/<name>\", ...], view: \"full\", lore: {include_content: true, limit: 50}}: at most three rules per call, each rule once per session. view \"record\" returns no lore content and no links; never use it when you need either.\n1. get_world_context, then get_world_instructions (list_my_worlds only if you do not have the world_id).\n2. Read this rule.\n3. search_entities {entity_type: \"investigation\", view: \"compact\", limit: 100}. None: read rule/onboarding. Otherwise get_entities on the watches, view \"record\", for status, tag, focus, last_output_on, review_on. One active: use it, never ask which. Several and the message does not say: ask once, by name.\n4. Search for anything the message names before replying.\n5. Greet from the watch records: \"Velmar watch: last brief 3 November, next due 17 November. Want what's changed since?\" If review_on has passed, say the brief is due. Never open with findings or state a claim.\nThen read only the rules the work triggers.",
+                    "display_index": 3
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Onboarding",
+            "slug": "rule/onboarding",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "first session; no watch exists yet; start another watch; add or drop an organisation from a watch; change a watch's cadence, audience or standards; the first brief is requested",
+                    "scope": "investigation, actor, place, source, event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Setting up a watch with the owner, logging the first material and saying what they can ask for, asking audience and cadence at the first brief, and later changes to a watch."
+            },
+            "lore": [
+                {
+                    "title": "Starting a watch",
+                    "content": "Skip any question the owner's message already answers, and ask one at a time:\n1. What are you watching, and what decision or question does it serve? (The watch's question, in their words.)\n2. Which few organisations, people or places are at the centre? (The focus.)\nThen create it: search_entities {return: \"tags\"} and pick an unused tag (velmar-watch); search each focus actor by identifier, then by name, and create the missing ones (actor_type, identifier if given, identification-only description, no tags); then create_entities {entities: [{entity_type: \"investigation\", name: \"Velmar market watch\", description: \"Watch on Lind Foods and the Velmar market\", properties: {status: \"active\", tag: \"velmar-watch\", question: \"<owner's words>\", focus: [\"actor/lind_foods\", \"place/velmar\"]}}]}, and create_entity_lore title \"Scope and standards\" with what is in and out of scope, in the owner's words. Never name the watch from anything but the owner's words or a plain description; ask if unsure.\nAudience, cadence, freshness window (default 90 days) and quote limits go in Scope and standards: if the owner has already given them, add them and set review_on now, and the first reply names the first due date; otherwise ask when the first brief is requested. A second watch asks its own; you may offer the first watch's answers as a suggestion. Never explain the machinery.",
+                    "display_index": 0
+                },
+                {
+                    "title": "The first material",
+                    "content": "Ask for something recent that bears on the watch, and log it per rule/logging_sources. The reply that logs it also says what the owner can ask for, leading each claim with its attribution: \"Logged: Lind Foods states it plans a Velmar plant for 2027 (12 June release, para 2); unconfirmed, one source. You can ask me to 'write the brief', 'what's changed', 'what's open' or 'what supports our view'.\"\nA substantive question you ask the owner that goes unanswered becomes a question record (rule/open_questions), so it is not lost.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Changing a watch",
+                    "content": "Adding or dropping a focus organisation: find or create the actor, then read the watch (view \"record\") and update_entity {entity_id: \"investigation/<slug>\", updates: {properties: {focus: [<the full new list>]}}}. A new cadence: update review_on. A new audience, window or quote limit: read the watch with lore content, and rewrite the Scope and standards chunk whole with update_entity_lore {entity_id: \"investigation/<slug>\", lore_id: \"<id>\", content: \"<full new text>\"}, keeping what the owner did not change. Say what changed.",
+                    "display_index": 2
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Vocabulary",
+            "slug": "rule/vocabulary",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "vocabulary",
+                    "trigger": "choosing a claim type, relation, source grading, terms or confidence; telling the owner how a claim stands; any value this use defines",
+                    "scope": "event, source",
+                    "priority": 150,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Every value this use defines: claim types, relations, source grades and defaults, terms, confidence, likelihood words, standing words and the bar for confirmed."
+            },
+            "lore": [
+                {
+                    "title": "Claim types (event_type)",
+                    "content": "Exactly these; never invent one (use other and say so). Core: relationship, attribute, identity, assessment, decision (an approval, sign-off, vote, award or ruling), other. This use adds: announcement (a stated plan, target, expectation or promise; never the thing announced), launch (actually launched or opened), filing (a filing made), results (results for a period), deal (agreed or completed), funding (money raised or committed), legal_action (a lawsuit or court case, including that a complaint was filed), regulatory (a regulator's notice, fine, investigation or rule change, including that a notice was issued or a filing received), closure (closed or wound down).\nAppointments, ownership and employment are relationship claims (an appointment is a start date).\nTimeline types, for get_timeline event_types: every event_type above except attribute, identity and assessment.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Relations",
+                    "content": "Read subject relation other_party; one direction only, never the inverse as a second claim. subsidiary_of (subject is in the other's corporate group); owner_of (owns it outright or by majority, or owns an asset, brand or site); invested_in (minority stake or funding round); partner_of (joint venture, alliance, distribution; once); supplier_to (supplies, including equipment installed at its sites); customer_of (only when the source frames it that way round); competitor_of (once); licensee_of (holds a licence or franchise from it); employed_by (a person's job, title in capacity on the subject's ABOUT link; a founder is employed_by with capacity \"founder\", and one claim covers \"founder and managing director\"); director_of (a board seat; capacity gives the seat); regulated_by; leasing a place: other, capacity lessee, ABOUT the place as location (tell the owner once); other (say what in the name and capacity, and tell the owner).",
+                    "display_index": 1
+                },
+                {
+                    "title": "Grading sources",
+                    "content": "reliability (Admiralty source grading, of the source, not the claim): a_reliable (proven accurate), b_usually_reliable (established outlets, audited filings), c_fairly_reliable (trade newsletters, a mixed record), d_not_usually_reliable (a history of errors), e_unreliable (shown wrong), f_cannot_judge (new or unknown). The 1 to 6 credibility scale is not used; that an issuer speaks for itself is put_as stated, not a grade.\nFirst value, from this table only, and stated in your reply for every new source, own notes included:\na document published by a public body, registry or regulator: a_reliable;\na company's own annual report, accounts, filing, release or news page, for facts about itself: b_usually_reliable;\nthe owner's own knowledge, or a document they described but you have not seen: b_usually_reliable;\nthe owner's note of what someone told them: f_cannot_judge (it records the call, not the speaker);\neverything else: f_cannot_judge.\nEvery later change is the owner's (rule/independence, Revisions and regrades).",
+                    "display_index": 2
+                },
+                {
+                    "title": "Terms",
+                    "content": "public (quote and cite), licensed (subscription content: quote limits apply, otherwise paraphrase with attribution), client_confidential (only in briefs for that client), internal (the owner's organisation's material or a contact's call: only in briefs that stay inside it).\nPublic without asking: a public register, a regulator's or court's notice, a company's published filing, report or release, a public web page, a published article at an open url (unless the owner mentions a subscription or paywall). An owner's own note needs none: it is their knowledge, attributed (\"your note of 14 November\") and flagged as unsourced. Everything else (calls, private or leaked documents, correspondence, paywalled articles) is left unset, unknown, until the owner says; it never holds up logging. Order: when a bulk plan is due, its question is the reply's only question and nothing is written; the terms question is then the first question in the reply that logs, covering every unset source, and any other question waits. Until answered, cite and attribute, never quote, in that reply too. \"We subscribe to Coldchain Review\" sets licensed on every source from it; say so. Never infer terms. Before a brief, ask once about cited sources still unset.",
+                    "display_index": 3
+                },
+                {
+                    "title": "Confidence, likelihood and standing words",
+                    "content": "confidence, on conclusions only (assessments, identity claims, worked-out figures): high, moderate, low. Drafting one, set moderate and tell the owner; later changes are theirs.\nLikelihood, in words in an assessment's Standing chunks and the brief, never stored: almost certain, likely, roughly even chance, unlikely, remote (\"likely, low confidence\" is valid).\nStanding words: open = unconfirmed; confirmed = confirmed; contested = conflicting reports; refuted = disproved; withdrawn = retracted; plus the count (rule/independence).\nThe bar for confirmed (you check it before proposing; the owner decides): an official filing or the actor's own evidence of a completed action (not an announcement), or two independent sources; and no unanswered denial. Only links that state the proposition count. A confirmed announcement means only that it was announced. An assessment is confirmed when the owner adopts it as the current view.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Logging Sources",
+            "slug": "rule/logging_sources",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "the owner shares a link, file, filing, excerpt, article, transcript or call note; names where something came from",
+                    "scope": "source, actor, place, event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Logging a source and what it says: counting first, candidate duplicate checks, reusing known actors, naming, BY links, locators and verbatim passages."
+            },
+            "lore": [
+                {
+                    "title": "The recipe",
+                    "content": "1. Count first the records you will actually write (tables: rule/recording_claims). Over twenty: the reply is the plan and its question, nothing written, the source included. An owner's yes to large batches stands for the session (still show the plan when writing); a new session asks again.\n2. Duplicates: search_entities {entity_type: \"source\", filter: {path: \"properties.url\", operator: \"eq\", value: \"<url as given>\"}}, the same on properties.reference, then by name. A hit is a candidate: read it and confirm it is the same document. Actors: identifier filter, then name; reuse per rule/identity, Reuse first. Claims: search_entities {entity_type: \"event\", tags: [\"<watch tag>\"], query: \"<gist>\"}; an existing claim in any watch gets the new link.\n3. create_entities (up to 100): the source (source_type, origin, logged_on, the watch tag; other properties only as the source gives them), new actors and places, new claims (standing open, logged_on and changed_on from server_time, a \"That ...\" description, the watch tag). Every record gets a description; the duplicate search reads it. url, reference and file_ref exactly as given.\n4. create_relationships (up to 100 a call): BY; BEARS_ON with stance, put_as, locator, and knowledge, recorded, repeats where they apply; ABOUT with roles; PART_OF; DERIVES_FROM when the whole source depends on another.\n5. create_entity_lore on the source, one chunk per cited passage, titled with its locator.\n6. An existing source new to this watch: read its tags, write the full list. Stamp changed_on only as rule/recording_claims, Change dates, says. Conflicts: rule/contradictions. Dependence, revisions, and a document the owner describes but you have not seen: rule/independence.\n7. Reply: what was logged, each claim led by its attribution; actors taken to be existing records; each new source's first grade; questions in the order rule/vocabulary, Terms, gives.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Naming, types and BY",
+                    "content": "Cite as an analyst would, using the title as given or a plain description; never invent a headline. Article: Trade Ledger, \"Lind eyes Velmar\", 2026-06-12 (or \"undated\"). Release: Lind Foods release, \"Velmar plant plans\", 2026-06-12. Also \"<Regulator> docket <reference>\", \"<Authority> planning application <reference>\", \"<Issuer> letter to <recipient>, <date or undated>\", \"Call with Source A, 2026-10-02\", \"Owner note, <YYYY-MM-DD>: <gist>\".\nsource_type: a registry, regulator or planning filing is filing; a release is statement; a call the owner held is interview; a webcast is recording; a deck or letter is document. origin: a pasted public text at a url the owner gives is original; copy is for images, scans, screenshots and snapshots; derivative for a transcript, summary or an article that only restates another (with DERIVES_FROM how repeats).\npublished_on only as the source gives a publication date (not a \"date received\"; none for a call or meeting); accessed_on only when you or the owner opened it online, not for pasted text.\nBY: a register, portal, docket or official record is BY the authority that keeps it, role issuer (if it names only itself, an actor named as it heads itself, \"Saarne Regional Planning Portal\"); the applicant or filer is ABOUT the claims, never BY. A release is BY its issuer; a quoted person, role speaker. Never guess who informed a source: no BY informant unless the source names one.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Locators and passages",
+                    "content": "Every BEARS_ON link from a source has a locator (p. 14 para 2; section 3.1; slide 7; 00:12:31-00:13:05; \"Expansion, para 3\"; \"<chunk title>, row <id>\"; a paragraph counted from the paste, noted in an Agent note), and the passage goes verbatim under a lore chunk with that title. Long material: Transcript 1, 2, about 1,500 words each, never paraphrased. The owner's commentary in Notes; yours in Agent note. A confidential contact's material is cleaned before storing (rule/people_and_confidentiality). Never invent a locator: ask once, else \"as pasted <YYYY-MM-DD>\", saying it cannot be checked.\nA further passage from a source already linked to the claim: the same link cannot be created twice. Read it (get_entities on the claim with BEARS_ON) and update_relationship {relationship_id: \"<id>\", updates: {locator: \"<old>; <new>\"}}; if stance or put_as differ, say so and add the point to its note the same way.",
+                    "display_index": 2
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Recording Claims",
+            "slug": "rule/recording_claims",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "turning what a source says into claims; dates on claims; a link between two organisations or people; an announcement, plan, expectation or forecast; an accusation",
+                    "scope": "event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "How statements become claims: one proposition each, names and descriptions, announcements and allegations, how each source puts it, links, dates and change dates."
+            },
+            "lore": [
+                {
+                    "title": "One proposition per claim",
+                    "content": "Split a passage into the things it says (\"Lind will open a Velmar plant in 2027 and has bought a site\" is an announcement and a deal). A source that lists items without pairing them is cited as listed; never pair them yourself.\nA table or list (a register, permits list, schedule) is one source and one passage stored whole under one chunk; each locator is that chunk's title plus the row (\"Berth register, row N4\"). Claims only for rows that bear on a watch's question or name someone on file, records only for their parties; other rows stay in the passage. Say which rows you logged and that the rest are kept in the source.\nAn announcement (plan, target, expectation, promise) is never the thing announced: the launch, deal or closure is its own claim once a source shows it.\nAn accusation is two claims: that it was made (regulatory or legal_action, documented by the notice) and the conduct alleged (put_as alleged). Confirming the first never confirms the second.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Names and descriptions",
+                    "content": "<subject> <what> [<other party>] (<date>), under about 80 characters: no attribution, hedges or standing, nothing that reads as an outcome not shown, no codename, never an invented headline. A comparative name must not assume the claim it compares with. A date goes in the name only when the source dates the event itself; an announcement takes the date it was announced; an undated report takes none or \"(reported <date>)\".\nExamples: Pellar subsidiary of Lind Foods (from March 2026); Lind Foods announced Velmar plant for 2027 (June 2026); Assessment: Lind Foods enters Velmar by 2028. Competing accounts differ by detail: Lind Foods paid 350m for Pellar (2026 filing) / (March 2026).\nDescription: \"That Lind Foods plans to open a plant in Velmar in 2027.\", never a plain sentence.",
+                    "display_index": 1
+                },
+                {
+                    "title": "How each source puts it",
+                    "content": "put_as by what the words do, not the medium (the schema defines each value). Traps in this use: a company's target in its own filing is stated. A planning portal documents that an application was filed; what it proposes is stated by the applicant. A party describing its counterparty (a buyer on its target's sites) is reported, knowledge unknown, with a note. A news story about a lawsuit carries the accusation as alleged (repeats to the complaint once logged). An analyst's estimate, or anything a source implies but does not state, is inferred.\nOne link per source and claim: when it would carry a stated point and an inferred one, set put_as inferred and write \"stated: <what>\" in the note. A source backing only part of a claim is qualifies, or supports with the covered part named in the note. A link whose note records a conflict is qualifies, never asserts. Notes carry no speculation. Never change put_as to strengthen a claim; a correction needs the owner's yes and a Standing chunk.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Links between parties",
+                    "content": "A relationship claim with a relation from rule/vocabulary; create_relationships: ABOUT the subject {role: \"subject\"} and the other party {role: \"other_party\"}; BEARS_ON from the source {stance: \"asserts\", put_as: \"documented\", locator: \"Form 12, item 4\", knowledge: \"firsthand\", recorded: \"at_the_time\"}; PART_OF each watch; slugs from the create response. Known only \"as of\" a document, the claim has date_precision unknown, end_status unknown and as_of; dates come later with update_entity.",
+                    "display_index": 3
+                },
+                {
+                    "title": "Dates",
+                    "content": "Only the parts the source gives; never convert or fill in. date_precision always; date_text in the source's words unless precision is day or unknown, except a status end. \"Early 2026\": 2026, circa. \"Q3 2026\": 2026, year, date_text \"Q3 2026\", no months. \"Before March 2027\": 2027, 3, before. A period result is dated at the period end only when the source gives it.\nAnnouncements: date fields hold the target (2027, year), end_status none, as_of the date announced; no target, precision unknown.\nAn attribute merely mentioned in a dated document (a headcount in a profile) is year or month precision unless the document dates it; a relationship mentioned without its own date is precision unknown with as_of (Links between parties). Never stretch a dated event into a period. An entry whose own date is disputed gives its claims no day. Dates added to an existing claim come only from its own sources or a documented one; another account's date is a separate claim.\nA term not yet started (a lease from January 2027): date fields the term, end_status none, as_of the date seen. A day and month with no year: month and day only, precision unknown, the source's words in date_text.\nSpans: end in end_*, end_status always (unknown: \"end not recorded\", never \"still\"). A status seen on a pasted page (\"consultation open to 4 December 2026\"): as_of the date pasted, end_status ongoing, the end in date_text. as_of may move earlier on a correction, with an Agent note. No as_of, or older than the freshness window: \"as of <date>\", never current.",
+                    "display_index": 4
+                },
+                {
+                    "title": "Change dates",
+                    "content": "changed_on (from server_time) is set at creation and stamped only for: standing, confidence or an assessment's likelihood changed (same update_entity call, per rule/standing); dates, as_of, relation or event_type corrected (same call); a contradicting or denying link added, a link removed, or a link's put_as, stance or repeats changed (update_entity straight after); a source regraded, retracted or found dependent (rule/independence). A new supporting link does not stamp: \"what changed\" finds it through sources logged since. The stamp is update_entity {entity_id: \"<claim>\", updates: {properties: {changed_on: \"<server_time>\"}}}.",
+                    "display_index": 5
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Standing",
+            "slug": "rule/standing",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "policy",
+                    "trigger": "any change to how a claim stands, to confidence or to an assessment's likelihood; the owner says confirm, drop, wrong, settled, adopt; proposing an upgrade; a premise changes",
+                    "scope": "event",
+                    "priority": 300,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "The one procedure for any change in how a claim stands: you record unconfirmed and may mark conflicting reports; every other change is the owner's, logged and propagated to conclusions."
+            },
+            "lore": [
+                {
+                    "title": "Who decides",
+                    "content": "New claims are unconfirmed (open). You may mark one as conflicting reports (contested) when an account that cannot also be true arrives (rule/contradictions), and say so in the same reply. That is the only change you make. Confirmed, disproved, retracted, any change to confidence after the draft value, and any change to an assessment's likelihood are the owner's, in their words. The brief's readers act on what it calls confirmed; an upgrade you made would carry the owner's authority without their judgement.\nEvery change, from whichever rule prompted it, goes through Making the change. If the owner decides against the bar, say plainly that it is not met, then record their decision and reason.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Checking the bar and proposing",
+                    "content": "Read the claim's BEARS_ON links (paged to the end) and its sources with BY and DERIVES_FROM; count origins per rule/independence. Check coverage proposition by proposition, every date included, and propose only what the evidence covers, naming any part uncovered.\nNever propose confirmed when the only support is put_as alleged, or while a denial stands with no documented or observed evidence beside the claim. For an announcement the bar is met by the announcement itself.\nOne upgrade proposal per reply, at the end, in one sentence: \"The Port Arnow purchase now has the land registry's transfer entry behind it (documented), covering the purchase and its May 2026 date. Mark it confirmed?\" A terms question takes precedence: if one is due, the proposal waits for the next reply.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Making the change",
+                    "content": "1. If not read this turn: get_entities on the claim with BEARS_ON.\n2. update_entity {entity_id: \"<claim>\", updates: {properties: {standing: \"<value>\", changed_on: \"<server_time>\"}}} (or confidence; for a likelihood word, changed_on only).\n3. create_entity_lore {entity_id: \"<claim>\", title: \"Standing <YYYY-MM-DD>\", content: \"<one line>\"} (a second one that day adds <HH:MM> to the title): new value, who decided, why. \"confirmed. Owner: 'the registry entry settles it.'\" \"contested. AI: contested on new material, source/<slug>.\" \"confirmed, likely, moderate confidence. Owner: 'adopting this as our view.'\"\n4. Conclusions: from the claim's outgoing BEARS_ON links to other claims, read those claims (view \"record\", in 20s); each with a confidence value is a conclusion. Unless created this turn, open one check question ABOUT it, PART_OF its watches, \"Review: premise <name> now <standing word>\", priority normal, with a description. Tell the owner.\nA claim in two watches has one standing; say the change shows in both.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Corrections, retractions and reversals",
+                    "content": "The owner's correction is a source: own_note \"Owner correction, <YYYY-MM-DD>\", their words under \"as told <YYYY-MM-DD>\". Competing with a sourced account: rule/contradictions. Your own data-entry error: correct it with changed_on and say exactly what changed. Never rewrite a sourced value because the owner remembers it differently.\nA cancelled plan does not retract the announcement: record the cancellation as its own claim bearing on the plan (qualifies or contradicts). retracted is for a claim whose source retracts it, or that the owner drops; disproved for one shown false. Both keep the history.",
+                    "display_index": 3
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Independence",
+            "slug": "rule/independence",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "guidance",
+                    "trigger": "how many sources back something; is this independent; five outlets saying the same thing; before any brief or proposal; the owner describes a document you have not seen; regrade this source; they issued a correction or retraction; two sources turn out to be one",
+                    "scope": "source, event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Counting independent sources, and what changes the count: documents described but not seen, dependence found, corrections, retractions and regrades."
+            },
+            "lore": [
+                {
+                    "title": "Finding each origin",
+                    "content": "Computed when needed, never stored. Count BEARS_ON links from sources with stance asserts or supports that state the whole proposition. Not counted: put_as inferred (counted separately, \"plus one inference\"; a link noted \"stated: <what>\" counts for that stated part only), partial supports, qualifies, and an owner's note that is undated, in the present tense or at odds with the claim's dates (listed beside the claim). Contradicts and denies are listed beside the count.\nFor each counted link: if it has repeats, move to that source; if a source DERIVES_FROM another, move to the target; repeat. The origin is the actor behind the testimony (BY author, speaker, issuer or informant), else the source itself. Distinct origins are independent. A shared publisher never merges origins; one person telling two outlets, or one company's two statements, is one origin. Two records from one public body count by the record when each was made independently from different material (a register of payments and an audit of them are two); the body is one origin only for what it itself asserts.\nRead: the claim's BEARS_ON links, then its sources in 20s with BY and DERIVES_FROM, paging every block.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Cases in this use",
+                    "content": "Five outlets rewriting Lind's release: each is origin derivative, DERIVES_FROM the release (how repeats); one origin, Lind Foods. Lind's filing and Lind's release on one deal: one origin, though the filing alone meets the bar as a completed action. A regulator's docket showing a merger filing received states the filing, not the deal. Source A on a call and quoted in an article: one origin. Trade Ledger and the Northgate Courier each with their own reporting: two, even under one publisher. Two articles citing \"people familiar\": \"two reports citing unnamed sources\", never \"two independent sources\".\nSay what the count is made of: \"confirmed, two independent sources (the Velmar registry; Trade Ledger's own reporting)\"; \"unconfirmed, one source; Lind denies it\". Never offer general background (what you know of an outlet or company) as a reason to weigh a source; weigh only what is recorded. When sources carry the same figure or wording within a day or two and no dependence is recorded, say \"appear independent on what is recorded\" and ask once whether they share a source.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Material described but not seen",
+                    "content": "When the owner tells you what a document says without its text, you have their account. Log the document with the reference, file_ref or url they give, their words as the passage under \"as told <YYYY-MM-DD>\", the owner's grade, and a Notes line that the text is unseen. Its links are put_as reported, knowledge secondhand. Link it only to what they say it states (a filing received), never to what that implies (the deal agreed), and say in the reply that you have not seen it. When the text arrives, update the links to what it shows, regrade only on the owner's word, and add a Revision chunk.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Dependence, corrections and regrades",
+                    "content": "Whole dependence: DERIVES_FROM (an article that only rewrites the release). Links from a derived source (a restating article, a summary, a rewrite) take recorded and knowledge from the source it copies, or unknown, never firsthand. Partial: repeats on single links (Trade Ledger restates the release's capacity but reports the land purchase itself: repeats on the capacity link only). Log the original first so repeats points at a real slug.\nA dependence found, or a source corrected, retracted or regraded:\n1. get_entities {entity_ids: [\"<source>\"], relationships: {filter: {relationship_types: [\"BEARS_ON\"], direction: \"outgoing\"}, limit: 100}}, paged to the end.\n2. Create DERIVES_FROM, or update_relationship {relationship_id: \"<id>\", updates: {repeats: \"<slug>\"}} per affected link; a regrade is update_entity {entity_id: \"<source>\", updates: {properties: {reliability: \"<owner's grade>\"}}}, only on the owner's word; add create_entity_lore \"Revision <YYYY-MM-DD>\".\n3. Stamp changed_on on every claim those links bear on.\n4. A retraction: propose retracted for each claim asserted only by that source, in one question (rule/standing).",
+                    "display_index": 3
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Contradictions",
+            "slug": "rule/contradictions",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "a source disagrees with something already recorded; two accounts of the same thing; two dates, figures or expectations for one event; their press office denied it",
+                    "scope": "event, source",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "When sources disagree: what counts as a conflict, both accounts kept side by side, differing expectations joined without contesting either, and denials shown beside the claim."
+            },
+            "lore": [
+                {
+                    "title": "What is a conflict",
+                    "content": "A conflict is two accounts that cannot both be true: two prices for one completed deal, two dates for one past opening. Not conflicts: two documents out of sequence (log a question instead); an overlapping or contained range (\"2026\" and \"March 2026\"), which supports the existing claim with the range in the note; a figure consistent with rounding (supports, figure in the note); figures at different dates (separate claims; the brief reports the change); a qualification (qualifies); differing expectations and denials, below.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Recording a conflict",
+                    "content": "1. Find the existing claim and read it with BEARS_ON.\n2. Duplicate source checks as in rule/logging_sources.\n3. create_entities: the source if new, and the competing claim (standing contested, a \"That ...\" description, the watch tags), named apart by the differing detail.\n4. create_relationships: new source BEARS_ON new claim (asserts, its put_as, locator); new source BEARS_ON old claim (contradicts, locator, note \"gives 400m, not 350m\"); new claim BEARS_ON old claim (contradicts, put_as as the new source puts it); ABOUT and PART_OF for the new claim.\n5. create_entity_lore the passage on the source.\n6. Mark the old claim contested through rule/standing, Making the change, reason \"AI: contested on new material, source/<slug>\".\n7. Reply with both accounts side by side, each attributed, and ask which the owner wants to weigh. Never pick one.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Differing expectations",
+                    "content": "Bresca expects its deal to close before March 2027; Tovik's letter expects Q2 2027. Nobody disputes that each said it, so each is its own announcement claim, both stay unconfirmed, and neither is contested. Join them: the newer claim BEARS_ON the older, stance contradicts, put_as stated, note \"Tovik expects Q2 2027; Bresca expects before March 2027\". Stamp the older claim's changed_on. Open one check question, priority normal, PART_OF the watch, ABOUT both claims and every conclusion resting on either, named \"Differing expectations: <the event>\".",
+                    "display_index": 2
+                },
+                {
+                    "title": "Denials",
+                    "content": "A denial by the actor the claim is about is a statement source BY that actor, BEARS_ON the claim, stance denies, put_as stated. It does not change standing or make the claim contested. Stamp changed_on. Show it beside the claim in every answer and brief (\"Trade Ledger reports it; Lind denies it\"), and do not propose confirmed while it stands unanswered by documented or observed evidence. \"Declined to comment\" is not a denial: Activity on the reply question, or a link note.",
+                    "display_index": 3
+                },
+                {
+                    "title": "In answers and the brief",
+                    "content": "Conflicting reports and differing expectations sit under that heading, each account on its own line with its source: \"Price paid for Pellar: Lind's filing states 350m (note 22). Trade Ledger reports 400m, citing people familiar.\" Never blend them into one range or sentence, never average, never pick the more reliable source, never drop a side to save space. Never comment on which account is likelier or on a party's reliability, even after the owner confirms one.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Identity",
+            "slug": "rule/identity",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "a name in new material that may be an existing record; \"same company?\", \"same person?\"; trading names, subsidiaries, aliases; a duplicate record",
+                    "scope": "actor, place, event",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Whether a name is a record already held: reuse it when the material plainly means it and say so, split with a \"Same organisation?\" claim only on real doubt, never merge silently."
+            },
+            "lore": [
+                {
+                    "title": "Reuse first",
+                    "content": "A name in new material is an existing actor when the owner plainly treats it as that actor, when it appears in the same name form, role and setting as an existing record, or when the material is a copy or derivative of a source already attached to it. Attach to the existing actor, add any new name form to aliases (read, then write the full list; a name the owner has doubted is never an alias), and say so: \"I've taken 'I. Marrow' in the annual report to be Ines Marrow; tell me if that's wrong.\" Say it again the first time the name comes up in a new session. New details for a link already recorded update that claim, whatever name form is used.\nA separate, source-qualified actor plus an identity claim only on a real reason to doubt: a place, period or role that does not fit; a similar name with nothing else linking them; evidence against; the owner's doubt. One identity claim may cover several records.",
+                    "display_index": 0
+                },
+                {
+                    "title": "When there is doubt",
+                    "content": "1. Search both names, and the identifier filter when either has one.\n2. get_entities both actors with relationships {filter: {relationship_types: [\"ABOUT\"], direction: \"incoming\"}, limit: 100}, paging either alone; then their claims in 20s with BEARS_ON.\n3. create_entities: the new actor (\"Corvane Group (trade press)\", identification-only description) and the identity claim \"Same organisation? Corvane Ltd (Velmar registry) / Corvane Group (trade press)\": identity, open, confidence moderate (tell the owner), date_precision unknown, end_status none, a \"That ...\" description, the watch tag; plus a check question if there is a next step.\n4. create_relationships: ABOUT each actor (subject); BEARS_ON from claims pointing each way (supports or contradicts, inferred, a note); PART_OF.\n5. Reply with the case for and against, and what would settle it.\nWhen a similar name may be a subsidiary (\"Bresca Logistics (Saarne) Ltd\"), name it \"Same organisation or group company? ...\" until a source settles it. Group structure is a subsidiary_of or owner_of claim, never identity; a shared name, address or officer proves nothing beyond what the sources say.",
+                    "display_index": 1
+                },
+                {
+                    "title": "When the owner decides",
+                    "content": "Same: rule/standing on the identity claim (confirmed, their reason). Both actors are kept and nothing is re-linked; add the other name to aliases if they ask. Answers about either actor then mention it and read the other's claims too. Different: the same with disproved. Two existing records are joined only on the owner's word.",
+                    "display_index": 2
+                },
+                {
+                    "title": "True duplicates",
+                    "content": "The same record created twice (same identifier, registry number, or document url). Never an identity question. Show both, propose keeping the older, and only on an explicit yes:\n1. Read the duplicate in full (relationships and lore with content, paged).\n2. Copy its lore chunks to the keeper unchanged.\n3. Merge aliases, other_identifiers and tags: read the keeper, write full lists.\n4. Recreate its links on the keeper (same type, direction, properties).\n5. delete_relationship each old link.\n6. delete_entity {entity_id: \"<duplicate>\"}; it refuses a record that still has links.\nSay what was merged.",
+                    "display_index": 3
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Open Questions",
+            "slug": "rule/open_questions",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "leads, checks, records requests, requests for comment, things to watch; \"what's open\"; \"I looked and found nothing\"; a reply arrives; a question the owner left unanswered",
+                    "scope": "question",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Questions, leads, checks, requests, replies and indicators: how each is logged and finished, Activity logs including searches that found nothing, and what's open."
+            },
+            "lore": [
+                {
+                    "title": "Types and when each is done",
+                    "content": "question: answered when a claim answers it (answered_by its slug). lead: answered when it yields claims, dead_end when not, Activity says where it led. check: verifying a claim or reviewing a conclusion; answered when the result is logged and the owner has settled the standing. request: waiting once sent; answered when the material is logged as a source; dead_end if refused or none exists. reply: waiting once put; answered when the reply is logged or the deadline passes (\"no response by <date>\" in Activity). indicator: watching until the owner drops it (rule/assessments).\npriority normal unless the owner says otherwise; next_step one line; due_on for deadlines. A question's name, description and next step never take an unconfirmed claim as given (\"Does Lind have a Velmar packaging supplier?\", not \"Who supplies Lind's Velmar plant?\"). A substantive question you asked the owner that went unanswered, or a gap you raise that bears on the watch's question, is also logged as a question.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Logging and updating",
+                    "content": "search_entities {entity_type: \"question\", tags: [\"<watch tag>\"], query: \"<gist>\"}; create_entities {entities: [{entity_type: \"question\", name: \"Request Lind's Velmar permit application\", description: \"<the task>\", tags: [\"<watch tag>\"], properties: {question_type: \"request\", status: \"open\", priority: \"normal\", next_step: \"<one line>\", due_on: \"<date>\", logged_on: \"<server_time>\", changed_on: \"<server_time>\"}}]}; create_relationships PART_OF the watch and ABOUT the claims, actors or sources it concerns (so a brief shows \"request out\" only on those claims).\nEach action: create_entity_lore {entity_id: \"<question>\", title: \"Activity <YYYY-MM-DD>\", content: \"<done, coverage, result>\"} (a second one that day: \"Activity <YYYY-MM-DD> <HH:MM>\"), and on a status change update_entity {entity_id: \"<question>\", updates: {properties: {status: \"waiting\", changed_on: \"<server_time>\"}}}. Status is a work record, not a verdict: change it when the owner reports what happened. A reply that arrives is a statement source BY the organisation, BEARS_ON what it answers (rule/contradictions, Denials), then the reply question answered.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Activity and negative results",
+                    "content": "This rule writes the Activity note for every action: what was searched or done, the coverage (which register, which dates), and the result, including nothing found: \"Searched Velmar permit register for Lind Foods or Pellar, January to October 2026: none found.\" The owner's guesses, bets and opinions (\"the buyer's Morrow, surely\") are not knowledge: no source, no claim; note them on the relevant question as \"owner's view, unsourced\", or open a check question, and never use them in an output. A negative result records where someone looked; it creates no claim and moves no standing. In a brief: \"no sign recorded in the permit register to October 2026\", never \"Lind has not applied\".",
+                    "display_index": 2
+                },
+                {
+                    "title": "What's open",
+                    "content": "1. search_entities {entity_type: \"event\", tags: [\"<watch tag>\"], filter: {path: \"properties.standing\", operator: \"eq\", value: \"contested\"}, limit: 100, view: \"compact\"}, and \"open\", each paged.\n2. search_entities {entity_type: \"question\", tags: [\"<watch tag>\"], filter: {path: \"properties.status\", operator: \"eq\", value: \"open\"}, limit: 100}, and \"waiting\", paged.\n3. get_entities on the questions, 20 at a time, view \"record\", for question_type, priority, due_on.\n4. Answer in order: conflicting reports and differing expectations; high-priority and overdue questions; open checks, reviews and other questions at normal priority; waiting requests and replies with deadlines; unconfirmed claims under \"Unconfirmed:\". Indicators and watch signs never appear, under any heading; if the owner asks about signs, answer from the assessment (rule/assessments). This answer logs no Output.",
+                    "display_index": 3
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Assessments",
+            "slug": "rule/assessments",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "forming, revising or questioning a judgement; \"how confident are we\"; \"what supports our view\"; \"what would overturn it\"; an indicator observed",
+                    "scope": "event, question",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Assessments as claims resting on premise claims, their confidence and likelihood, the signs that would change them, and keeping them honest when premises move."
+            },
+            "lore": [
+                {
+                    "title": "What an assessment is",
+                    "content": "A claim: event_type assessment, \"Assessment: <proposition, with horizon>\" without likelihood words (\"Assessment: Lind Foods enters Velmar by 2028\"), date_precision unknown, end_status none, open when drafted, confidence moderate (tell the owner), a \"That ...\" description, the watch tag, PART_OF, ABOUT what it concerns (subject).\nIt rests on premise claims: each BEARS_ON it with supports, contradicts or qualifies, put_as inferred, a note on why. If you chose the premises, say so and ask the owner to confirm the set.\nLikelihood and reasoning go in its Standing chunks; a change of likelihood is the owner's, through rule/standing, Making the change. Standing: open is a draft, confirmed means adopted as the current view, withdrawn dropped, refuted overtaken by events.",
+                    "display_index": 0
+                },
+                {
+                    "title": "What supports it",
+                    "content": "get_entities the assessment with BEARS_ON incoming and lore with content; its premises in 20s with BEARS_ON and lore with content (latest Standing chunk); their sources with BY and DERIVES_FROM. Page every block.\nAnswer with the latest likelihood and confidence, then each premise led by its attribution, with standing word and count, supporting first, then those against. Flag premises that are conflicting, disproved, retracted, denied, have differing expectations, or are stale; an announcement is a plan, not a completed action.",
+                    "display_index": 1
+                },
+                {
+                    "title": "What would change it",
+                    "content": "A lore chunk \"What would change it\", written with the owner when the assessment is drafted: the signs, in their words, yours marked. When the list changes, read it and rewrite it whole.\nEach sign is an indicator question, PART_OF the watch, ABOUT the assessment, status watching, priority normal (\"Lind files a Velmar plant permit\", next_step \"check the permit register monthly\").\n\"What would overturn it?\": get_entities the assessment with lore and ABOUT incoming for its indicators; then the indicators with lore content for their latest Activity.",
+                    "display_index": 2
+                },
+                {
+                    "title": "When an indicator is observed",
+                    "content": "Log the source (rule/logging_sources) and what it shows as a claim; that claim BEARS_ON the assessment (supports or contradicts, inferred, note naming the indicator); add Activity on the indicator. A contradicting sign stamps the assessment's changed_on; a supporting one does not. A sign seen through an unsettled identity reads \"pending identity\" beside it. Propose a review of likelihood or confidence in one question; never change them.\nA sign looked for and not seen is Activity only: no claim, no change, \"no sign recorded\" in the brief.",
+                    "display_index": 3
+                },
+                {
+                    "title": "When premises move",
+                    "content": "A premise's standing change opens a review question through rule/standing, Making the change, step 4.\nAt every brief, walk each assessment's premises down to source links. Flag it \"under review\", with a check question if none is open, when a premise is disproved, retracted or conflicting, has differing expectations, or has changed_on later than the assessment's latest Standing chunk. Never silently keep a flagged assessment as the current view.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Output Brief",
+            "slug": "rule/output_brief",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "format",
+                    "trigger": "write the brief, the weekly, the monthly, a summary for the team or client, \"since last time\", \"what changed\"",
+                    "scope": "investigation, event, source, question",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "The brief: what changed since last time, the assessment and confidence, what supports it, what would change it, open questions; built from the record, worded with attribution and terms, checked clause by clause, and logged."
+            },
+            "lore": [
+                {
+                    "title": "What changed since the last brief",
+                    "content": "D is the watch's last_output_on.\n1. get_entity_lore {entity_id: \"investigation/<slug>\"} (titles), then every part of the latest \"Output ... brief\" by lore_id.\n2. search_entities {tags: [\"<watch tag>\"], filter: {path: \"properties.changed_on\", operator: \"gte\", value: \"<D>\", cast: \"date\"}, limit: 100, view: \"compact\"}, paged: new claims, standing moves, conflicts, denials, question moves.\n3. search_entities {entity_type: \"source\", tags: [\"<watch tag>\"], filter: {path: \"properties.logged_on\", operator: \"gte\", value: \"<D>\", cast: \"date\"}, limit: 100}, paged; then those sources' outgoing BEARS_ON links: claims that gained evidence.\n4. get_entities on all those claims in 20s with BEARS_ON and lore content; changed questions view \"record\".\n5. New means logged_on at or after D; a claim logged earlier but not in the log is \"in the record, not cited last time\". Compare standings with the log. Say \"since <D>, per the record\".\nAn informal \"what changed\" answer logs no Output and does not move last_output_on.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Building the full brief",
+                    "content": "If audience or cadence is not yet in Scope and standards, ask now (rule/onboarding). Tell the owner first if the watch is large. Page everything; 20 records per get_entities call.\n1. The watch with lore content: Scope and standards (audience, freshness window, quote limits).\n2. search_entities {entity_type: \"event\", tags: [\"<watch tag>\"], limit: 100, view: \"compact\"}, every page.\n3. get_entities on them in 20s with relationships {filter: {relationship_types: [\"BEARS_ON\", \"ABOUT\"]}, limit: 100} and lore content: standing, evidence, questions about each, latest Standing reason.\n4. Cited sources in 20s with BY and DERIVES_FROM: origins, reliability, terms. Any cited source with terms unset: ask once before composing.\n5. Each quoted passage: get_entity_lore {entity_id: \"<source>\", lore_id: \"<the locator's chunk>\"}.\n6. The premise walk (rule/assessments, When premises move).\n7. Questions per rule/open_questions, What's open, steps 2 and 3; indicators with their latest Activity.\n8. Compose, then read the draft clause by clause (Wording and terms) and fix every clause that leans on a claim not confirmed and documented.",
+                    "display_index": 1
+                },
+                {
+                    "title": "The sections",
+                    "content": "About one page. What changed (since <D>, newest first, each attributed; announcements as \"announced <date>: expected <target>\"; retractions once). Assessment and confidence (likelihood and confidence per assessment; \"under review\" with the reason if flagged). What supports it (premises with standing words and counts; against; denials; stale \"as of\"). What would change it (indicators and latest Activity). Open questions (conflicting reports and differing expectations, one account per line; high-priority and overdue; checks and reviews; \"request out\" only beside the claims that question is ABOUT). Unconfirmed items only under \"Unconfirmed:\" or attributed in a sentence.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Wording and terms",
+                    "content": "Every sentence and every clause, including a bold lead, a heading, a one-word answer and a possessive (\"Lind's new Velmar plant\"), follows rule/retrieval, Never from the name: lead with the attribution (\"Bresca states it has agreed to buy Tovik\"), never \"Bresca agreed to buy Tovik\" or \"Agreed.\"; a reported reply, a stated condition and an owner-reported status are attributed too, and a negative is \"nothing recorded shows ...\" Keep the source's hedges (\"is understood to have won\"). Competing accounts are never blended; a denial sits beside its claim. Stale, open-ended and silent items are worded per rule/retrieval, Current, stale and silent.\nTerms on every cited source: public, quote and cite; licensed, a short phrase at most (or the Scope limit), otherwise paraphrase with attribution; client_confidential, only for that client; internal, only inside the owner's organisation; unset, cite and attribute, never quote. An owner's note: \"your note of <date>\", unsourced. A codename never appears: a contact's material is its gist with \"attribution as agreed\", only where its terms allow the audience.",
+                    "display_index": 3
+                },
+                {
+                    "title": "Logging the brief",
+                    "content": "1. create_entity_lore {entity_id: \"investigation/<slug>\", title: \"Output <YYYY-MM-DD>: brief\" (a second that day adds <HH:MM>), content: \"<audience; server_time>\\n<slug> | <standing then> | <count>\\n...\"}; past about 100 lines, \"(part 2)\".\n2. update_entity {entity_id: \"investigation/<slug>\", updates: {properties: {last_output_on: \"<server_time>\", review_on: \"<next date per cadence>\"}}}.",
+                    "display_index": 4
+                },
+                {
+                    "title": "A short example",
+                    "content": "Velmar market watch, brief of 17 November 2026 (strategy team)\nWhat changed: the Velmar permit register records Lind Foods' plant permit application (documented; confirmed). Trade Ledger reports, citing a recruiter, that Lind is hiring a Velmar plant director (unconfirmed, one source).\nAssessment: Lind Foods likely enters Velmar by 2028 (moderate confidence, up from low on 10 November).\nWhat supports it: the land registry records Lind's Port Arnow site purchase (confirmed); permit filed (confirmed); Lind announced 12 June 2026 a Velmar plant, expected 2027 (a plan). Against: Lind stated on its Q3 call that capital spending is \"under review\".\nWhat would change it: a construction tender (none recorded); a tariff cut (no sign recorded to October 2026).\nOpen: price paid for Pellar, conflicting reports. Lind's filing states 350m. Trade Ledger reports 400m. Permit file: request out, due 28 November.",
+                    "display_index": 5
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Retrieval",
+            "slug": "rule/retrieval",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "guidance",
+                    "trigger": "any question about what is known: about an organisation or person, linking two of them, who said what, when, timelines, \"is this still current\"",
+                    "scope": "world",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Answering from the record: never from a claim's name, lists grouped by standing, answers scoped to the watch, links between X and Y, timelines, freshness and gaps."
+            },
+            "lore": [
+                {
+                    "title": "Never from the name",
+                    "content": "This is the home of the rule. A claim's name and description are labels; read its BEARS_ON links before any sentence states what it says. Say a claim plainly only when it is confirmed and none of its asserting links is alleged, stated or reported without a documented or observed link beside it; accusations, a party's own statements and secondhand reports stay attributed even when confirmed. This holds for every clause: the lead or first words, a bold line, a one-word answer (\"Yes\", \"Agreed\"), a possessive, a clause inside a sentence about something else. Lead with the attribution: \"Lind states it plans a Velmar plant for 2027 (12 June release); unconfirmed, one origin.\" This includes a third party's report of a reply (\"Bresca declined to comment, Coldchain reports\"), a condition the subject states (\"Bresca says the deal needs clearance\") and a status from the owner's account (\"per your account, still under review\"). Never state a negative as fact: \"nothing recorded shows completion\", not \"not done\"; \"no search is recorded here\", not \"nobody has searched\". Competing accounts are each given with their source, never blended. Before sending an answer, read it clause by clause and fix any that lean on a claim not confirmed and documented.\nLists come pre-grouped: search_entities {entity_type: \"event\", tags: [\"<watch tag>\"], filter: {path: \"properties.standing\", operator: \"eq\", value: \"<value>\"}, limit: 100, view: \"compact\"}, one per standing, paged, under headings (\"Confirmed:\", \"Unconfirmed:\", \"Conflicting reports:\"). A listed name is not a statement.",
+                    "display_index": 0
+                },
+                {
+                    "title": "What do we know about X",
+                    "content": "1. Find X's slug.\n2. get_entities {entity_ids: [\"<X>\"], relationships: {filter: {relationship_types: [\"ABOUT\"], direction: \"incoming\"}, limit: 100}}, paged until next_cursor is null.\n3. Those claims in 20s with BEARS_ON (paged), view \"full\": standing, tags, dates, links.\n4. Keep claims carrying this watch's tag; claims from another watch only when asked or relevant, labelled with their watch.\n5. Their sources in 20s with BY and DERIVES_FROM.\n6. Answer by standing word, identity questions first, per Never from the name; stale items \"as of\". \"Who said what\" goes source by source.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Linking X and Y",
+                    "content": "1. get_entities [X, Y] with ABOUT incoming, limit 100; page either alone if needed.\n2. Direct links: claims in both sets.\n3. Every claim in either set in 20s with ABOUT and BEARS_ON: each claim's other parties. Scope to the watch.\n4. One-intermediary chains: a party Z in claims from both sets.\n5. Answer direct links, then chains, every step attributed with standing. Never query_relationships depth 2 (its second level can miss links). Never \"no link\": \"nothing recorded within one intermediary\", and offer to go further.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Timelines",
+                    "content": "get_timeline year bounds test the start year only, so never pass them.\n1. get_timeline {entity_ids: [\"investigation/<slug>\"], event_types: [timeline types, rule/vocabulary], view: \"compact\", limit: 100} (or an actor, or location_id), paged.\n2. Every returned claim in 20s, view \"record\", for precision, date_text, end parts, end_status, as_of, event_type, before excluding any: \"before March 2027\" can belong in a 2026 window; a period starting earlier can run into it.\n3. Keep what can overlap the window; end_status ongoing or unknown reads \"end not recorded\"; before, after and between flagged; undated listed apart.\n4. For each kept claim read its BEARS_ON links and sources' terms; present in order, attributed, with standing. An announcement reads \"announced <as_of>: expected <target>\". Gaps are \"nothing recorded\".",
+                    "display_index": 3
+                },
+                {
+                    "title": "Current, stale and silent",
+                    "content": "\"Still current?\": within the freshness window (90 days unless Scope and standards says otherwise), \"as of <date>, per <source>\"; older or no as_of, \"the latest recorded is as of <date>\", and offer a check. Never \"currently\". When the record is silent: \"nothing recorded here on any Corvane plans for Velmar\", never \"Corvane has no Velmar plans\". audit_world listing rules or an empty watch as unlinked is expected.",
+                    "display_index": 4
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "People and Confidentiality",
+            "slug": "rule/people_and_confidentiality",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "policy",
+                    "trigger": "adding or editing a person; a confidential or anonymous contact; an expert-network call; identifying detail in a passage; terms of use; anything about a private individual; looking someone or something up",
+                    "scope": "actor, source",
+                    "priority": 300,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "People and confidential sources: codenames as internal labels only, nothing identifying stored, redaction done and reported safely, no profiling of private individuals, and lookups only on public subjects when asked."
+            },
+            "lore": [
+                {
+                    "title": "Confidential sources",
+                    "content": "A contact speaking in confidence (an industry contact, an expert-network call, a former employee) is an actor, person, named \"Source A\", confidential true, description \"Confidential contact\". Their sources are named by codename too: \"Call with Source A, 2026-10-02\". A codename is an internal label: never in a brief or anything for others, never as a qualifier in another record's name or description. A watch's Scope and standards says only \"works with confidential sources\", never where they work.\nNever store their real name or anything identifying: role, employer or former employer, contact details, where or how the owner met them, the network that arranged the call, details only they would know. Orbismo stores the world, the AI service reads what you read, and everyone the world is shared with reads everything. If the owner gives identifying detail, do not store it, and say why in one line.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Cleaning a passage",
+                    "content": "Clean before storing: remove identifying words, mark each \"[identifying detail removed]\", store once. When in doubt, leave it out of every write first, then ask; add it back only on the owner's yes; never store a detail in order to ask about it. A confidential source's account is stored without its date, place or counterpart by default.\nCleaning covers anything derived from the passage too: a claim, link note, capacity or date only the source could give. If it cannot be stored without pointing back to the source, keep it only as \"to check: <gist>\" on an open question, or leave it out. That note, and the question's name, description and next step, carry only the checkable question: no act, timing or access only the source could know, and nothing about where the lead came from; an unclear owner answer means leave it out.\nReport a removal by count and kind only, each kind one bare noun (a job, a role, a workplace, a place, a date, a person, an act), never what it attaches to: \"two details removed: a job and a date\". Never repeat them, use the source's pronouns, or add anything else that narrows who they are.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Cleaning what is already stored",
+                    "content": "Every write is versioned, so an edit never removes text. A lore chunk: delete_entity_lore {entity_id: \"<source>\", lore_id: \"<id>\"}, then create_entity_lore with the same title, the cleaned text and the same display_index.\nA claim or question whose name, description or properties held an identifying detail: note its links, delete_entity {entity_id: \"<slug>\", cascade: true, reason: \"confidential cleaning <YYYY-MM-DD>\"}, recreate it clean, and recreate its links. This is cleaning, not a deletion of record: it needs no retraction warning (rule/tidying, Deleting). An actor or source holding such a detail is handled the same way. Tell the owner what kinds were removed, as above.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Terms and sensitive material",
+                    "content": "Terms are set per rule/vocabulary, Terms, and applied per rule/output_brief. Contact calls are usually internal or client_confidential; ask, never infer. Material that looks like another company's confidential information (unreleased figures, internal plans passed on by an employee): say so in one line and ask before recording; the owner and their compliance rules decide.",
+                    "display_index": 3
+                },
+                {
+                    "title": "People in a watch",
+                    "content": "Executives, founders, board members and spokespeople have a public role: their roles are employed_by or director_of claims, their statements sources BY them. A role whose employer is not named (\"previously Director of Network Planning, 2019 to 2025\"): employed_by ABOUT the person only, \"<Person> Director of Network Planning, employer not named (2019 to 2025)\", plus a question on the employer. Even for them, nothing about home, family, health, movements or private contacts.\nAnyone else named (a quoted plant worker, a recruiter) is private: a record only if needed, private_person true, holding only what bears on a claim; prefer the organisation and the source. A person is living unless a death is recorded, or they were born over 100 years ago and nothing suggests they are alive; the owner saying someone is living wins; never infer a death.\nNever compile a living private person's family, home or movements, and never look them up, even when asked; say once that this world does not hold that. One allowance: a single family link a source gives that is itself material to a claim (a contract awarded to a director's brother's company), the relative named only as the source names them, nothing further gathered.",
+                    "display_index": 4
+                },
+                {
+                    "title": "Looking things up",
+                    "content": "Only when the owner asks, only about organisations and people with a public role, and only with web access. Record what you find as a source: url as opened, accessed_on, the passage verbatim under its locator, terms per rule/vocabulary. Never fill anything in from memory. This world does not monitor, scrape or collect on a schedule; never look up private individuals, employee lists or personal social accounts.",
+                    "display_index": 5
+                }
+            ]
+        },
+        {
+            "entity_type": "rule",
+            "name": "Tidying",
+            "slug": "rule/tidying",
+            "data": {
+                "tags": [
+                    "rule",
+                    "investigation-research"
+                ],
+                "properties": {
+                    "status": "active",
+                    "rule_type": "workflow",
+                    "trigger": "merge, split, rename, retag, delete, archive; check the record; audit; reconcile a watch",
+                    "scope": "world",
+                    "priority": 100,
+                    "trust": "imported",
+                    "source": "orbismo-playbook/investigation-research@1.0"
+                },
+                "short_description": "Keeping the record sound: reconciling each watch's membership by exact sets, repairing values safely, deleting a claim only after a warning, and reporting rule index drift."
+            },
+            "lore": [
+                {
+                    "title": "Reconciling a watch",
+                    "content": "Lists rely on tags; PART_OF is authoritative. Check them against each other when asked to tidy and after any bulk log, paging everything. A claim in two watches carries both tags and two PART_OF links; that is correct.\n1. search_entities {entity_type: \"event\", tags: [\"<watch tag>\"], limit: 100, view: \"compact\"}, and the same for question, every page: T_claim, T_question.\n2. get_entities {entity_ids: [\"investigation/<slug>\"], relationships: {filter: {relationship_types: [\"PART_OF\"], direction: \"incoming\"}, limit: 100}}, every page: P_claim, P_question by slug prefix.\n3. Compare exact sets, never counts. In P not T: read tags, write the full list. In T not P: if it belongs, create_relationships PART_OF in batches of up to 100; if the tag is wrong, remove it by read and write.\n4. Report what changed, by name.",
+                    "display_index": 0
+                },
+                {
+                    "title": "Repairs",
+                    "content": "A misclassified event_type: update_entity {entity_id: \"<claim>\", updates: {properties: {event_type: \"announcement\", changed_on: \"<server_time>\"}}}, plus an Agent note on what and why (a second one that day adds <HH:MM> to its title). A value not in rule/vocabulary or the Building Blocks: ask what was meant, then fix it; get_world_context's enumerations show values in use.\nTwin claims from the old one-watch convention (same proposition, one name ending \"[tag]\"): propose keeping one; on a yes, rule/identity, True duplicates, then give the keeper both tags and both PART_OF links.\nRenaming does not change the slug; rename only to fix a real error, with the owner's yes.",
+                    "display_index": 1
+                },
+                {
+                    "title": "Deleting",
+                    "content": "Nothing is deleted without an explicit instruction: a false claim is disproved, a dropped one retracted, a dead lead a dead end, a watch paused or closed.\nConfidential cleaning is different and follows rule/people_and_confidentiality, Cleaning what is already stored. A claim: only on explicit instruction, after one warning that retracted is the usual way and that deleting loses the claim, its evidence links and its standing history. Then delete_entity {entity_id: \"<claim>\", cascade: true}.\nA source, actor or question: on explicit instruction, after listing its links and lore and confirming; say what cascade removes before using it.",
+                    "display_index": 2
+                },
+                {
+                    "title": "Index drift and audit",
+                    "content": "search_entities {entity_type: \"rule\", view: \"compact\", limit: 100} against the rule index in the world instructions: report rules with no row, rows with no rule, and rules not active; never fix silently. audit_world flagging rules or an empty watch is expected; claims with no BEARS_ON or no PART_OF are real problems to list and offer to fix.",
+                    "display_index": 3
+                }
+            ]
+        }
+    ],
+    "relationships": [],
+    "skip_existing": true,
+    "skip_duplicates": true
+}

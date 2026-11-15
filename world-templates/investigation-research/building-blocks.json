@@ -1,0 +1,745 @@
+{
+  "entity_types": [
+    {
+      "type_name": "investigation",
+      "label": "Investigation",
+      "description": "One line of work with its own question and output: a story, a standing watch, a line of family or local research.",
+      "icon": "policy",
+      "property_schema": {
+        "type": "object",
+        "description": "With one active investigation, everything belongs to it; never ask which. Claims and questions belong to one or more investigations: a PART_OF edge to each (authoritative) plus each one's tag (its searchable copy). Sources carry the tag of every investigation using them; actors and places carry none. Lore: one Output <date time> chunk per delivered output.",
+        "required": [
+          "status",
+          "tag"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "closed"
+            ],
+            "enumerable": true,
+            "description": "active, paused (set aside, intact) or closed (finished; still readable)."
+          },
+          "tag": {
+            "type": "string",
+            "description": "Lowercase-hyphen tag, unique in the world (check existing tags first). Carried by its claims, questions and sources. Never changed."
+          },
+          "question": {
+            "type": "string",
+            "description": "The question or decision the work serves, in the owner's words."
+          },
+          "focus": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Slugs of the few actors or places at the centre, copied from tool responses."
+          },
+          "last_output_on": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When the last table, brief or narrative was delivered. Full date-time from server_time (2026-11-14T19:32:05Z). \"What changed since\" starts here."
+          },
+          "review_on": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO date the next brief or review is due, when the owner works to a cadence."
+          }
+        }
+      },
+      "display_order": 0,
+      "is_active": true
+    },
+    {
+      "type_name": "event",
+      "label": "Claim",
+      "description": "Something that may or may not be true: a happening, a role or link between two actors, an attribute, an identity question or a judgement, dated or not.",
+      "icon": "checklist",
+      "property_schema": {
+        "type": "object",
+        "description": "A CLAIM: stored as kind event so dated claims reach the timeline; call it a claim to the owner. One proposition, dated or not: a happening, role, link, attribute, identity question, decision or assessment. Who says it, and how, lives on each BEARS_ON edge, never on the claim. Never repeat a claim from its name. In every sentence, lead, summary line, one-word answer and clause, possessives included (\"his first ship\" asserts it), state a claim bare only when standing is confirmed and no asserting edge is put_as alleged, stated or reported without a documented or observed edge beside it; otherwise lead with the attribution (\"the census puts him at 4 Quay Row\"). Never state a negative as fact; say nothing recorded shows it. Accusations, a party's own statements and secondhand reports stay attributed even when confirmed; a denial is shown beside its claim. Name: neutral headline with the date as the source gives it (Ana Reyes director of Harbor Holdings (2014 to 2019)); announcements named as announced. Description: the proposition beginning \"That ...\", no attribution or verdict. PART_OF each investigation it belongs to (one record, never twins), with each tag. ABOUT each actor or place it concerns; a link between two actors is one claim ABOUT both. At least one BEARS_ON from a source, or from the claims a conclusion rests on.",
+        "required": [
+          "event_type",
+          "standing",
+          "date_precision",
+          "logged_on",
+          "changed_on"
+        ],
+        "properties": {
+          "event_type": {
+            "type": "string",
+            "enumerable": true,
+            "description": "From this world's vocabulary rule only. The fixed core in every world: relationship (a role, office, ownership, membership or kinship between two subjects, dated or not), attribute (something about one subject), identity (whether two records are one), assessment (a judgement or forecast resting on other claims), decision (an approval, sign-off, vote, award or ruling), other. The rest are the use's happenings."
+          },
+          "standing": {
+            "type": "string",
+            "enum": [
+              "open",
+              "confirmed",
+              "contested",
+              "refuted",
+              "withdrawn"
+            ],
+            "enumerable": true,
+            "description": "open when created. You may set contested only when another account cannot also be true, and say so; overlapping or contained ranges and rounded figures support instead, a denial never contests, and differing forecasts are separate claims linked contradicts with neither contested. Every other change is the owner's, recorded in a Standing <date> chunk. confirmed: meets this world's bar, by the owner's word. refuted: shown false. withdrawn: retracted or dropped."
+          },
+          "confidence": {
+            "type": "string",
+            "enumerable": true,
+            "description": "Only on conclusions drawn by the owner or you from other claims (assessments, identities, an inferred kinship or birth year), in this world's vocabulary. Its presence marks a conclusion."
+          },
+          "relation": {
+            "type": "string",
+            "enumerable": true,
+            "description": "For relationship claims only, read subject relation other_party, from this world's vocabulary rule. Never invent one or record the inverse as a second claim."
+          },
+          "date_year": {
+            "type": "integer",
+            "description": "Only when the source gives it: the start of a span, the earliest of a between, the bound of before or after; for an announcement, plan or forecast, the target. Another account's date is a separate claim."
+          },
+          "date_month": {
+            "type": "integer",
+            "description": "1-12, only when the source gives it. An attribute merely mentioned in a dated entry (an occupation) gets year or month precision unless the record dates it; a relationship mentioned in a dated document gets date_precision unknown plus as_of."
+          },
+          "date_day": {
+            "type": "integer",
+            "description": "Only when the source gives it. When an entry's own date is disputed, its own event becomes two competing claims, one per reading; the entry's other claims take no day."
+          },
+          "date_precision": {
+            "type": "string",
+            "enum": [
+              "day",
+              "month",
+              "year",
+              "circa",
+              "before",
+              "after",
+              "between",
+              "unknown"
+            ],
+            "enumerable": true,
+            "description": "day, month, year; circa (about 1847, early 2019); before or after (only a bound, held in date_*); between (earliest in date_*, latest in end_*); unknown: no year given (sorts last). A day and month with no year: date_month and date_day, no date_year, unknown, the source's words in date_text."
+          },
+          "date_text": {
+            "type": "string",
+            "description": "The date as the source puts it (about 1847, Q3 2026, 12 March). Filled unless precision is day, or unknown with no date words at all."
+          },
+          "end_year": {
+            "type": "integer",
+            "description": "End year of a span or between range, when a source gives it."
+          },
+          "end_month": {
+            "type": "integer",
+            "description": "End month, only when given."
+          },
+          "end_day": {
+            "type": "integer",
+            "description": "End day, only when given."
+          },
+          "end_status": {
+            "type": "string",
+            "enum": [
+              "none",
+              "ended",
+              "ongoing",
+              "unknown"
+            ],
+            "enumerable": true,
+            "description": "none: a point, or not about time. ended: end recorded. ongoing: a source says it still held as of as_of. unknown: no end given; never call it still going on."
+          },
+          "as_of": {
+            "type": "string",
+            "description": "Latest date a source observed it to hold, ISO, partial allowed; for an announcement, plan or forecast, the date announced. May move earlier on a correction, with an Agent note. Never the date it happened. No as_of: never described as current."
+          },
+          "logged_on": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When recorded. Full date-time from server_time (2026-11-14T19:32:05Z)."
+          },
+          "changed_on": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last consequential change. Full date-time from server_time (2026-11-14T19:32:05Z). Set at creation; stamped only when standing or confidence changes, a contradicting or denying edge is added, or an edge on it is removed or regraded (put_as, stance, repeats, its source regraded or retracted). Added supporting evidence does not stamp it."
+          }
+        }
+      },
+      "display_order": 1,
+      "is_active": true
+    },
+    {
+      "type_name": "source",
+      "label": "Source",
+      "description": "Something that says something: a web page, article, filing, archive record, document, interview, statement, post, recording, book, dataset, or the owner's own note or file. Orbismo holds the reference and the passages that matter, not the document.",
+      "icon": "article",
+      "property_schema": {
+        "type": "object",
+        "description": "One per document, page, recording, interview or register entry, tagged for each investigation using it. Named as cited, using the title as given or a plain description; never an invented headline. Cited passages go in lore, verbatim, each titled with its locator; your commentary only in an Agent note. A table or list is one source with one passage stored whole (locator <chunk title>, row <id>); claims only for rows bearing on the investigation's question or naming someone on file. An exact url or reference match is a duplicate candidate: read it to confirm. Material described but not shown: their words as the passage, edges reported and secondhand; say you have not seen it. Never invent a URL, reference, locator or quotation.",
+        "required": [
+          "source_type",
+          "origin",
+          "logged_on"
+        ],
+        "properties": {
+          "source_type": {
+            "type": "string",
+            "enum": [
+              "web_page",
+              "article",
+              "filing",
+              "record",
+              "document",
+              "interview",
+              "statement",
+              "social_post",
+              "recording",
+              "book",
+              "dataset",
+              "own_note",
+              "other"
+            ],
+            "enumerable": true,
+            "description": "filing: an official filing (registry, court, regulator). record: an archive or register entry (census, parish register, deed, minutes). document: a letter, report or contract not officially filed. interview: one the owner conducted. statement: a press release or official statement. recording: video or audio. own_note: the owner's own observation, recollection or correction."
+          },
+          "origin": {
+            "type": "string",
+            "enum": [
+              "original",
+              "copy",
+              "derivative",
+              "unknown"
+            ],
+            "enumerable": true,
+            "description": "original: the record or first publication, including public text the owner pastes from a url they give. copy: an image (scan, photo, microfilm, screenshot, archived snapshot). derivative: a transcript, abstract, index, translation or write-up of another source."
+          },
+          "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "As given or as opened; never constructed."
+          },
+          "archive_url": {
+            "type": "string",
+            "format": "uri",
+            "description": "An independently preserved copy, when one exists."
+          },
+          "file_ref": {
+            "type": "string",
+            "description": "Where the owner keeps their copy."
+          },
+          "reference": {
+            "type": "string",
+            "description": "The source's own identifier as its issuer writes it (call number, case or company number, piece and folio, entry number)."
+          },
+          "creator": {
+            "type": "string",
+            "description": "Author, speaker or issuer as written, when not tracked as an actor."
+          },
+          "publisher": {
+            "type": "string",
+            "description": "The outlet, registry, archive or platform."
+          },
+          "published_on": {
+            "type": "string",
+            "description": "When published, filed or said, ISO, partial allowed. When reported, not when the events happened."
+          },
+          "accessed_on": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO date last viewed, for anything online."
+          },
+          "reliability": {
+            "type": "string",
+            "enumerable": true,
+            "description": "General trust in the source, from this world's vocabulary rule. Separate from any claim's standing and from per-point timing (on the edge)."
+          },
+          "terms": {
+            "type": "string",
+            "enumerable": true,
+            "description": "From this world's vocabulary rule only. A published public document (public register, published notice or filing, public web page, published article the owner can lawfully quote) takes the world's public or open value without asking. An own_note is usable as the owner's knowledge, flagged as unsourced. Anything else is unknown until the owner says; never infer it. While blank or unknown: cite and attribute, never quote, in anything meant for others."
+          },
+          "logged_on": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When recorded. Full date-time from server_time (2026-11-14T19:32:05Z). \"What changed since\" finds new sources by this."
+          }
+        }
+      },
+      "display_order": 2,
+      "is_active": true
+    },
+    {
+      "type_name": "actor",
+      "label": "Actor",
+      "description": "A person, organisation, group, online account or movable object that claims are about or sources come from.",
+      "icon": "person",
+      "property_schema": {
+        "type": "object",
+        "description": "A person, organisation, group, online account or movable object, shared by every investigation, no investigation tag. Identification only (names, aliases, identifiers); its description says who or what it is. Everything said about it, including links to other actors, is a claim ABOUT it. Before creating, check identifier exactly, then the name. Reuse first: attach new material to an existing actor when the owner plainly means it, the name form, role and setting match, or the material derives from a source already attached; add the name form to aliases and say so (I've taken X to be Y), again on first mention in a new session. Only on real doubt create a source-qualified actor (John Reyes (1902 deed)) and a Same person? claim. Never join two existing records without the owner's word. Land and buildings are places. A codename never qualifies another record's name or description.",
+        "required": [
+          "actor_type"
+        ],
+        "properties": {
+          "actor_type": {
+            "type": "string",
+            "enum": [
+              "person",
+              "organisation",
+              "group",
+              "account",
+              "object"
+            ],
+            "enumerable": true,
+            "description": "organisation: a company, agency, charity or other body. group: an informal set of people. account: an online identity whose owner is not established. object: a vessel, vehicle, product or other movable thing."
+          },
+          "identifier": {
+            "type": "string",
+            "description": "The main stable identifier as <scheme>:<value> (northland-company:0812345, imo:9876543). Matched exactly for duplicates."
+          },
+          "other_identifiers": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Further identifiers, same form."
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Other name forms of this actor, including ones you attached aloud. Read, then write the full list."
+          },
+          "private_person": {
+            "type": "boolean",
+            "description": "true for a living person with no public role: record only what bears on a claim; no home, family, movements, contacts, health or photos."
+          },
+          "confidential": {
+            "type": "boolean",
+            "description": "true for a confidential source: codename only. Nothing stored may identify them or say where they work. Anything derived from their material (a claim, note, capacity or date only they could give) is stored only if it does not point back to them; otherwise it is kept as to check on an open question, or left out."
+          }
+        }
+      },
+      "display_order": 3,
+      "is_active": true
+    },
+    {
+      "type_name": "place",
+      "label": "Place",
+      "description": "A place claims are about: a country, town, district or parish, site, plot, building or the registered address of an organisation.",
+      "icon": "place",
+      "property_schema": {
+        "type": "object",
+        "description": "A place, the only home for land and buildings. Shared, no investigation tag; its description says what and where it is. Named as records name it. Claims ABOUT it with role location reach its timeline; residence is such a claim. Never a living private person's home.",
+        "required": [
+          "place_type"
+        ],
+        "properties": {
+          "place_type": {
+            "type": "string",
+            "enum": [
+              "country",
+              "region",
+              "settlement",
+              "district",
+              "site",
+              "building",
+              "address",
+              "other"
+            ],
+            "enumerable": true,
+            "description": "settlement: city, town or village. district: parish, ward or other administrative area. site: farm, port, plot or estate. address: for organisations and historical households only."
+          },
+          "within": {
+            "type": "string",
+            "description": "Slug of the enclosing place, from a tool response, or its name."
+          },
+          "aliases": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Other names and spellings, including former names."
+          }
+        }
+      },
+      "display_order": 4,
+      "is_active": true
+    },
+    {
+      "type_name": "question",
+      "label": "Question",
+      "description": "Something still to find out, do or watch for: a question, a lead, a check, a records request, a request for comment, an indicator.",
+      "icon": "help",
+      "property_schema": {
+        "type": "object",
+        "description": "Something to find out, do or watch for. PART_OF each investigation it belongs to, with each tag; ABOUT what it concerns. Every action on it (searches with coverage, requests, chasers, observations, negative results) goes in an Activity <date> chunk. A negative result records where someone looked, never that something did not happen. Its name, description and next_step never take an unconfirmed claim as given. A to check note drawn from a confidential source is only the checkable question: no act, timing or access only the source could know, and no word of where the lead came from.",
+        "required": [
+          "question_type",
+          "status",
+          "logged_on",
+          "changed_on"
+        ],
+        "properties": {
+          "question_type": {
+            "type": "string",
+            "enum": [
+              "question",
+              "lead",
+              "check",
+              "request",
+              "reply",
+              "indicator"
+            ],
+            "enumerable": true,
+            "description": "question: unknown; answered by a claim. lead: answered when it yields claims, else dead_end. check: answered when logged and the owner has settled the claim. request: waiting once sent; answered when the material is logged, dead_end if refused or none exists. reply: waiting once put; answered when the reply is logged or the deadline passes (no response by <date> in Activity). indicator: watching until the owner drops it; each observation in Activity and as a claim bearing on the assessment."
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "waiting",
+              "watching",
+              "answered",
+              "dead_end",
+              "dropped"
+            ],
+            "enumerable": true,
+            "description": "open; waiting (a request or reply is out); watching (indicators only, never in \"what's open\"); answered (answered_by says by what); dead_end (looked, found nothing); dropped."
+          },
+          "priority": {
+            "type": "string",
+            "enum": [
+              "high",
+              "normal",
+              "low"
+            ],
+            "enumerable": true,
+            "description": "normal unless the owner says otherwise."
+          },
+          "next_step": {
+            "type": "string",
+            "description": "Next concrete action."
+          },
+          "due_on": {
+            "type": "string",
+            "format": "date",
+            "description": "ISO date it is due or should be chased."
+          },
+          "answered_by": {
+            "type": "string",
+            "description": "Slug of the claim or source that answered it, from a tool response."
+          },
+          "logged_on": {
+            "type": "string",
+            "format": "date-time",
+            "description": "When recorded. Full date-time from server_time (2026-11-14T19:32:05Z)."
+          },
+          "changed_on": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Set at creation and in the same update_entity call as any status change. Full date-time from server_time (2026-11-14T19:32:05Z)."
+          }
+        }
+      },
+      "display_order": 5,
+      "is_active": true
+    },
+    {
+      "type_name": "rule",
+      "label": "Rule",
+      "description": "Standing guidance for the AI working in this world. Substance lives in lore chunks; the rule index in the world instructions says when to read each one. Only rules with status active apply.",
+      "icon": "gavel",
+      "property_schema": {
+        "type": "object",
+        "description": "Guidance for you; substance in lore. The rule index in the world instructions says when to read each. Only status active applies.",
+        "required": [
+          "status"
+        ],
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "paused",
+              "archived",
+              "draft"
+            ],
+            "enumerable": true,
+            "description": "Only active rules apply."
+          },
+          "rule_type": {
+            "type": "string",
+            "enum": [
+              "app",
+              "workflow",
+              "vocabulary",
+              "guidance",
+              "policy",
+              "format",
+              "other"
+            ],
+            "enumerable": true,
+            "description": "workflow, vocabulary, guidance, policy, format, app, other."
+          },
+          "trigger": {
+            "type": "string",
+            "description": "When to read this rule."
+          },
+          "scope": {
+            "type": "string",
+            "description": "Kinds it covers, or world."
+          },
+          "priority": {
+            "type": "integer",
+            "description": "Higher wins when two active rules conflict."
+          },
+          "trust": {
+            "type": "string",
+            "enum": [
+              "self-authored",
+              "imported",
+              "ai-generated",
+              "shared"
+            ],
+            "enumerable": true,
+            "description": "Highest first; lower never overrides higher."
+          },
+          "owns_tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags this rule manages."
+          },
+          "source": {
+            "type": "string",
+            "description": "Where the rule came from."
+          }
+        }
+      },
+      "display_order": 6,
+      "is_active": true
+    }
+  ],
+  "relationship_types": [
+    {
+      "type_name": "PART_OF",
+      "inverse_label": "includes",
+      "label": "Part Of",
+      "description": "A claim or question belongs to an investigation.",
+      "category": "structure",
+      "allowed_source_types": [
+        "event",
+        "question"
+      ],
+      "allowed_target_types": [
+        "investigation"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "description": "A claim or question belongs to an investigation; one record may belong to several, a PART_OF edge to each plus each tag in the same turn. Authoritative for membership. get_timeline with the investigation in entity_ids returns its claims.",
+        "properties": {}
+      },
+      "display_order": 0,
+      "is_active": true
+    },
+    {
+      "type_name": "ABOUT",
+      "inverse_label": "subject of",
+      "label": "About",
+      "description": "What a claim or question concerns.",
+      "category": "subject",
+      "allowed_source_types": [
+        "event",
+        "question"
+      ],
+      "allowed_target_types": [
+        "actor",
+        "place",
+        "event",
+        "source"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "description": "What a claim or question concerns. A link between two actors is one claim with two ABOUT edges (subject first-named, other_party second), read subject relation other_party; the only way actors are linked. The applicant, filer or party named in a record is ABOUT its claims, not BY the source. Never set started or ended on any edge in this world.",
+        "required": [
+          "role"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "subject",
+              "other_party",
+              "mentioned",
+              "location"
+            ],
+            "description": "subject: what it is about, first-named in a link. other_party: the second party. mentioned: named without being the point. location: where it happened or applies, including residence."
+          },
+          "capacity": {
+            "type": "string",
+            "description": "The capacity the actor appears in: director, witness, informant."
+          }
+        }
+      },
+      "display_order": 1,
+      "is_active": true
+    },
+    {
+      "type_name": "BEARS_ON",
+      "inverse_label": "evidence",
+      "label": "Bears On",
+      "description": "Evidence: a source, or another claim, bears on a claim.",
+      "category": "evidence",
+      "allowed_source_types": [
+        "source",
+        "event"
+      ],
+      "allowed_target_types": [
+        "event"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "description": "Evidence, and the only home of attribution. One edge per source and claim. A claim bears on another when a conclusion rests on it (put_as inferred) or as a competing account (contradicts, newer to older). A source counts only for what it states: an implied point is put_as inferred and never an origin; partial backing is qualifies, or supports with the covered part in note, and never counts toward the rest.",
+        "required": [
+          "stance",
+          "put_as"
+        ],
+        "properties": {
+          "stance": {
+            "type": "string",
+            "enum": [
+              "asserts",
+              "supports",
+              "contradicts",
+              "denies",
+              "qualifies"
+            ],
+            "description": "asserts: where the claim is made. supports: backing from another quarter, including an overlapping or contained range (range in note). contradicts: an account that cannot also be true; claim to claim, a competing account, including differing forecasts (neither contested). denies: the actor it is about rejects it; never changes standing or contests, always shown beside the claim, and while unanswered you never propose confirmed. qualifies: a limit or condition, partial backing, or any edge whose note records a conflict (never asserts). Claim to claim: supports, contradicts or qualifies only."
+          },
+          "put_as": {
+            "type": "string",
+            "enum": [
+              "documented",
+              "observed",
+              "stated",
+              "alleged",
+              "reported",
+              "inferred"
+            ],
+            "description": "How this source puts it; classify what the words do before the medium: an accusation in a filed complaint is alleged, a company's promise in its annual report is stated. documented: a record states it as a matter of record. observed: the owner saw or checked it. stated: someone says it about themselves or their side. alleged: someone accuses another. reported: a secondhand account. inferred: implied or concluded, not stated, or a premise of a conclusion; never an origin. When one edge carries both a stated and an inferred point (a census stating a birthplace, its age implying a birth year): inferred, with stated: <what> in note; it counts as an origin for the stated part only. Never changed to strengthen a claim."
+          },
+          "locator": {
+            "type": "string",
+            "description": "Where in the source (p. 4 para 2; 00:12:31; folio 23r entry 112), also the title of the lore chunk holding the passage. Required when the bearer is a source; several places separated by semicolons; as pasted <date> when none is given."
+          },
+          "repeats": {
+            "type": "string",
+            "description": "Slug of a source this point is taken from, when this source repeats it on this point only. Wholly dependent sources use DERIVES_FROM."
+          },
+          "knowledge": {
+            "type": "string",
+            "enum": [
+              "firsthand",
+              "secondhand",
+              "unknown"
+            ],
+            "description": "Whether whoever gave this point had direct knowledge (firsthand) or passes it on (secondhand). From a derived source (index, summary, rewrite): as on the source it copies, or unknown; never firsthand."
+          },
+          "recorded": {
+            "type": "string",
+            "enum": [
+              "at_the_time",
+              "later",
+              "unknown"
+            ],
+            "description": "Whether this point was recorded at or near the time (a death record is at_the_time for the death, later for the birth). From a derived source: as on the source it copies, or unknown."
+          },
+          "note": {
+            "type": "string",
+            "description": "One line on how it bears, without speculation: gives 1849, not 1847; stated: birthplace Leith."
+          }
+        }
+      },
+      "display_order": 2,
+      "is_active": true
+    },
+    {
+      "type_name": "DERIVES_FROM",
+      "inverse_label": "source of",
+      "label": "Derives From",
+      "description": "A source wholly depends on another: a repeat, copy, transcript, summary or translation.",
+      "category": "evidence",
+      "allowed_source_types": [
+        "source"
+      ],
+      "allowed_target_types": [
+        "source"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "description": "A source wholly depends on another (everything it says comes from the target); never independent of it. Partial dependence goes on BEARS_ON as repeats instead.",
+        "properties": {
+          "how": {
+            "type": "string",
+            "enum": [
+              "repeats",
+              "quotes",
+              "summarises",
+              "transcribes",
+              "copies",
+              "translates",
+              "cites"
+            ],
+            "description": "repeats: restates without new reporting. copies: scan, snapshot or duplicate. cites: rests entirely on it."
+          }
+        }
+      },
+      "display_order": 3,
+      "is_active": true
+    },
+    {
+      "type_name": "BY",
+      "inverse_label": "source",
+      "label": "By",
+      "description": "Who a source comes from: its author, speaker, issuer, publisher, informant or recorder.",
+      "category": "evidence",
+      "allowed_source_types": [
+        "source"
+      ],
+      "allowed_target_types": [
+        "actor"
+      ],
+      "is_symmetric": false,
+      "property_schema": {
+        "type": "object",
+        "description": "Who a source comes from. A register, portal, docket or official record is BY the authority that keeps it, role issuer. For independence, sources from the same author, speaker, issuer or informant are one origin for what that party itself asserts; separate records made independently from different underlying material (a body's payments register and its audit of them) count by the record, not the issuer. A shared publisher or recorder never makes sources dependent.",
+        "required": [
+          "role"
+        ],
+        "properties": {
+          "role": {
+            "type": "string",
+            "enum": [
+              "author",
+              "speaker",
+              "issuer",
+              "publisher",
+              "informant",
+              "recorder"
+            ],
+            "description": "speaker: said it aloud or on a recording. issuer: the body a statement, filing or official record comes from. informant: gave the information a record was made from. recorder: the clerk or official who wrote it."
+          }
+        }
+      },
+      "display_order": 4,
+      "is_active": true
+    }
+  ]
+}
