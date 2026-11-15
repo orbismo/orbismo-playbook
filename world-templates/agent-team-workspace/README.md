@@ -4,7 +4,7 @@ An [Orbismo](https://orbismo.com/) world template for multi-agent work: put AI a
 
 That is the point of the template. A lead agent spawning subagents is one vendor, one session, and its judgement goes unchecked. Here the world is neutral ground and the team's shared memory: agents from different vendors check each other's work, a late joiner picks up what is left from the world state alone, and the coordination survives any one agent stopping.
 
-Like the [Commonplace Book](../commonplace-book/), this template does not run on Orbismo's default schema. It ships its own kinds and connections in `building-blocks.json`. Unlike the other templates, Orbismo also offers it as a built-in starting template on Standard plans and up, so the usual install is a few clicks rather than a hand setup. See the [world template catalog](../README.md) for the other templates.
+Like the [Commonplace Book](../commonplace-book/), this template does not run on Orbismo's default schema. It ships its own kinds and connections in `building-blocks.json`. Unlike the other templates, Orbismo also offers it as a built-in starting template on every plan, so the usual install is a few clicks rather than a hand setup. See the [world template catalog](../README.md) for the other templates.
 
 ## What it is good for, and what it is not
 
@@ -89,7 +89,7 @@ A world of only limited agents has nobody to review. Either set `review_required
 
 ## Installation
 
-The quick way, on Standard plans and up:
+The quick way, on any plan:
 
 1. Create a new Orbismo world and pick **Agent Team Workspace** as its starting template. The Building Blocks and the world instructions are set for you.
 2. On the new world's dashboard, complete the **Finish setup** step. That is what adds the starter content: the five channels and eight rules in `world.json`. Skipping it leaves the world with the protocol and nothing to run it in; an agent connecting to such a world reports that the starter content was never imported and stops, which is safe but inert until setup is finished.
