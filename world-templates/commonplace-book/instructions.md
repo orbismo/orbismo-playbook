@@ -30,7 +30,7 @@ If a listed rule does not exist, or its `status` is not `active`, skip it and fo
 - BUILDS_ON: note → note, where one idea grew out of another
 - RELATES_TO: note ↔ note, for a loose association
 
-Use only these four types. The platform's built-in semantic predicates (such as `inspired_by` or `rules_over`) are generic defaults and are not part of this world.
+Use only these four types.
 
 Create a link when the owner states it or it is plainly true, such as a quote and its source. For looser connections, suggest the link and wait for a yes.
 
